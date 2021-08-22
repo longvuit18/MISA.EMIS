@@ -1,0 +1,56 @@
+button {
+	background-color: #2ca01c;
+	border: none;
+	color: #fff;
+	height: 36px;
+	border-radius: 3px;
+	text-align: center;
+	cursor: pointer;
+	padding: 8px 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	font-family: "Notosans" !important;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 13px;
+	letter-spacing: normal;
+	word-spacing: normal;
+	transition: all .2s ease;
+}
+
+button:hover {
+	background-color: #35bf22;
+	color: #fff;
+}
+
+.secondary-button {
+	background-color: #fff;
+	border: 1px solid #8d9096;
+	border-radius: 3px;
+	height: 36px;
+	font-size: 13px;
+	padding: 8px 20px;
+	text-align: center;
+	color: #111;
+}
+
+.secondary-button:hover {
+	background-color: #d2d3d6;
+	color: #111;
+}
+
+.fix-width {
+	padding-left: 0;
+	padding-right: 0;
+	width: 100px;
+}
+
+.color-red {
+	background-color: #f65454;
+}
+
+.color-red:hover {
+	background-color: #f06868;
+}

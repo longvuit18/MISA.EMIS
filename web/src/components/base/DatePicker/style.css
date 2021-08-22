@@ -1,0 +1,73 @@
+.form-item-datepicker .ms-input-datepicker {
+	border-radius: 2px;
+	border: 1px solid #babec5;
+	outline: none;
+	height: 32px;
+	padding: 6px 10px;
+	display: inline-block;
+	box-sizing: border-box;
+	position: relative;
+	width: 100%;
+}
+
+.ms-input-datepicker:focus {
+	border: 1px solid #2ca01c;
+}
+
+.form-item-datepicker {
+	margin-bottom: 12px;
+	width: 100%;
+}
+
+.mx-datepicker {
+	width: auto;
+}
+
+.form-item-datepicker label {
+	color: #111;
+	margin-bottom: 4px;
+	font-size: 12px;
+	font-weight: 700;
+	display: block;
+}
+
+.form-item-datepicker .ms-input-datepicker::-webkit-input-placeholder {
+	/* Edge */
+	font-size: 11px;
+	color: #bbb;
+	font-style: italic;
+}
+
+.form-item-datepicker .ms-input-datepicker:-ms-input-placeholder {
+	/* Internet Explorer 10-11 */
+	font-size: 11px;
+	color: #bbb;
+}
+
+.form-item-datepicker .ms-input-datepicker::placeholder {
+	font-size: 11px;
+	color: #bbb;
+	font-style: italic;
+}
+
+.form-item-datepicker .end-icon {
+	background: url('../../../assets/icon/icon.svg') no-repeat -992px -360px;
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	top: 8px;
+	line-height: 32px;
+	right: 10px;
+}
+
+.form-item-datepicker .full-width {
+	width: 100% !important;
+}
+
+.form-item-datepicker .border-red {
+	border: 1px solid red;
+}
+
+.form-item-datepicker .box-input {
+	position: relative;
+}

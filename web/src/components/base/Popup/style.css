@@ -1,0 +1,73 @@
+.popup {
+	background-color: #fff;
+	width: 450px;
+	border-radius: 4px;
+	padding: 32px;
+}
+
+.popup .popup-content {
+	display: flex;
+	align-items: center;
+}
+
+.popup .popup-content .content-text {
+	font-size: 13px;
+	padding-left: 16px;
+}
+
+.popup .popup-content .content-icon {
+	width: 48px;
+	height: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.popup .popup-space {
+	height: 0.5px;
+	background: #b8bcc3;
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+
+.popup .popup-action {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.popup .popup-action .confirm {
+	display: flex;
+}
+
+.popup--error {
+	background: url("../../../assets/icon/icon.svg") no-repeat;
+	cursor: pointer;
+	width: 36px;
+	height: 36px;
+	background-position: -752px -462px;
+}
+
+.popup--info {
+	background: url("../../../assets/icon/icon.svg") no-repeat;
+	cursor: pointer;
+	width: 36px;
+	height: 36px;
+	background-position: -832px -462px;
+}
+
+.popup--warning {
+	background: url("../../../assets/icon/icon.svg") no-repeat;
+	cursor: pointer;
+	width: 36px;
+	height: 36px;
+	background-position: -598px -463px;
+}
+
+.popup--success {
+	background: url("../../../assets/icon/icon.svg") no-repeat;
+	cursor: pointer;
+	width: 36px;
+	height: 36px;
+	background-position: -990px -462px;
+}

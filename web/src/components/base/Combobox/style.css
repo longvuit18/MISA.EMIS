@@ -1,0 +1,156 @@
+/* Base input */
+
+input {
+	border-radius: 2px 0 0 2px;
+	border: 1px solid #babec5;
+	border-right: 0px;
+	outline: none;
+	height: 30px;
+	padding: 0;
+	padding: 6px 0px 6px 12px;
+	display: inline-block;
+	box-sizing: border-box;
+	border: none;
+	width: 100%;
+}
+
+input {
+	background-color: #fff;
+	color: #111;
+}
+
+.form-item {
+	margin-bottom: 12px;
+}
+
+label {
+	color: #111;
+	margin-bottom: 4px;
+	font-size: 12px;
+	font-weight: 700;
+	display: block;
+}
+
+::-webkit-input-placeholder {
+	/* Edge */
+	font-size: 11px;
+	color: #bbb;
+}
+
+:-ms-input-placeholder {
+	/* Internet Explorer 10-11 */
+	font-size: 11px;
+	color: #bbb;
+}
+
+::placeholder {
+	font-size: 11px;
+	color: #bbb;
+}
+
+/* End style baseinput */
+
+.combobox {
+	position: relative;
+	user-select: none;
+	/* Internet Explorer */
+	-khtml-user-select: none;
+	/* KHTML browsers (e.g. Konqueror) */
+	-webkit-user-select: none;
+	/* Chrome, Safari, and Opera */
+	-webkit-touch-callout: none;
+	/* Disable Android and iOS callouts*/
+}
+
+.border-red {
+	border: 1px solid red !important;
+}
+
+.box {
+	display: flex;
+	border-radius: 2px;
+	border: 1px solid #c7c7c7;
+	position: relative;
+	box-sizing: border-box;
+}
+
+.box:focus-within {
+	border: 1px solid #2ca01c;
+}
+
+.combobox-options-bottom {
+	height: auto;
+	overflow: auto;
+	position: absolute;
+	top: 32px;
+	background-color: #fff;
+	z-index: 1000;
+	width: 100%;
+	border-radius: 2px;
+	padding: 3px 0;
+	border: 1px solid #c7c7c7;
+}
+
+.combobox-options-top {
+	height: auto;
+	overflow: auto;
+	position: absolute;
+	bottom: 32px;
+	background-color: #fff;
+	z-index: 1000;
+	width: 100%;
+	border-radius: 2px;
+	padding: 3px 0;
+	border: 1px solid #c7c7c7;
+}
+
+.combobox-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	background-color: #fff;
+	cursor: pointer;
+	border-radius: 0 4px 4px 0;
+}
+
+.combobox-icon:hover {
+	background-color: #e9ebee;
+}
+
+.combobox-result {
+	list-style: none;
+	text-align: left;
+	padding-left: 10px;
+	cursor: pointer;
+	height: 32px;
+	line-height: 32px;
+}
+
+.combobox-result:hover, .combobox-result.current-select {
+	background-color: #e9ebee;
+}
+
+.combobox-result.is-active {
+	background-color: #2ca01c;
+	color: white;
+}
+
+.angle-down-icon {
+	background: url("../../../assets//icon//icon.svg") no-repeat;
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+	background-position: -560px -359px;
+	transition: transform .15s linear;
+}
+
+.angle-up-icon {
+	background: url("../../../assets//icon//icon.svg") no-repeat;
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+	background-position: -560px -359px;
+	transform: rotate( 180deg);
+	transition: transform .15s linear;
+}

@@ -1,0 +1,125 @@
+input, select {
+	border-radius: 2px;
+	border: 1px solid #babec5;
+	outline: none;
+	height: 32px;
+	padding: 6px 10px;
+	display: inline-block;
+	box-sizing: border-box;
+}
+
+input:focus, select:focus {
+	border: 1px solid #2ca01c;
+}
+
+.form-item {
+	margin-bottom: 12px;
+}
+
+label {
+	color: #111;
+	margin-bottom: 4px;
+	font-size: 12px;
+	font-weight: 700;
+	display: block;
+}
+
+::-webkit-input-placeholder {
+	/* Edge */
+	font-size: 11px;
+	color: #bbb;
+	font-style: italic;
+}
+
+:-ms-input-placeholder {
+	/* Internet Explorer 10-11 */
+	font-size: 11px;
+	color: #bbb;
+}
+
+::placeholder {
+	font-size: 11px;
+	color: #bbb;
+	font-style: italic;
+}
+
+.end-icon {
+	background: url('../../../assets/icon/icon.svg') no-repeat -992px -360px;
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	top: 8px;
+	line-height: 32px;
+	right: 10px;
+}
+
+.full-width {
+	width: 100% !important;
+}
+
+.border-red {
+	border: 1px solid red;
+}
+
+.box-input {
+	position: relative;
+}
+
+.currency {
+	position: absolute;
+	top: 0px;
+	line-height: 32px;
+	right: 10px;
+	color: #454545;
+	font-style: oblique;
+}
+
+.enter-text-right-to-left {
+	text-align: right;
+	padding-right: 50px;
+}
+
+/* Tooltip container */
+
+.m-tooltip {
+	position: relative;
+}
+
+/* Tooltip text */
+
+.m-tooltip .m-tooltip-text {
+	visibility: hidden;
+	width: 120px;
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+	/* Position the tooltip text - see examples below! */
+	position: absolute;
+	z-index: 1;
+	/* Top tooltip */
+	width: 120px;
+	bottom: 100%;
+	left: 50%;
+	margin-left: -60px;
+	/* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
+.m-tooltip .m-tooltip-text::after {
+	content: " ";
+	position: absolute;
+	top: 100%;
+	/* At the bottom of the tooltip */
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: black transparent transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+
+.m-tooltip:hover .m-tooltip-text {
+	visibility: visible;
+}

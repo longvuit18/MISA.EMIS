@@ -1,0 +1,60 @@
+.toast-message {
+	min-width: 350px;
+	max-width: 350px;
+	font-size: 13px;
+	background-color: #fff;
+	color: #333;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+	padding: 16px;
+	position: relative;
+}
+
+.toast-message .toast-close {
+	font-size: 26px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+.toast-message .toast-icon {
+	margin-right: 10px;
+	font-size: 24px;
+}
+
+.toast-message .toast-content {
+	max-width: 350px;
+}
+
+.toast--error {
+	background: url("../../../assets/icon/icon.svg") no-repeat;
+	cursor: pointer;
+	width: 36px;
+	height: 36px;
+	background-position: -752px -462px;
+}
+
+.toast--info {
+	background: url("../../../assets/icon/icon.svg") no-repeat;
+	cursor: pointer;
+	width: 36px;
+	height: 36px;
+	background-position: -832px -462px;
+}
+
+.toast--warning {
+	background: url("../../../assets/icon/icon.svg") no-repeat;
+	cursor: pointer;
+	width: 36px;
+	height: 36px;
+	background-position: -598px -463px;
+}
+
+.toast--success {
+	background: url("../../../assets/icon/icon.svg") no-repeat;
+	cursor: pointer;
+	width: 36px;
+	height: 36px;
+	background-position: -990px -462px;
+}
