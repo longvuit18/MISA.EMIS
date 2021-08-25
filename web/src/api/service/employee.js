@@ -7,15 +7,6 @@ class EmployeeApi extends BaseApi {
 	}
 
 	/**
-	 * Lấy thông tin của departments
-	 * @returns axios promise
-	 * Created by: VLVU (20/7/2021)
-	 */
-	async getDepartments() {
-		return await axios.get("/api/v1/departments");
-	}
-
-	/**
 	 * Lấy mã mới cho nhân viên
 	 * @returns axios promise
 	 * Created by: VLVU (20/7/2021)
@@ -32,7 +23,7 @@ class EmployeeApi extends BaseApi {
 	 * @returns axios promise
 	 * Created by: VLVU (18/8/2021)
 	 */
-	async getEmployeeFilter(filterText, pageNumber, pageSize) {
+	async getEmployeeFilterPaging(filterText, pageNumber, pageSize) {
 		return await axios.get(`${this.route}/filterPaging?employeeFilter=${filterText}&pageNumber=${pageNumber}&pageSize=${pageSize}`);
 	}
 

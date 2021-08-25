@@ -197,6 +197,7 @@
 <script>
 
 import EmployeeApi from "../../api/service/employee";
+import DepartmentApi from "../../api/service/department";
 import EmployeeDetails from "./Details";
 import { mapActions, mapMutations } from "vuex";
 import enums from "../../enums";
@@ -352,8 +353,8 @@ export default {
         async getData() {
             try {
                 const promise = await Promise.all([
-                    EmployeeApi.getEmployeeFilter("", this.pageNumber, this.pageSize.value),
-                    EmployeeApi.getDepartments()
+                    EmployeeApi.getEmployeeFilterPaging("", this.pageNumber, this.pageSize.value),
+                    DepartmentApi.getAll()
                 ]);
 
                 this.employees = promise[0]?.data?.Data ?? [];
@@ -378,7 +379,7 @@ export default {
          */
         async loadEmployees() {
             try {
-                const promise = await EmployeeApi.getEmployeeFilter(this.filterText.trim(), this.pageNumber, this.pageSize.value);
+                const promise = await EmployeeApi.getEmployeeFilterPaging(this.filterText.trim(), this.pageNumber, this.pageSize.value);
 
                 this.employees = promise?.data.Data;
                 this.totalPage = promise?.data?.TotalPage === 0 ? 1 : promise?.data?.TotalPage || 1;
@@ -401,6 +402,7 @@ export default {
         reloadEmployees() {
             this.employees = null;
             this.pageNumber = defaultPageNumber;
+            this.$router.push({ path: "employee", query: { page: defaultPageNumber } }).catch(() => { });
             this.totalPage = defaultTotalPage;
             this.totalRecord = defaultTotalRecord;
             this.filterText = defaultFilterText;
@@ -426,7 +428,7 @@ export default {
             this.currentEmployee = {};
             if (params?.hasReloadEmployees) {
                 this.employees = null;
-                this.loadEmployees();
+                this.reloadEmployees();
             }
         },
         /**

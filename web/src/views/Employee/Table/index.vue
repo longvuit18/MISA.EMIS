@@ -85,7 +85,7 @@
                                     style="cursor: pointer;"
                                 >Xóa</li>
                                 <li
-                                    v-tooltip="'Tính năng chưa phát triển'"
+                                    v-tooltip.bottom="'Tính năng chưa phát triển'"
                                     style="cursor: pointer;"
                                 >Ngừng sử dụng</li>
                             </ul>

@@ -307,7 +307,7 @@
                             <BaseButton
                                 buttonName="Hủy"
                                 secondaryButton
-                                @click="onClose"
+                                @click="() => onClose(false)"
                             />
                         </div>
                         <div class="dialog-footer-right">
@@ -438,10 +438,11 @@ export default {
         },
         /**
          * handle ấn vào đóng dialog
+         * @param {boolean} confirm có hiện xác nhận popup hay không
          * Created by: VLVU (2021)
          */
-        async onClose() {
-            if (this.edited) {
+        async onClose(confirm = true) {
+            if (this.edited && confirm) {
                 const ok = await this.confirmPopup(resources.popup.confirmCloseEmployeeDetailForm);
                 // không làm gì cả
                 if (ok === null) {
@@ -453,7 +454,7 @@ export default {
                     return;
                 }
             }
-            // không chưa edit thì đóng form luôn
+            // chưa edit thì đóng form luôn
             this.$emit("onClose");
         },
 
@@ -540,7 +541,7 @@ export default {
                     this.$refs["1"].$refs.BaseInput.focus();
                     this.loading = false;
                     this.edited = false;
-                    this.defaultDepartment = null;
+                    // this.defaultDepartment = null;
                     // set lại currentState là post để nó có thể thêm mới
                     this.currentState = enums.dialogState.post;
                     this.$emit("reloadEmployees");

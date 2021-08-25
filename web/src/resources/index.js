@@ -72,7 +72,7 @@ const popup = {
 		content: "Dữ liệu đã bị thay đổi. Bạn có muốn cất không?",
 		state: "hyper-confirm",
 		type: "info",
-		primaryButtonName: "Cất",
+		primaryButtonName: "Có",
 		secondaryButtonName: "Không"
 	}
 };
