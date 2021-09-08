@@ -20,7 +20,7 @@
                     ref="BaseInput"
                     v-bind="$attrs"
                     :title="errorMessage"
-                    placeholder="Nhập/chọn"
+                    :placeholder="placeholder"
                 />
                 <div
                     class="combobox-icon"
@@ -95,6 +95,10 @@ export default {
         name: {
             type: String
 
+        },
+        placeholder: {
+            type: String,
+            default: () => "Nhập/Chọn"
         }
     },
     data() {

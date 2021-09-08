@@ -1,0 +1,242 @@
+table {
+	-moz-user-select: none;
+	/* Firefox */
+	user-select: none;
+	/* Internet Explorer */
+	-khtml-user-select: none;
+	/* KHTML browsers (e.g. Konqueror) */
+	-webkit-user-select: none;
+	/* Chrome, Safari, and Opera */
+	-webkit-touch-callout: none;
+	/* Disable Android and iOS callouts*/
+	box-sizing: border-box;
+	border-spacing: 0;
+}
+
+table thead th {
+	background-color: #ECEEF1 !important;
+	white-space: nowrap;
+	position: sticky;
+	position: -webkit-sticky;
+	top: -2px;
+	z-index: 13;
+	padding: 0px 10px;
+	height: 34px;
+	text-transform: uppercase;
+}
+
+table th, td {
+	border-bottom: 1px solid #c7c7c7;
+	border-right: 1px dotted #c7c7c7;
+	text-align: left;
+	white-space: nowrap;
+}
+
+table td {
+	border-bottom: 1px solid #c7c7c7;
+	border-right: 1px dotted #c7c7c7;
+	text-align: left;
+	white-space: nowrap;
+	padding: 5px 10px;
+	height: 47px;
+}
+
+table tbody tr {
+	background-color: #fff;
+}
+
+table tbody tr:hover {
+	background-color: #f3f8f8 !important;
+}
+
+table tbody tr:hover .td-viewer {
+	background-color: #f3f8f8 !important;
+}
+
+table tbody tr {
+	position: relative;
+}
+
+.align-center {
+	text-align: center !important;
+	width: 100px;
+}
+
+.align-right {
+	text-align: right !important;
+}
+
+.align-left {
+	text-align: left !important;
+}
+
+.loading {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 40%;
+	position: fixed;
+	width: calc(100% - 180px);
+}
+
+.width-cell {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.selected {
+	background-color: #019160 !important;
+	color: #fff;
+}
+
+.first-white-space {
+	position: sticky;
+	position: -webkit-sticky;
+	left: 0;
+	top: -5px;
+	z-index: 12;
+	border: 0;
+	background-color: #fff !important;
+}
+
+.last-white-space-1 {
+	position: sticky;
+	position: -webkit-sticky;
+	right: 0;
+	top: -5px;
+	z-index: 15;
+	border: 0;
+	background-color: #fff !important;
+	cursor: auto;
+}
+
+.last-white-space-2 {
+	position: sticky;
+	position: -webkit-sticky;
+	right: -30px;
+	min-width: 30px;
+	max-width: 30px;
+	width: 30px;
+	top: -5px;
+	z-index: 15;
+	border: 0;
+	background-color: #f4f5f6 !important;
+	cursor: auto;
+}
+
+.first-column-fixed {
+	position: sticky;
+	position: -webkit-sticky;
+	top: -2px;
+	left: 20px;
+	z-index: 9;
+	background-color: #fff;
+}
+
+.second-column-fixed {
+	position: sticky;
+	position: -webkit-sticky;
+	top: -2px;
+	left: 59px;
+	z-index: 9;
+	background-color: #fff;
+}
+
+.last-column-fixed {
+	position: sticky;
+	position: -webkit-sticky;
+	right: 20px;
+	z-index: 9;
+	border-left: 1px dotted #c7c7c7;
+	border-right: 0;
+	background-color: #fff;
+}
+
+.z-index-header {
+	z-index: 16;
+}
+
+.z-index-row {
+	z-index: 10;
+}
+
+.feature-column {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.feature-column .popup-top {
+	background-color: #fff;
+	border-radius: 2px;
+	border: 1px solid #c7c7c7;
+	position: absolute;
+	z-index: 13;
+	bottom: 30px;
+	right: 20px;
+	list-style: none;
+	text-align: left;
+}
+
+.feature-column .popup-bottom {
+	background-color: #fff;
+	border-radius: 2px;
+	border: 1px solid #c7c7c7;
+	position: absolute;
+	z-index: 13;
+	top: 30px;
+	right: 20px;
+	list-style: none;
+	text-align: left;
+}
+
+.feature-column ul li {
+	padding: 5px 10px;
+}
+
+.feature-column ul li:hover {
+	background-color: #e8e9ec;
+	color: #08bf1e;
+	transition: all .1s ease;
+}
+
+.feature-column>div {
+	width: 46px;
+	height: 36px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #0075c0;
+	font-weight: 600;
+}
+
+.feature-column>span {
+	color: #0075c0;
+	font-weight: 600;
+}
+
+.feature-column .icon-arrow-down {
+	width: 16px;
+	height: 16px;
+	min-height: 16px;
+	min-width: 16px;
+	background: url("../../../assets//icon//icon.svg") no-repeat;
+	background-position: -896px -359px;
+	cursor: pointer;
+}
+
+.feature-column .hide-border {
+	border: none;
+}
+
+button {
+	border-spacing: 0;
+	margin: 0;
+	padding: 0;
+	width: 26px;
+	display: flex;
+	justify-content: center;
+	background-color: #fff;
+	border: 1px solid #0075c0;
+}

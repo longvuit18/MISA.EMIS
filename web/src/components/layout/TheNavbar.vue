@@ -39,7 +39,7 @@ export default {
         return {
             routesDeveloping: [
                 { key: "dashboard", text: "Tổng quan" },
-                { key: "employee", text: "Danh mục nhân viên" },
+                { key: "cash", text: "Tiền mặt" },
                 { key: "bank", text: "TIền gửi" },
                 { key: "bag", text: "Mua hàng" },
                 { key: "cart", text: "Bán hàng" },
@@ -179,7 +179,7 @@ export default {
     background-position: -30px -1628px;
 }
 
-.employee {
+.cash {
     background-position: -73px -1628px;
 }
 .bank {

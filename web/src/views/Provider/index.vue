@@ -1,31 +1,103 @@
 <template>
-    <div id="employee">
-        <div class="employee-header">
-            <div class="title-text">
-                Nhân viên
-            </div>
-            <div class="group-button">
-                <div class="add-button">
-                    <BaseButton
-                        buttonName="Thêm mới nhân viên"
-                        @click="handleOpenDialog"
-                    />
+    <div id="provider">
+        <div class="provider-header">
+            <div class="title-area">
+                <div class="title-text">
+                    Danh sách nhà cung cấp
                 </div>
+                <div class="group-button">
+                    <div class="tour-icon"></div>
+                    <div class="tutorial">
+                        Hướng dẫn
+                    </div>
+                    <div class="utility">
+                        <BaseDropdownButton
+                            buttonName="Tiện ích"
+                            secondaryButton
+                        />
+                    </div>
+                    <div class="add-button">
+                        <BaseDropdownButton
+                            buttonName="Thêm"
+                            @click="handleOpenDialog"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="back">
+                Quay lai
             </div>
         </div>
-        <div class="employee-body">
 
+        <div class="provider-body">
+            <div class="overview">
+                <BaseRow>
+                    <BaseCol
+                        :cols="4"
+                        :padding="4"
+                        style="padding-left:0;"
+                    >
+                        <div class="debit">
+                            <div class="data">
+                                <div class="total-money">100</div>
+                            </div>
+                            <div class="label">Nợ quá hạn</div>
+                        </div>
+                    </BaseCol>
+                    <BaseCol
+                        :cols="4"
+                        :padding="4"
+                    >
+                        <div class="total-debit">
+                            <div class="data">
+                                <div class="total-money">100</div>
+                            </div>
+                            <div class="label">Nợ quá hạn</div>
+                        </div>
+                    </BaseCol>
+                    <BaseCol
+                        :cols="4"
+                        :padding="4"
+                        style="padding-right:0;"
+                    >
+                        <div class="payment">
+                            <div class="data">
+                                <div class="total-money">100</div>
+                            </div>
+                            <div class="label">Nợ quá hạn</div>
+                        </div>
+                    </BaseCol>
+                </BaseRow>
+            </div>
             <div class="filter-bar">
-                <div class="search-input">
-                    <BaseInput
-                        searchIcon
-                        placeholder="Tìm theo mã, tên, số điện thoại"
-                        fullWidth
-                        v-model="filterText"
-                    />
-
+                <div class="filter-area">
+                    <div class="check-all-arrow">
+                        <div class="check-all-arrow-icon"></div>
+                    </div>
+                    <div class="check-all">
+                        <BaseDropdownButton
+                            buttonName="Thực hiện hàng loạt"
+                            disabled
+                            secondaryButton
+                        />
+                    </div>
+                    <div class="filter">
+                        <BaseDropdownButton
+                            buttonName="Lọc"
+                            secondaryButton
+                        />
+                    </div>
                 </div>
-                <div class="reload-button">
+                <div class="filter-bar-right-area">
+                    <div class="search-input">
+                        <BaseInput
+                            searchIcon
+                            placeholder="Tìm theo mã, tên, số điện thoại"
+                            fullWidth
+                            v-model="filterText"
+                        />
+
+                    </div>
                     <div
                         class="reload-icon"
                         @click="reloadEmployees"
@@ -230,13 +302,12 @@ const defaultTotalRecord = 0;
 const defaultPageSizes = [
     { value: 10, text: "10 bản ghi trên 1 trang" },
     { value: 20, text: "20 bản ghi trên 1 trang" },
-    { value: 30, text: "30 bản ghi trên 1 trang" },
     { value: 50, text: "50 bản ghi trên 1 trang" },
     { value: 100, text: "100 bản ghi trên 1 trang" }
 ];
 const defaultPageSize = defaultPageSizes[2];
 export default {
-    name: "Employee",
+    name: "Provider",
     components: { EmployeeDetails, EmployeeTable },
     data() {
         return {

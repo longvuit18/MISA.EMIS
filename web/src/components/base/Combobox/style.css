@@ -35,6 +35,7 @@ label {
 	/* Edge */
 	font-size: 11px;
 	color: #bbb;
+	font-style: italic;
 }
 
 :-ms-input-placeholder {
@@ -46,6 +47,7 @@ label {
 ::placeholder {
 	font-size: 11px;
 	color: #bbb;
+	font-style: italic;
 }
 
 /* End style baseinput */

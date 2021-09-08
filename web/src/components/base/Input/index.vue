@@ -1,10 +1,12 @@
 <template>
     <div class="form-item">
         <label v-if="label">{{label}}{{" "}}<span v-if="required"><span style="color: red;">*</span></span></label>
-        <div class="box-input">
+        <div
+            class="box-input"
+            v-if="!isTextarea"
+        >
             <input
                 :required="required"
-                :max="maxDateInput"
                 :class="{'full-width': fullWidth, 'border-red': error, 'enter-text-right-to-left': hasCurrencyFormat}"
                 v-bind="$attrs"
                 :tabindex="tabindex"
@@ -26,6 +28,34 @@
                 (VNĐ)
             </div>
         </div>
+        <div
+            class="box-input"
+            v-else
+        >
+            <textarea
+                :required="required"
+                style="height: auto;"
+                :class="{'full-width': fullWidth, 'border-red': error, 'enter-text-right-to-left': hasCurrencyFormat}"
+                v-bind="$attrs"
+                :tabindex="tabindex"
+                :value="valueFormat"
+                v-on:input="updateValue($event)"
+                @blur="onBlur"
+                ref="BaseInput"
+                @keypress="keyPress"
+                :title="errorMessage"
+            />
+            <div
+                class="end-icon"
+                v-if="searchIcon"
+            ></div>
+            <div
+                v-if="hasCurrencyFormat"
+                class="currency"
+            >
+                (VNĐ)
+            </div>
+        </div>
     </div>
 </template>
 
@@ -36,7 +66,6 @@
  */
 
 import enums from "../../../enums";
-import utils from "../../../utils";
 
 // message error
 const ErrorRequire = (name) => `${name} là trường bắt buộc phải nhập!`;
@@ -85,9 +114,10 @@ export default {
             type: String,
             default: ""
         },
-        // ngày lớn nhất cho phép nhập
-        maxDate: {
-            type: [Date, Number, String]
+
+        isTextarea: {
+            type: Boolean,
+            default: () => false
         }
 
     },
@@ -109,10 +139,6 @@ export default {
         },
         hasCurrencyFormat() {
             return this.format === enums.format.currency;
-        },
-
-        maxDateInput() {
-            return utils.formatDateValueInput(this.maxDate);
         }
     },
     methods: {

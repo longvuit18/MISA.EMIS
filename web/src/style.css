@@ -99,6 +99,51 @@ h1, h2, h3, h4, h5, h6 {
 	}
 }
 
+.icon {
+	background: url("./assets/icon/icon.svg") no-repeat;
+}
+
+.icon-size-24 {
+	width: 24px;
+	height: 24px;
+	min-width: 24px;
+	min-height: 24px;
+}
+
+.icon-size-16 {
+	width: 16px;
+	height: 16px;
+	min-width: 16px;
+	min-height: 16px;
+}
+
+.icon-size-12 {
+	width: 12px;
+	height: 12px;
+	min-width: 12px;
+	min-height: 12px;
+}
+
+.no-border {
+	border: none !important;
+}
+
+.mi-process-customer {
+	background-position: -872px -200px;
+}
+
+.mi-process-provider {
+	background-position: -928px -200px;
+}
+
+.mi-process-employee {
+	background-position: -984px -200px;
+}
+
+.mi-calculate {
+	background-position: -1376px -256px;
+}
+
 .flex {
 	display: flex;
 }

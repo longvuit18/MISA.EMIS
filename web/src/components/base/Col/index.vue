@@ -19,7 +19,7 @@ export default {
     name: "BaseCol",
     props: {
         cols: {
-            type: String,
+            type: Number,
             default: () => 12
         },
         padding: {
