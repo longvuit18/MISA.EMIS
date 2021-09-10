@@ -1,18 +1,25 @@
 <template>
     <div style="height: 100%">
         <table>
-            <thead>
+            <thead v-if="!disabledHeader">
                 <tr>
-                    <th class="first-white-space z-index-header"></th>
+                    <th
+                        class="first-white-space z-index-header"
+                        :class="{'header-sticky': headerSticky}"
+                        v-if="!disabledFirstWhiteSpace"
+                    ></th>
                     <th
                         class="first-column-fixed align-center"
+                        :class="{'first-column-fixed': !disabledFirstWhiteSpace,'header-sticky': headerSticky}"
                         style="z-index: 14;"
+                        v-if="!disabledIndexColumn"
                     >
                         #
                     </th>
                     <th
                         v-for="(columnName) in columnNames"
                         :key="columnName.key"
+                        :class="{'header-sticky': headerSticky}"
                     >
                         <div
                             :style="{width: width(columnName.key), 'min-width': width(columnName.key), 'background': '#ECEEF1'}"
@@ -22,23 +29,34 @@
                         </div>
                     </th>
                     <th
-                        class="last-column-fixed align-center"
+                        class="align-center"
+                        :class="{'last-column-fixed': !disabledLastWhiteSpace, 'header-sticky': headerSticky}"
                         style="z-index:16;"
                     >
                     </th>
-                    <th class="last-white-space-1"></th>
+                    <th
+                        class="last-white-space-1"
+                        v-if="!disabledLastWhiteSpace"
+                        :class="{'header-sticky': headerSticky}"
+                    ></th>
                 </tr>
             </thead>
             <tbody>
                 <tr
                     v-for="(item, rowIndex) in data"
-                    @click="(e) => handleClick(e, rowIndex)"
                     :key="rowIndex"
                     @dblclick="(e) => handleDblClickRow(e, item)"
                     @contextmenu="(e) => handleRightClick(e, item)"
                 >
-                    <th class="first-white-space"></th>
-                    <td class="first-column-fixed align-center td-viewer">
+                    <th
+                        class="first-white-space"
+                        v-if="!disabledFirstWhiteSpace"
+                    ></th>
+                    <td
+                        class="align-center td-viewer"
+                        :class="{'first-column-fixed': !disabledFirstWhiteSpace}"
+                        v-if="!disabledIndexColumn"
+                    >
                         <div>
                             {{rowIndex + 1}}
                         </div>
@@ -48,6 +66,7 @@
                         :key="key"
                         :class="{...setAlign(key)}"
                         class="td-viewer"
+                        @click="(e) => handleClick(e, rowIndex)"
                     >
                         <div
                             :style="{width: width(key)}"
@@ -58,6 +77,8 @@
                                 fullWidth
                                 v-model="item[key]"
                                 isTextarea
+                                :enterRightToLeft="formatCol(key) === 'number' || formatCol(key) === 'curreny'"
+                                :format="formatCol(key)"
                                 rows="1"
                             />
                             <BaseCombobox
@@ -72,7 +93,10 @@
                             >{{value}}</span>
                         </div>
                     </td>
-                    <td class="last-column-fixed align-center td-viewer">
+                    <td
+                        class="align-center td-viewer"
+                        :class="{'last-column-fixed': !disabledLastWhiteSpace}"
+                    >
                         <div class="feature-column">
                             <span
                                 @click="() =>handleClickDelete(rowIndex)"
@@ -83,7 +107,10 @@
                         </div>
 
                     </td>
-                    <td class="last-white-space-1"></td>
+                    <td
+                        class="last-white-space-1"
+                        v-if="!disabledLastWhiteSpace"
+                    ></td>
 
                 </tr>
             </tbody>
@@ -100,13 +127,36 @@
 export default {
     name: "TableCommon",
     props: {
-        // columnNames là 1 Array chứa object {key: string, text: string, align: string, sort: boolean, format: string, width: number}
+        // columnNames là 1 Array chứa object {key: string, text: string, align: string, sort: boolean, format: string, width: number, type: string}
         columnNames: {
             type: Array
         },
         data: {
             type: Array,
             default: () => null
+        },
+
+        disabledFirstWhiteSpace: {
+            type: Boolean,
+            default: () => false
+        },
+        disabledLastWhiteSpace: {
+            type: Boolean,
+            default: () => false
+        },
+
+        disabledIndexColumn: {
+            type: Boolean,
+            default: () => false
+        },
+        disabledHeader: {
+            type: Boolean,
+            default: () => false
+        },
+
+        headerSticky: {
+            type: Boolean,
+            default: () => false
         }
     },
 
@@ -198,6 +248,21 @@ export default {
             }
 
             return column.type;
+        },
+
+        /**
+         * @param {string} key key của column
+         * @returns format của từng cell trong cột (vd: number, string)
+         * Created by: VLVU (9/9/2021)
+         */
+        formatCol(key) {
+            const column = this.columnNames.find((item) => item.key === key);
+
+            if (!column || !column?.format) {
+                return "string";
+            }
+
+            return column.format;
         },
 
         /**

@@ -216,7 +216,7 @@ const columnNames = [
     { key: "a", text: "Diễn giải", width: 320, type: "input" },
     { key: "b", text: "Tài khoản nợ", width: 150, type: "combobox", items: [{ value: "test", text: "test" }] },
     { key: "c", text: "Tài khoản có", width: 175, type: "combobox", items: [{ value: "test", text: "test" }] },
-    { key: "d", text: "Số tiền", width: 190, align: "right", type: "input" },
+    { key: "d", text: "Số tiền", width: 190, align: "right", type: "input", format: "currency" },
     { key: "e", text: "Đối tượng", width: 185, type: "input" },
     { key: "f", text: "Tên đối tượng", width: 305 }
 ];
@@ -392,6 +392,9 @@ export default {
 
 .grid-control {
     padding: 0 30px;
+    position: sticky;
+    position: -webkit-sticky;
+    left: 0;
 }
 
 .btn-grid-control {

@@ -132,6 +132,8 @@
 
 .other-information .details {
 	min-height: 216px;
+	max-height: 216px;
+	overflow: auto;
 	border: 1px solid #c9ccd2;
 	margin: 0 1px 1px;
 	z-index: 1;

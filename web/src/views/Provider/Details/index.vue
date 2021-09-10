@@ -100,6 +100,7 @@
                                         label="Địa chỉ"
                                         tabindex="4"
                                         name="Địa chỉ"
+                                        placeholder="VD: Số 82 Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội"
                                         isTextarea
                                         :rows="3"
                                     />
@@ -168,65 +169,47 @@
                     </BaseRow>
                     <div class="other-information">
                         <div class="tabs">
-                            <div class="tab action">Liên hệ</div>
-                            <div class="tab">Điều khoản thanh toán</div>
-                            <div class="tab">Tài khoản ngân hàng</div>
-                            <div class="tab">Địa chỉ khác</div>
-                            <div class="tab">Ghi chú</div>
+                            <div
+                                :class="{'action': tab === 'contact'}"
+                                class="tab"
+                                @click="() => getTab('contact')"
+                            >Liên hệ</div>
+                            <div
+                                class="tab"
+                                :class="{'action': tab === 'terms'}"
+                                @click="() => getTab('terms')"
+                            >Điều khoản thanh toán</div>
+                            <div
+                                class="tab"
+                                :class="{'action': tab === 'bankAccount'}"
+                                @click="() => getTab('bankAccount')"
+                            >Tài khoản ngân hàng</div>
+                            <div
+                                class="tab"
+                                :class="{'action': tab === 'address'}"
+                                @click="() => getTab('address')"
+                            >Địa chỉ khác</div>
+                            <div
+                                class="tab"
+                                :class="{'action': tab === 'note'}"
+                                @click="() => getTab('note')"
+                            >Ghi chú</div>
                         </div>
                         <div class="details">
-                            <BaseRow>
-                                <BaseCol :cols="6">
-                                    <BaseRow>
-                                        <BaseCol
-                                            :cols="4"
-                                            :padding="0"
-                                            style="padding-right: 4px;"
-                                        >
-                                            <BaseCombobox
-                                                label="Người liên hệ"
-                                                tabindex="9"
-                                                placeholder="Xưng hô"
-                                            />
-                                        </BaseCol>
-                                        <BaseCol
-                                            :cols="8"
-                                            :padding="0"
-                                        >
-                                            <BaseInput
-                                                fullWidth
-                                                tabindex="10"
-                                                name="Họ và tên"
-                                                style="margin-top:20px;"
-                                                placeholder="Họ và tên"
-                                            />
-                                        </BaseCol>
-                                    </BaseRow>
-                                    <BaseInput
-                                        fullWidth
-                                        tabindex="11"
-                                        name="Email"
-                                        placeholder="Email"
-                                    />
-
-                                    <BaseInput
-                                        fullWidth
-                                        tabindex="12"
-                                        style="width: 50%;"
-                                        name="Số điện thoại"
-                                        placeholder="Số điện thoại"
-                                    />
-                                </BaseCol>
-                                <BaseCol :cols="6">
-                                    <BaseInput
-                                        fullWidth
-                                        tabindex="13"
-                                        label="Đại diện theo PL"
-                                        name="Đại diện theo PL"
-                                        placeholder="Đại diện theo PL"
-                                    />
-                                </BaseCol>
-                            </BaseRow>
+                            <Contact v-if="tab === 'contact'" />
+                            <Terms v-if="tab === 'terms'" />
+                            <BankAccount v-if="tab === 'bankAccount'" />
+                            <Address v-if="tab === 'address'" />
+                            <div
+                                class="note"
+                                v-if="tab === 'note'"
+                            >
+                                <BaseInput
+                                    isTextarea
+                                    rows="11"
+                                    fullWidth
+                                />
+                            </div>
                         </div>
 
                     </div>
@@ -279,9 +262,14 @@ import { mapActions, mapMutations } from "vuex";
 import resources from "../../../resources";
 import enums from "../../../enums";
 import utils from "../../../utils";
+import Contact from "./Contact.vue";
+import Terms from "./Terms.vue";
+import BankAccount from "./BankAccount.vue";
+import Address from "./Address.vue";
 
 export default {
-    name: "TheEmployeeDetails",
+    name: "ProviderDetails",
+    components: { Contact, Terms, BankAccount, Address },
     props: {
         employee: Object,
         departments: Array,
@@ -310,7 +298,9 @@ export default {
             // loading
             loading: false,
 
-            currentState: this.state
+            currentState: this.state,
+
+            tab: "contact"
 
         };
     },
@@ -354,6 +344,13 @@ export default {
         ...mapActions("popup", {
             confirmPopup: "confirmPopup"
         }),
+
+        /**
+         * Lấy tên của tab hiện tại
+         */
+        getTab(name) {
+            this.tab = name;
+        },
         /**
          * Set 1 mã nhân viên mới lấy từ server về
          * Created by: VLVU (18/8/2021)

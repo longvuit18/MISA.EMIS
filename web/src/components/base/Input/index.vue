@@ -21,12 +21,6 @@
                 class="end-icon"
                 v-if="searchIcon"
             ></div>
-            <div
-                v-if="hasCurrencyFormat"
-                class="currency"
-            >
-                (VNĐ)
-            </div>
         </div>
         <div
             class="box-input"
@@ -49,12 +43,6 @@
                 class="end-icon"
                 v-if="searchIcon"
             ></div>
-            <div
-                v-if="hasCurrencyFormat"
-                class="currency"
-            >
-                (VNĐ)
-            </div>
         </div>
     </div>
 </template>
@@ -65,8 +53,7 @@
  * Created by: VLVU (18/7/2021)
  */
 
-import enums from "../../../enums";
-
+import numeral from "numeral";
 // message error
 const ErrorRequire = (name) => `${name} là trường bắt buộc phải nhập!`;
 const ErrorValidateEmail = () => "Bạn cần nhập đúng định dạng email ví dụ: misa@gmail.com";
@@ -88,8 +75,8 @@ export default {
 
         // input hiển thị theo định dạng nào
         format: {
-            type: Number,
-            default: enums.string
+            type: String,
+            default: "string"
         },
 
         // có bắt buộc nhập hay không?. default: false là khôn bắt buộc nhập
@@ -136,14 +123,14 @@ export default {
     computed: {
         valueFormat() {
             switch (this.format) {
-                case enums.format.currency:
+                case "currency":
                     return this.formatCurrency(this.value);
                 default:
                     return this.value;
             }
         },
         hasCurrencyFormat() {
-            return this.format === enums.format.currency;
+            return this.format === "currency";
         }
     },
     methods: {
@@ -153,7 +140,7 @@ export default {
          */
         updateValue(event) {
             let value = event.target.value;
-            if (this.format === enums.format.currency) {
+            if (this.format === "currency") {
                 value = this.formatCurrency(value);
                 this.$emit("input", value);
                 return;
@@ -176,7 +163,7 @@ export default {
             }
 
             // validate email
-            if (this.format === enums.format.email && !this.validateEmail(e.currentTarget.value)) {
+            if (this.format === "email" && !this.validateEmail(e.currentTarget.value)) {
                 this.error = true;
                 this.errorMessage = ErrorValidateEmail();
                 return;
@@ -186,7 +173,7 @@ export default {
             }
 
             // validate phone number
-            if (this.format === enums.format.phoneNumber && !this.validatePhoneNumber(e.currentTarget.value)) {
+            if (this.format === "phoneNumber" && !this.validatePhoneNumber(e.currentTarget.value)) {
                 this.error = true;
                 this.errorMessage = ErrorValidatePhoneNumber();
             } else {
@@ -201,7 +188,12 @@ export default {
          */
         keyPress(event) {
             event = (event) || window.event;
-            if (this.format === enums.format.currency || this.format === enums.format.number || this.format === enums.format.phoneNumber) {
+            // format curreny khong cho phép nhập hơn nghìn tỷ
+            if (this.format === "currency" && event.target.value.length > 17) {
+                event.preventDefault();
+                return;
+            }
+            if (this.format === "currency" || this.format === "number") {
                 var charCode = (event.which) ? event.which : event.keyCode;
                 if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
                     event.preventDefault();
@@ -221,22 +213,12 @@ export default {
         },
 
         /**
-         * Validate phone number
-         * Created by: VLVU (20/7/2021)
-         */
-        validatePhoneNumber(phoneNumber) {
-            if (phoneNumber.length > 15 || phoneNumber[0] !== 0) {
-                return false;
-            }
-            return true;
-        },
-
-        /**
          * Format tiền
          * Created by: VLVU (20/7/2021)
          */
         formatCurrency(str) {
-            return Intl.NumberFormat().format(Number(str?.replaceAll(".", "")?.replaceAll(",", "")) || 0).toString();
+            return numeral(str?.replaceAll(".", ",")).format("0,0").replaceAll(",", ".");
+            // return new Intl.NumberFormat().format(Number(str?.replace(".", ""))).toString();
         }
     }
 };

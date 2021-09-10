@@ -14,6 +14,7 @@
 		"@mdi/font": "^5.9.55",
 		"axios": "^0.21.1",
 		"core-js": "^3.6.5",
+		"numeral": "^2.0.6",
 		"portal-vue": "^2.1.7",
 		"uuid": "^8.3.2",
 		"v-tooltip": "^2.1.3",
