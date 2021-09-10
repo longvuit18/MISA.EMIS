@@ -20,7 +20,7 @@
 }
 
 .mx-datepicker {
-	width: auto;
+	width: inherit;
 }
 
 .form-item-datepicker label {

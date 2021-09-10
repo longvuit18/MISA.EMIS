@@ -1,3 +1,4 @@
+import PortalVue from "portal-vue";
 import VTooltip from "v-tooltip";
 import Vue from "vue";
 import { axiosConfig } from "./api/axiosConfig";
@@ -40,7 +41,7 @@ Vue.component("BaseRadio", Radio);
 Vue.component("BaseRadioGroup", RadioGroup);
 Vue.component("BaseDatePicker", DatePicker);
 Vue.use(VTooltip);
-
+Vue.use(PortalVue);
 Vue.config.productionTip = false;
 new Vue({
 	router,

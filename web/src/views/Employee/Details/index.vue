@@ -36,13 +36,13 @@
                     <BaseRow>
                         <BaseCol
                             :padding="0"
-                            cols="6"
+                            :cols="6"
                             style="padding-right: 13px"
                         >
                             <BaseRow>
                                 <BaseCol
                                     :padding="0"
-                                    cols="5"
+                                    :cols="5"
                                     style="padding-right: 6px"
                                 >
                                     <BaseInput
@@ -57,7 +57,7 @@
                                 </BaseCol>
                                 <BaseCol
                                     :padding="0"
-                                    cols="7"
+                                    :cols="7"
                                 >
                                     <BaseInput
                                         fullWidth
@@ -73,7 +73,7 @@
                             <BaseRow>
                                 <BaseCol
                                     :padding="0"
-                                    cols="12"
+                                    :cols="12"
                                 >
                                     <BaseCombobox
                                         fullWidth
@@ -84,14 +84,14 @@
                                         name="Đơn vị"
                                         :items="currentDepartments"
                                         :defaultItem="defaultDepartment"
-                                        @result="getDepartment"
+                                        v-model="currentEmployee.DepartmentId"
                                     />
                                 </BaseCol>
                             </BaseRow>
                             <BaseRow>
                                 <BaseCol
                                     :padding="0"
-                                    cols="12"
+                                    :cols="12"
                                 >
                                     <BaseInput
                                         fullWidth
@@ -105,13 +105,13 @@
                         </BaseCol>
                         <BaseCol
                             :padding="0"
-                            cols="6"
+                            :cols="6"
                             style="padding-left: 13px"
                         >
                             <BaseRow>
                                 <BaseCol
                                     :padding="0"
-                                    cols="5"
+                                    :cols="5"
                                     style="padding-right: 6px"
                                 >
                                     <BaseDatePicker
@@ -127,7 +127,7 @@
                                 <!-- Giới tính la radio -->
                                 <BaseCol
                                     :padding="0"
-                                    cols="7"
+                                    :cols="7"
                                 >
                                     <div class="gender-form">
                                         <span>Giới tính</span>
@@ -162,7 +162,7 @@
                             <BaseRow>
                                 <BaseCol
                                     :padding="0"
-                                    cols="7"
+                                    :cols="7"
                                     style="padding-right: 6px"
                                 >
                                     <BaseInput
@@ -175,7 +175,7 @@
                                 </BaseCol>
                                 <BaseCol
                                     :padding="0"
-                                    cols="5"
+                                    :cols="5"
                                 >
                                     <BaseDatePicker
                                         label="Ngày Cấp"
@@ -190,7 +190,7 @@
                             <BaseRow>
                                 <BaseCol
                                     :padding="0"
-                                    cols="12"
+                                    :cols="12"
                                 >
                                     <BaseInput
                                         fullWidth
@@ -206,7 +206,7 @@
                     <BaseRow>
                         <BaseCol
                             :padding="0"
-                            cols="12"
+                            :cols="12"
                         >
                             <BaseInput
                                 fullWidth
@@ -220,7 +220,7 @@
                     <BaseRow>
                         <BaseCol
                             :padding="0"
-                            cols="3"
+                            :cols="3"
                             style="padding-right: 6px"
                         >
                             <BaseInput
@@ -233,7 +233,7 @@
                         </BaseCol>
                         <BaseCol
                             :padding="0"
-                            cols="3"
+                            :cols="3"
                             style="padding-right: 6px"
                         >
                             <BaseInput
@@ -246,7 +246,7 @@
                         </BaseCol>
                         <BaseCol
                             :padding="0"
-                            cols="3"
+                            :cols="3"
                             style="padding-right: 6px"
                         >
                             <BaseInput
@@ -261,7 +261,7 @@
                     <BaseRow>
                         <BaseCol
                             :padding="0"
-                            cols="3"
+                            :cols="3"
                             style="padding-right: 6px"
                         >
                             <BaseInput
@@ -274,7 +274,7 @@
                         </BaseCol>
                         <BaseCol
                             :padding="0"
-                            cols="3"
+                            :cols="3"
                             style="padding-right: 6px"
                         >
                             <BaseInput
@@ -287,7 +287,7 @@
                         </BaseCol>
                         <BaseCol
                             :padding="0"
-                            cols="3"
+                            :cols="3"
                             style="padding-right: 6px"
                         >
                             <BaseInput

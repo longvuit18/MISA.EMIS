@@ -68,6 +68,16 @@ const popup = {
 		};
 	},
 
+	/**
+	 * popup xóa tất cả các dòng đã nhập
+	 * @returns object popup message
+	 */
+	deleteAllRows: {
+		content: "Bạn có thực sự muốn xóa tất cả các dòng đã nhập không này không?",
+		state: "confirm",
+		type: "warning"
+	},
+
 	confirmCloseEmployeeDetailForm: {
 		content: "Dữ liệu đã bị thay đổi. Bạn có muốn cất không?",
 		state: "hyper-confirm",

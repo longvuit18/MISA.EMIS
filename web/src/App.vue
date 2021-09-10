@@ -1,5 +1,5 @@
 <template>
-    <div id="main">
+    <div id="app">
         <TheNavbar
             :style="'width:' + widthNavbar + 'px'"
             :isToggle="isToggle"
@@ -20,7 +20,13 @@
 
         <ToastMessage :newToast="$store.state.toastMessage.toast" />
         <BasePopup ref="popup" />
+        <portal-target
+            name="root"
+            multiple
+        >
+        </portal-target>
     </div>
+
 </template>
 
 <script>
@@ -70,7 +76,7 @@ export default {
 </script>
 <style lang="css" src="./style.css"></style>
 <style lang="css">
-#main {
+#app {
     display: flex;
 }
 .route-view {

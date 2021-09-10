@@ -1,5 +1,5 @@
 <template>
-    <div class="form-item">
+    <div :class="{'form-item': label !== undefined}">
         <label v-if="label">{{label}}{{" "}}<span v-if="required"><span style="color: red;">*</span></span></label>
         <div
             class="box-input"
@@ -7,7 +7,7 @@
         >
             <input
                 :required="required"
-                :class="{'full-width': fullWidth, 'border-red': error, 'enter-text-right-to-left': hasCurrencyFormat}"
+                :class="{'full-width': fullWidth, 'border-red': error, 'enter-text-right-to-left': hasCurrencyFormat || enterRightToLeft}"
                 v-bind="$attrs"
                 :tabindex="tabindex"
                 :value="valueFormat"
@@ -35,7 +35,7 @@
             <textarea
                 :required="required"
                 style="height: auto;"
-                :class="{'full-width': fullWidth, 'border-red': error, 'enter-text-right-to-left': hasCurrencyFormat}"
+                :class="{'full-width': fullWidth, 'border-red': error, 'enter-text-right-to-left': hasCurrencyFormat || enterRightToLeft}"
                 v-bind="$attrs"
                 :tabindex="tabindex"
                 :value="valueFormat"
@@ -118,6 +118,11 @@ export default {
         isTextarea: {
             type: Boolean,
             default: () => false
+        },
+
+        enterRightToLeft: {
+            type: Boolean,
+            default: false
         }
 
     },

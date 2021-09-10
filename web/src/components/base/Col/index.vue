@@ -24,7 +24,7 @@ export default {
         },
         padding: {
             type: Number,
-            default: () => 6
+            default: () => 0
         }
     },
     data() {

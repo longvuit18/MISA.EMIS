@@ -4,6 +4,7 @@ import Cash from "../views/Cash";
 import Process from "../views/Cash/Process";
 import Dashboard from "../views/Dashboard.vue";
 import Employee from "../views/Employee";
+import ReceiptDetails from "../views/popup/ReceiptDetails";
 import Provider from "../views/Provider";
 import ReceiptPaymentList from "../views/ReceiptPaymentList";
 
@@ -45,6 +46,15 @@ const routes = [
 		component: Provider,
 		meta: {
 			title: "Nhà cung cấp | Công ty Misa"
+		}
+	},
+
+	{
+		path: "/popup/receipt-details",
+		name: "ReceiptDetails",
+		component: ReceiptDetails,
+		meta: {
+			title: "Công ty Misa"
 		}
 	},
 	{

@@ -1,7 +1,10 @@
 <template>
     <div class="form-item-datepicker">
         <label v-if="label">{{label}}{{" "}}<span v-if="required"><span style="color: red;">*</span></span></label>
-        <div class="input-box">
+        <div
+            class="input-box"
+            :class="{'full-width': fullWidth}"
+        >
             <DatePicker
                 placeholder="DD/MM/YYYY"
                 :input-attr="inputAttribute"

@@ -1,5 +1,8 @@
 <template>
-    <div class="combobox">
+    <div
+        class="combobox"
+        ref="combobox"
+    >
         <div :class="{'form-item': label}">
             <label v-if="label">{{label}}{{" "}}<span v-if="required"><span style="color: red;">*</span></span></label>
             <div
@@ -35,24 +38,25 @@
                         class="angle-up-icon"
                     />
                 </div>
-                <ul
-                    id="combobox-options"
-                    v-show="isOpen"
-                    style="display: none;"
-                    :class="'combobox-options' + '-' + positionOption"
-                >
-                    <li
-                        v-for="(option) in options"
-                        :key="option.value"
-                        @click="setResult(option)"
-                        class="combobox-result"
-                        :class="{ 'is-active': result && result.text === option.text }"
-                    >
-                        {{ option.text }}
-                    </li>
-                </ul>
             </div>
         </div>
+        <portal to="root">
+            <ul
+                :style="{...styleOption}"
+                v-if="isOpen"
+                class='combobox-options'
+            >
+                <li
+                    v-for="(option) in options"
+                    :key="option.value"
+                    @click="setResult(option)"
+                    class="combobox-result"
+                    :class="{ 'is-active': result && result.text === option.text }"
+                >
+                    {{ option.text }}
+                </li>
+            </ul>
+        </portal>
     </div>
 </template>
 
@@ -67,6 +71,10 @@
 const ErrorRequire = (name) => `${name} là trường bắt buộc phải nhập!`;
 export default {
     name: "BaseCombobox",
+    model: {
+        prop: "value",
+        event: "result"
+    },
     props: {
         // là 1 array object {value: string, text: string}
         items: {
@@ -76,10 +84,6 @@ export default {
         },
         label: String,
         tabindex: String,
-        defaultItem: {
-            type: Object,
-            default: () => null
-        },
 
         // vị trí của hộp option có 2 vị trí là top hoặc bottom, default: bottom
         positionOption: {
@@ -99,40 +103,103 @@ export default {
         placeholder: {
             type: String,
             default: () => "Nhập/Chọn"
+        },
+        value: {
+            type: [String, Number]
         }
     },
     data() {
         return {
             isOpen: false,
             options: this.items,
-            search: this.defaultItem?.text,
-            result: this.defaultItem,
+            search: this.defaultItem()?.text,
+            result: this.defaultItem(),
             arrowCounter: -1,
             error: false,
-            errorMessage: ""
+            errorMessage: "",
+
+            positonCombobox: null
         };
     },
+
+    computed: {
+        /**
+         * Lấy vị trí top hiện tại của combobox
+         * Created by: VLVU(10/9/2021)
+         */
+        top() {
+            return this.positonCombobox?.top + this.positonCombobox?.height + 4 + "px";
+        },
+        /**
+         * Lấy vị trí bottom hiện tại của combobox
+         * Created by: VLVU(10/9/2021)
+         */
+        bottom() {
+            return `calc(100% - ${this.positonCombobox?.top}px + 4px)`;
+        },
+        /**
+         * Lấy vị trí left hiện tại của combobox
+         * Created by: VLVU(10/9/2021)
+         */
+        left() {
+            return this.positonCombobox?.left + "px";
+        },
+        /**
+         * Lấy độ dài hiện tại của combobox
+         * Created by: VLVU(10/9/2021)
+         */
+        width() {
+            return this.positonCombobox?.width + "px";
+        },
+        /**
+         * set style cho option
+         * Created by: VLVU(10/9/2021)
+         */
+        styleOption() {
+            return this.positionOption === "bottom"
+                ? { top: this.top, left: this.left, width: this.width }
+                : { bottom: this.bottom, left: this.left, width: this.width };
+        }
+    },
+
     watch: {
-        defaultItem(newValue) {
-            this.result = newValue;
-            this.search = newValue?.text || "";
+        isOpen() {
+            this.positonCombobox = this.$refs.combobox.getBoundingClientRect();
         }
     },
     // Lắng nghe sự kiện click ra bên ngoài combobox
     mounted() {
+        window.addEventListener("scroll", this.handleScrollOutSide, true);
         document.addEventListener("click", this.handleClickOutside);
     },
     // xóa sự kiện này khi thoát khỏi xóa component
     destroyed() {
         document.removeEventListener("click", this.handleClickOutside);
+        window.removeEventListener("scroll", this.handleScrollOutSide, true);
     },
     methods: {
+        // phương thức khi người dùng click ra bên ngoài combobox
+        handleClickOutside(event) {
+            if (!this.$el.contains(event.target)) {
+                this.isOpen = false;
+            }
+        },
+        // phương thức khi người dùng scroll ở bên ngoài combobox
+        handleScrollOutSide(event) {
+            if (!this.$el.contains(event.target)) {
+                this.isOpen = false;
+            }
+        },
+        // lấy giá trị mặc định
+        defaultItem() {
+            return this.items.find(i => i.value === this.value);
+        },
         // khi người dùng ấn vào 1 kết quả
         setResult(option) {
             this.search = option.text;
             this.isOpen = false;
             this.result = option;
-            this.$emit("result", this.result);
+            this.$emit("result", this.result.value);
             // chắc chắn người dùng đã chọn
             this.error = false;
             this.errorMessage = "";
@@ -165,13 +232,6 @@ export default {
                 // focus vào input khi click vào icon
                 this.$refs.BaseInput.focus();
             } else {
-                this.isOpen = false;
-            }
-        },
-
-        // phương thức khi người dùng click ra bên ngoài combobox
-        handleClickOutside(event) {
-            if (!this.$el.contains(event.target)) {
                 this.isOpen = false;
             }
         },
@@ -217,7 +277,7 @@ export default {
                 this.isOpen = false;
                 // chắc chắn người dùng đã chọn
                 this.error = false;
-                this.$emit("result", this.result);
+                this.$emit("result", this.result.value);
             }
         },
 
@@ -226,7 +286,7 @@ export default {
                 this.search = this.options[this.arrowCounter].text;
                 this.result = this.options[this.arrowCounter];
                 this.isOpen = false;
-                this.$emit("result", this.result);
+                this.$emit("result", this.result.value);
 
                 // chắc chắn người dùng đã chọn
                 this.error = false;

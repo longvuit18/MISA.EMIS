@@ -53,7 +53,7 @@
                             positionOption="top"
                             :items="pageSizes"
                             :defaultItem="pageSize"
-                            @result="(result) => pageSize = result"
+                            v-model.number="pageSize"
                             readonly
                         />
                     </div>
@@ -234,7 +234,7 @@ const defaultPageSizes = [
     { value: 50, text: "50 bản ghi trên 1 trang" },
     { value: 100, text: "100 bản ghi trên 1 trang" }
 ];
-const defaultPageSize = defaultPageSizes[2];
+const defaultPageSize = 20;
 export default {
     name: "Employee",
     components: { EmployeeDetails, EmployeeTable },
@@ -284,7 +284,7 @@ export default {
         },
 
         /**
-         * Khi pageNumber thay thổi thì sẽ load lại employee
+         * Khi pageSize thay thổi thì sẽ load lại employee
          * Created by: VLVU (18/8/2021)
          */
         pageSize() {
@@ -354,7 +354,7 @@ export default {
         async getData() {
             try {
                 const promise = await Promise.all([
-                    EmployeeApi.getEmployeeFilterPaging("", this.pageNumber, this.pageSize.value),
+                    EmployeeApi.getEmployeeFilterPaging("", this.pageNumber, this.pageSize),
                     DepartmentApi.getAll()
                 ]);
 
@@ -385,7 +385,7 @@ export default {
          */
         async loadEmployees() {
             try {
-                const promise = await EmployeeApi.getEmployeeFilterPaging(this.filterText.trim(), this.pageNumber, this.pageSize.value);
+                const promise = await EmployeeApi.getEmployeeFilterPaging(this.filterText.trim(), this.pageNumber, this.pageSize);
 
                 this.employees = promise?.data.Data;
                 this.totalPage = promise?.data?.TotalPage === 0 ? 1 : promise?.data?.TotalPage || 1;
