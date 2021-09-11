@@ -155,6 +155,10 @@ h1, h2, h3, h4, h5, h6 {
 	background-position: -539px -203px;
 }
 
+.mi-arrow-right--black {
+	background-position: -320px -360px;
+}
+
 .flex {
 	display: flex;
 }
@@ -189,6 +193,22 @@ h1, h2, h3, h4, h5, h6 {
 
 .mb-10 {
 	margin-bottom: 10px !important;
+}
+
+.pl-12 {
+	padding-left: 12px !important;
+}
+
+.pr-12 {
+	padding-right: 12px !important;
+}
+
+.pt-12 {
+	padding-top: 12px !important;
+}
+
+.pb-12 {
+	padding-bottom: 12px !important;
 }
 
 .tooltip {

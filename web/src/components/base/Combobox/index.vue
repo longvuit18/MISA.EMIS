@@ -40,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <portal to="root">
+        <portal to="combobox">
             <ul
                 :style="{...styleOption}"
                 v-if="isOpen"

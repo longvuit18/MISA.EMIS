@@ -112,3 +112,12 @@ button:hover {
 	background-position: -560px -359px;
 	transition: transform .15s linear;
 }
+
+.dropdown-button-options {
+	height: auto;
+	overflow: auto;
+	position: absolute;
+	background-color: #fff;
+	z-index: 1000;
+	width: 100%;
+}

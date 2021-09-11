@@ -2,11 +2,14 @@
 	position: relative;
 	display: flex;
 	align-items: center;
-	justify-content: center;
 }
 
-.checkbox label {
+.checkbox div {
 	padding-left: 10px;
+	white-space: nowrap;
+	width: 100px;
+	/* overflow: hidden; */
+	/* text-overflow: ellipsis; */
 }
 
 input[type=checkbox] {

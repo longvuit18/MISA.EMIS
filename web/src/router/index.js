@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import AccountSystem from "../views/AccountSystem";
 import Cash from "../views/Cash";
 import Process from "../views/Cash/Process";
 import Dashboard from "../views/Dashboard.vue";
@@ -46,6 +47,15 @@ const routes = [
 		component: Provider,
 		meta: {
 			title: "Nhà cung cấp | Công ty Misa"
+		}
+	},
+
+	{
+		path: "/categories/account",
+		name: "AccountSystem",
+		component: AccountSystem,
+		meta: {
+			title: "Hệ thống tài khoản | Công ty Misa"
 		}
 	},
 

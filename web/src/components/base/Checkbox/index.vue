@@ -6,7 +6,7 @@
             v-bind="$attrs"
         >
         <span></span>
-        <label v-if="label">{{label}}</label>
+        <div v-if="label">{{label}}</div>
     </label>
 </template>
 <script>

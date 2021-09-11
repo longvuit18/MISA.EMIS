@@ -21,7 +21,12 @@
         <ToastMessage :newToast="$store.state.toastMessage.toast" />
         <BasePopup ref="popup" />
         <portal-target
-            name="root"
+            name="combobox"
+            multiple
+        >
+        </portal-target>
+        <portal-target
+            name="dropdown-button"
             multiple
         >
         </portal-target>

@@ -4,7 +4,10 @@
         class="dialog"
         v-if="isOpen"
     >
-        <div class="dialog-content">
+        <div
+            class="dialog-content"
+            :style="customContentStyle"
+        >
             <slot />
         </div>
     </div>
@@ -22,6 +25,11 @@ export default {
         isOpen: {
             type: Boolean,
             default: () => false
+        },
+
+        customContentStyle: {
+            type: Object,
+            default: () => { }
         }
     }
 };

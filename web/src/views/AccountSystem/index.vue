@@ -1,19 +1,16 @@
 <template>
-    <div id="provider">
-        <div class="provider-header">
-            <div class="title-area">
+    <div id="account-system">
+        <div class="account-system-header">
+            <div class="title-area flex justify-space-between">
                 <div class="title-text">
-                    Danh sách nhà cung cấp
+                    Hệ thống tài khoản
                 </div>
-                <div class="group-button">
-                    <div class="tour-icon"></div>
-                    <div class="tutorial">
-                        Hướng dẫn
-                    </div>
-                    <div class="utility">
-                        <BaseDropdownButton
-                            buttonName="Tiện ích"
+                <div class="group-button flex items-center">
+                    <div class="switch-account mr-10">
+                        <BaseButton
                             secondaryButton
+                            buttonName="Chuyển tài khoản hạch toán"
+                            style="border-radius: 30px"
                         />
                     </div>
                     <div class="add-button">
@@ -28,77 +25,19 @@
                 Quay lai
             </div>
         </div>
+        <div class="account-system-body">
 
-        <div class="provider-body">
-            <div class="overview">
-                <BaseRow>
-                    <BaseCol
-                        :cols="4"
-                        :padding="4"
-                        style="padding-left:0;"
-                    >
-                        <div class="debit">
-                            <div class="data">
-                                <div class="total-money">100</div>
-                            </div>
-                            <div class="label">Nợ quá hạn</div>
-                        </div>
-                    </BaseCol>
-                    <BaseCol
-                        :cols="4"
-                        :padding="4"
-                    >
-                        <div class="total-debit">
-                            <div class="data">
-                                <div class="total-money">100</div>
-                            </div>
-                            <div class="label">Nợ quá hạn</div>
-                        </div>
-                    </BaseCol>
-                    <BaseCol
-                        :cols="4"
-                        :padding="4"
-                        style="padding-right:0;"
-                    >
-                        <div class="payment">
-                            <div class="data">
-                                <div class="total-money">100</div>
-                            </div>
-                            <div class="label">Nợ quá hạn</div>
-                        </div>
-                    </BaseCol>
-                </BaseRow>
-            </div>
             <div class="filter-bar">
-                <div class="filter-area">
-                    <div class="check-all-arrow">
-                        <div class="check-all-arrow-icon"></div>
-                    </div>
-                    <div class="check-all">
-                        <BaseDropdownButton
-                            buttonName="Thực hiện hàng loạt"
-                            secondaryButton
-                        />
-                    </div>
-                    <div class="filter">
-                        <BaseDropdownButton
-                            buttonName="Lọc"
-                            secondaryButton
-                        >
-                            <FilterDropdown />
-                        </BaseDropdownButton>
-                    </div>
-                </div>
-                <div class="filter-bar-right-area">
-                    <div class="search-input">
-                        <BaseInput
-                            searchIcon
-                            placeholder="Tìm theo mã, tên, số điện thoại"
-                            fullWidth
-                            v-model="filterText"
-                        />
+                <div class="search-input">
+                    <BaseInput
+                        searchIcon
+                        placeholder="Tìm theo số, tên tài khoản"
+                        fullWidth
+                        v-model="filterText"
+                    />
 
-                    </div>
+                </div>
+                <div class="reload-button">
                     <div
                         class="reload-icon"
                         @click="reloadEmployees"
@@ -112,7 +51,6 @@
                     @handleClickEdit="handleClickEdit"
                     @handleClickDelete="handleClickDelete"
                     @handleClickRelication="handleClickRelication"
-                    @clickCheckbox="handleClickCheckbox"
                 />
             </div>
         </div>
@@ -127,7 +65,7 @@
                             positionOption="top"
                             :items="pageSizes"
                             :defaultItem="pageSize"
-                            @result="(result) => pageSize = result"
+                            v-model.number="pageSize"
                             readonly
                         />
                     </div>
@@ -277,7 +215,6 @@ import { mapActions, mapMutations } from "vuex";
 import enums from "../../enums";
 import resources from "../../resources";
 import EmployeeTable from "./Table";
-import FilterDropdown from "./dropdown/FilterDropdown.vue";
 const columnNames = [
     { key: "EmployeeCode", text: "Mã nhân viên", width: 145 },
     { key: "EmployeeName", text: "Họ và tên", sort: true, width: 250 },
@@ -305,13 +242,14 @@ const defaultTotalRecord = 0;
 const defaultPageSizes = [
     { value: 10, text: "10 bản ghi trên 1 trang" },
     { value: 20, text: "20 bản ghi trên 1 trang" },
+    { value: 30, text: "30 bản ghi trên 1 trang" },
     { value: 50, text: "50 bản ghi trên 1 trang" },
     { value: 100, text: "100 bản ghi trên 1 trang" }
 ];
-const defaultPageSize = defaultPageSizes[2];
+const defaultPageSize = 20;
 export default {
-    name: "Provider",
-    components: { EmployeeDetails, EmployeeTable, FilterDropdown },
+    name: "AccountSystem",
+    components: { EmployeeDetails, EmployeeTable },
     data() {
         return {
             columnNames: columnNames,
@@ -358,7 +296,7 @@ export default {
         },
 
         /**
-         * Khi pageNumber thay thổi thì sẽ load lại employee
+         * Khi pageSize thay thổi thì sẽ load lại employee
          * Created by: VLVU (18/8/2021)
          */
         pageSize() {
@@ -421,10 +359,6 @@ export default {
             confirmPopup: "confirmPopup"
         }),
 
-        handleClickCheckbox(t) {
-            console.log(t);
-        },
-
         /**
          * Hàm lấy dữ liệu và thông tin đơn vị
          * Created by: Vũ Long Vũ (19/7/2021)
@@ -432,7 +366,7 @@ export default {
         async getData() {
             try {
                 const promise = await Promise.all([
-                    EmployeeApi.getEmployeeFilterPaging("", this.pageNumber, this.pageSize.value),
+                    EmployeeApi.getEmployeeFilterPaging("", this.pageNumber, this.pageSize),
                     DepartmentApi.getAll()
                 ]);
 
@@ -463,7 +397,7 @@ export default {
          */
         async loadEmployees() {
             try {
-                const promise = await EmployeeApi.getEmployeeFilterPaging(this.filterText.trim(), this.pageNumber, this.pageSize.value);
+                const promise = await EmployeeApi.getEmployeeFilterPaging(this.filterText.trim(), this.pageNumber, this.pageSize);
 
                 this.employees = promise?.data.Data;
                 this.totalPage = promise?.data?.TotalPage === 0 ? 1 : promise?.data?.TotalPage || 1;
@@ -611,12 +545,4 @@ export default {
 </script>
 
 <style scoped src="./style.css">
-</style>
-
-<style>
-.filter-content {
-    height: 300px;
-    background-color: #fff;
-    padding: 16px 20px 20px;
-}
 </style>

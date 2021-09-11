@@ -57,7 +57,10 @@
                             :cols="3"
                             :padding="0"
                         >
-                            <div class="content no-border">
+                            <div
+                                class="content no-border"
+                                @click="toAccountSystemPage"
+                            >
                                 <div class="icon icon-size-24 mi-calculate"></div>
                                 <div class="text">Hệ thống tài khoản</div>
                             </div>
@@ -94,6 +97,9 @@ export default {
         },
         toProviderPage() {
             this.$router.push("/categories/provider");
+        },
+        toAccountSystemPage() {
+            this.$router.push("/categories/account");
         }
     }
 };
