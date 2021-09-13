@@ -30,46 +30,76 @@
         </div>
 
         <div class="provider-body">
-            <div class="overview">
+            <div
+                class="overview"
+                v-if="showOverview"
+            >
                 <BaseRow>
                     <BaseCol
                         :cols="4"
-                        :padding="4"
-                        style="padding-left:0;"
+                        style="padding-right: 3px"
                     >
-                        <div class="debit">
-                            <div class="data">
-                                <div class="total-money">100</div>
+                        <div class="overview-box">
+                            <div class="debit-color">
+                                <div class="mouse-pointer">
+                                    <div class="data">
+                                        <div class="total-money">100</div>
+                                    </div>
+                                    <div class="label">Nợ quá hạn</div>
+                                    <div class="icon icon-size-18 mi-funnel icon-area"></div>
+                                </div>
+                                <div class="overview-line"></div>
                             </div>
-                            <div class="label">Nợ quá hạn</div>
                         </div>
                     </BaseCol>
                     <BaseCol
                         :cols="4"
-                        :padding="4"
+                        style="padding: 0 3px;"
                     >
-                        <div class="total-debit">
-                            <div class="data">
-                                <div class="total-money">100</div>
+                        <div class="overview-box ">
+                            <div class="total-debit-color">
+                                <div class="mouse-pointer">
+                                    <div class="data">
+                                        <div class="total-money">100</div>
+                                    </div>
+                                    <div class="label">Tổng phải trả</div>
+                                    <div class="icon icon-size-18 mi-funnel icon-area"></div>
+                                </div>
+                                <div class="overview-line"></div>
                             </div>
-                            <div class="label">Nợ quá hạn</div>
                         </div>
                     </BaseCol>
                     <BaseCol
                         :cols="4"
-                        :padding="4"
-                        style="padding-right:0;"
+                        style="padding:0 0 0 3px;"
                     >
-                        <div class="payment">
-                            <div class="data">
-                                <div class="total-money">100</div>
+                        <div
+                            class=""
+                            style="padding-top:6px;"
+                        >
+                            <div class="payment-color">
+                                <div class="mouse-pointer">
+                                    <div class="data">
+                                        <div class="total-money">100</div>
+                                    </div>
+                                    <div class="label">Đã thanh toán (30 ngày gần nhất)</div>
+                                </div>
+                                <div class="overview-line"></div>
                             </div>
-                            <div class="label">Nợ quá hạn</div>
                         </div>
                     </BaseCol>
                 </BaseRow>
             </div>
             <div class="filter-bar">
+                <div
+                    class="collapse-overview flex justify-center items-center"
+                    @click="showOverview = !showOverview"
+                >
+                    <div
+                        class="icon icon-size-16 mi-chevron-up--primary"
+                        :class="{'rotate-down': !showOverview}"
+                    ></div>
+                </div>
                 <div class="filter-area">
                     <div class="check-all-arrow">
                         <div class="check-all-arrow-icon"></div>
@@ -78,6 +108,7 @@
                         <BaseDropdownButton
                             buttonName="Thực hiện hàng loạt"
                             secondaryButton
+                            disabled
                         />
                     </div>
                     <div class="filter">
@@ -329,7 +360,9 @@ export default {
             totalRecord: defaultTotalRecord,
             filterText: defaultFilterText,
 
-            idTimeout: null // id của setTimeOut khi thực hiện filter
+            idTimeout: null, // id của setTimeOut khi thực hiện filter,
+
+            showOverview: true
 
         };
     },
@@ -423,6 +456,10 @@ export default {
 
         handleClickCheckbox(t) {
             console.log(t);
+        },
+
+        handleCollapseOverview() {
+
         },
 
         /**

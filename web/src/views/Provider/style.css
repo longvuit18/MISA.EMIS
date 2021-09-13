@@ -41,6 +41,7 @@
 	position: -webkit-sticky;
 	left: 0;
 	background: #fff;
+	margin-top: 14px;
 }
 
 .filter-bar .filter-area {
@@ -104,10 +105,29 @@
 
 .overview {
 	margin-bottom: 36px;
+	position: sticky;
+	position: -webkit-sticky;
+	left: 0;
 }
 
-.overview .debit, .total-debit, .payment {
+.overview .mouse-pointer {
 	padding: 6px 10px;
+	position: relative;
+	cursor: pointer;
+}
+
+.overview .overview-box {
+	padding-top: 6px;
+}
+
+.overview .overview-box:hover {
+	padding: 0;
+}
+
+.overview .overview-box:hover .overview-line {
+	padding-top: 6px;
+	background: #707070;
+	opacity: .5;
 }
 
 .overview .data {
@@ -124,16 +144,38 @@
 	color: #fff;
 }
 
-.overview .debit {
+.overview .debit-color {
 	background-color: #FF7F2C;
 }
 
-.overview .total-debit {
+.overview .total-debit-color {
 	background-color: #B8BCC3;
 }
 
-.overview .payment {
+.overview .payment-color {
 	background-color: #74CB2F;
+}
+
+.overview .icon-area {
+	position: absolute;
+	top: 4px;
+	right: 8px;
+}
+
+.collapse-overview {
+	border: 2px solid #e2e9f2;
+	background: #f2f5f8;
+	position: absolute;
+	width: 30px;
+	height: 28px;
+	top: -14px;
+	right: 0;
+	cursor: pointer;
+}
+
+.collapse-overview .rotate-down {
+	transform: rotate(180deg);
+	transition: all 0.3s ease;
 }
 
 #provider .provider-body .reload-icon {

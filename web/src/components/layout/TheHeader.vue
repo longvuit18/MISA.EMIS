@@ -23,7 +23,35 @@
             </div>
         </div>
         <div class="account">
-            <div class="notification"></div>
+            <div class="search-input">
+                <BaseInput
+                    searchIcon
+                    placeholder="Nhập từ khóa để tìm kiếm"
+                    fullWidth
+                    v-tooltip="'Tính năng chưa phát triển'"
+                />
+
+            </div>
+            <div
+                class="icon icon-size-24 mi-category ml-10 mr-10"
+                v-tooltip="'Tính năng chưa phát triển'"
+            ></div>
+            <div
+                class="icon icon-size-24 mi-setting__nav ml-10 mr-10"
+                v-tooltip="'Tính năng chưa phát triển'"
+            ></div>
+            <div
+                class="icon icon-size-24 mi-help__nav ml-10"
+                v-tooltip="'Tính năng chưa phát triển'"
+            ></div>
+            <div
+                class="icon icon-size-16 mi-arrow-up--gray mr-10"
+                v-tooltip="'Tính năng chưa phát triển'"
+            ></div>
+            <div
+                class="notification ml-10 "
+                v-tooltip="'Tính năng chưa phát triển'"
+            ></div>
             <div class="account-avatar"></div>
             <div class="account-name">Vũ Long Vũ</div>
             <div

@@ -3,27 +3,25 @@
         class="base"
         ref="dropdownButton"
     >
-        <div
-            class="main-button"
-            @click="isOpen = !isOpen"
-        >
+        <div class="main-button">
             <button
-                v-bind:class="{'secondary-button': secondaryButton, 'color-red': colorRed, 'disabled': disabled}"
+                v-bind:class="{ 'disabled-secondary-button': disabled && secondaryButton,'secondary-button': !disabled && secondaryButton, 'color-red': colorRed}"
                 v-on="$listeners"
                 v-bind="$attrs"
-                :disabled="disabled || loading"
+                @click="handleClick"
+                :disabled="disabled"
             >
                 <img
                     v-if="startIcon"
                     :src="require('../../../assets/icon/'+ startIcon)"
                     alt="start icon"
                 >
-                <div style="white-space: nowrap;">{{!loading ? buttonName : ''}}</div>
-                <BaseSpin v-if="loading" />
+                <div style="white-space: nowrap;">{{buttonName}}</div>
                 <div style="padding-left:4px;">
                     <div
                         v-if="secondaryButton"
                         class="angle-down-icon--black"
+                        :style="styleIconDisabled"
                     />
                 </div>
             </button>
@@ -31,6 +29,7 @@
         <div
             class="dropdown-icon"
             v-if="!secondaryButton"
+            @click="isOpen = !isOpen"
         >
             <div class="line" />
             <button>
@@ -38,14 +37,17 @@
             </button>
         </div>
         <portal to="dropdown-button">
-            <div
-                class="dropdown-button-options"
-                ref="options"
-                :style="{...styleOption}"
-                v-if="isOpen"
-            >
-                <slot></slot>
-            </div>
+            <transition name="fade">
+                <div
+                    class="dropdown-button-options"
+                    ref="options"
+                    :style="{...styleOption}"
+                    v-if="isOpen"
+                >
+                    <slot></slot>
+                </div>
+            </transition>
+
         </portal>
     </div>
 </template>
@@ -118,7 +120,7 @@ export default {
          * Created by: VLVU(10/9/2021)
          */
         right() {
-            return this.positionDropdownButton?.left + "px";
+            return `calc(100% - ${this.positionDropdownButton?.right}px)`;
         },
         /**
          * Lấy độ dài hiện tại của dropdownButton
@@ -135,37 +137,46 @@ export default {
             return this.positionOption === "bottom"
                 ? { top: this.top, right: this.right, width: "auto", "min-width": this.width }
                 : { bottom: this.bottom, right: this.right, width: "auto", "min-width": this.width };
+        },
+
+        styleIconDisabled() {
+            return this.disabled ? { opacity: 0.5 } : {};
         }
     },
 
     watch: {
         isOpen() {
-            console.log(this.positionDropdownButton);
             this.positionDropdownButton = this.$refs.dropdownButton.getBoundingClientRect();
         }
     },
     // Lắng nghe sự kiện click ra bên ngoài combobox
     mounted() {
         window.addEventListener("scroll", this.handleScrollOutSide, true);
-        // document.addEventListener("click", this.handleClickOutside);
+        document.addEventListener("click", this.handleClickOutside);
     },
     // xóa sự kiện này khi thoát khỏi xóa component
     destroyed() {
-        // document.removeEventListener("click", this.handleClickOutside);
+        document.removeEventListener("click", this.handleClickOutside);
         window.removeEventListener("scroll", this.handleScrollOutSide, true);
     },
     methods: {
-        // // phương thức khi người dùng click ra bên ngoài combobox
-        // handleClickOutside(event) {
-        //     console.log(this.$root.);
-        //     if (!this.$el.contains(event.target) && !this.$refs.options?.contains(event.target)) {
-        //         this.isOpen = false;
-        //     }
-        // },
+        // phương thức khi người dùng click ra bên ngoài combobox
+        handleClickOutside(event) {
+            const datepickerPopup = document.getElementsByClassName("mx-datepicker-main mx-datepicker-popup");
+            if (!this.$el.contains(event.target) && !this.$refs.options?.contains(event.target) && datepickerPopup.length === 0) {
+                this.isOpen = false;
+            }
+        },
         // phương thức khi người dùng scroll ở bên ngoài combobox
         handleScrollOutSide(event) {
             if (!this.$el.contains(event.target)) {
                 this.isOpen = false;
+            }
+        },
+
+        handleClick() {
+            if (this.secondaryButton) {
+                this.isOpen = !this.isOpen;
             }
         }
     }

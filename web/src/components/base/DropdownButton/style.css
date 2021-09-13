@@ -63,6 +63,19 @@ button:hover {
 	color: #fff;
 }
 
+.base .disabled-secondary-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #fff;
+	border: 2px solid #000;
+	border-radius: 30px;
+	height: 36px;
+	font-size: 13px;
+	text-align: center;
+	color: #afafaf;
+}
+
 .base .secondary-button {
 	display: flex;
 	align-items: center;
@@ -120,4 +133,5 @@ button:hover {
 	background-color: #fff;
 	z-index: 1000;
 	width: 100%;
+	transition: all .3s;
 }

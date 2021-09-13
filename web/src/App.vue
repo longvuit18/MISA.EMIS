@@ -17,7 +17,6 @@
                 <router-view />
             </div>
         </div>
-
         <ToastMessage :newToast="$store.state.toastMessage.toast" />
         <BasePopup ref="popup" />
         <portal-target

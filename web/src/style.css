@@ -159,6 +159,30 @@ h1, h2, h3, h4, h5, h6 {
 	background-position: -320px -360px;
 }
 
+.mi-funnel {
+	background-position: -1814px -202px;
+}
+
+.mi-category {
+	background-position: -568px -30px;
+}
+
+.mi-setting__nav {
+	background-position: -675px -30px;
+}
+
+.mi-help__nav {
+	background-position: -731px -30px;
+}
+
+.mi-arrow-up--gray {
+	background-position: -944px -360px;
+}
+
+.mi-chevron-up--primary {
+	background-position: -128px -360px;
+}
+
 .flex {
 	display: flex;
 }
@@ -302,4 +326,12 @@ h1, h2, h3, h4, h5, h6 {
 	visibility: visible;
 	opacity: 1;
 	transition: opacity 0.15s;
+}
+
+.fade-enter-active, .fade-leave-active {
+	transition: opacity 0.25s
+}
+
+.fade-enter, .fade-leave-to {
+	opacity: 0
 }

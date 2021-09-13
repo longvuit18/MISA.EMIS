@@ -74,7 +74,7 @@ table tbody tr {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 60%;
+	height: 40%;
 	position: fixed;
 	width: calc(100% - 180px);
 }

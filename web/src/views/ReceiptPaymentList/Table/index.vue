@@ -8,7 +8,10 @@
                         class="first-column-fixed align-center"
                         style="z-index: 14;"
                     >
-                        <BaseCheckbox />
+                        <BaseCheckbox
+                            @click="handleClickCheckboxAll"
+                            :checked="selectedAll"
+                        />
                     </th>
                     <th
                         v-for="(columnName,index) in columnNames"
@@ -38,12 +41,15 @@
                     :key="rowIndex"
                     @dblclick="(e) => handleDblClickRow(e, item)"
                     @contextmenu="(e) => handleRightClick(e, item)"
-                    :class="{'selected': rowSelected(rowIndex), 'z-index-row': showFeature(rowIndex)}"
+                    :class="{'z-index-row': showFeature(rowIndex)}"
                 >
                     <th class="first-white-space"></th>
                     <td class="first-column-fixed align-center td-viewer">
                         <div>
-                            <BaseCheckbox />
+                            <BaseCheckbox
+                                @click="(e) =>handleClickCheckbox(e, rowIndex)"
+                                :checked="hasCheck(rowIndex)"
+                            />
                         </div>
                     </td>
                     <td
@@ -62,7 +68,7 @@
                             <span
                                 @click="() =>handleClickEdit(item)"
                                 style="cursor: pointer;"
-                            >Sửa</span>
+                            >Xem</span>
                             <div>
                                 <button
                                     @click="handleClickFeature(rowIndex)"
@@ -79,15 +85,15 @@
                                 <li
                                     @click="() =>handleClickReplication(item)"
                                     style="cursor: pointer;"
+                                >Sửa</li>
+                                <li
+                                    @click="() =>handleClickReplication(item)"
+                                    style="cursor: pointer;"
                                 >Nhân bản</li>
                                 <li
                                     @click="() =>handleClickDelete(item)"
                                     style="cursor: pointer;"
                                 >Xóa</li>
-                                <li
-                                    v-tooltip.bottom="'Tính năng chưa phát triển'"
-                                    style="cursor: pointer;"
-                                >Ngừng sử dụng</li>
                             </ul>
                         </div>
 
@@ -136,12 +142,6 @@ export default {
         dataProps: {
             required: true,
             default: () => null
-        },
-
-        // cho phép người dùng có thể chọn nhiều hàng
-        allowsMultipleSelection: {
-            type: Boolean,
-            default: () => false
         }
     },
 
@@ -154,6 +154,7 @@ export default {
             // lọc ra những cột nào cần set fixed,
             data: null,
             rowsSelected: [],
+            selectedAll: false,
 
             showedFeature: -1
         };
@@ -190,20 +191,58 @@ export default {
         * Sự kiện khi  click vào 1 row
         * CreatedBy: Vũ Long Vũ 19/7/2021
         */
-        handleClick(e, index, item) {
-            e.preventDefault();
+        // handleClick(e, index, item) {
+        //     e.preventDefault();
+        //     // gắn lại những hàng đã chon trước đó
+        //     // check xem người dùng click vào hàng mới hay cũ
+        //     const rowIndex = this.rowsSelected.findIndex(row => row === index);
+
+        //     if (rowIndex > -1) {
+        //         this.rowsSelected.splice(rowIndex, 1);
+        //         this.$emit("click", null);
+        //     } else {
+        //         // nếu cho phép chọn nhiều thì cập nhập array không thì chỉ truyền vào 1
+        //         this.rowsSelected = this.allowsMultipleSelection ? [...this.rowsSelected, index] : [index];
+        //         this.$emit("click", item);
+        //     }
+        // },
+
+        /**
+         * sự kiện click vào checkbox
+         * Created by: VLVU(12/9/2021)
+         */
+        handleClickCheckbox(e, index) {
             // gắn lại những hàng đã chon trước đó
             // check xem người dùng click vào hàng mới hay cũ
             const rowIndex = this.rowsSelected.findIndex(row => row === index);
 
             if (rowIndex > -1) {
                 this.rowsSelected.splice(rowIndex, 1);
-                this.$emit("click", null);
             } else {
                 // nếu cho phép chọn nhiều thì cập nhập array không thì chỉ truyền vào 1
-                this.rowsSelected = this.allowsMultipleSelection ? [...this.rowsSelected, index] : [index];
-                this.$emit("click", item);
+                this.rowsSelected = [...this.rowsSelected, index];
             }
+            if (this.rowsSelected.length < this.data.length) {
+                this.selectedAll = false;
+            } else {
+                this.selectedAll = true;
+            }
+            this.$emit("clickCheckbox", this.rowsSelected);
+        },
+
+        /**
+         * sự kiện click vào checkbox
+         * Created by: VLVU(12/9/2021)
+         */
+        handleClickCheckboxAll() {
+            if (this.selectedAll) {
+                this.selectedAll = false;
+                this.rowsSelected = [];
+            } else {
+                this.selectedAll = true;
+                this.rowsSelected = Array.from({ length: this.data.length }, (_v, k) => k);
+            }
+            this.$emit("clickCheckbox", this.rowsSelected);
         },
 
         /**
@@ -260,7 +299,7 @@ export default {
          * check xem hàng đó có được chọn không
          * Created by: VLVU (11/8/2021)
          */
-        rowSelected(index) {
+        hasCheck(index) {
             return this.rowsSelected.findIndex(i => i === index) > -1;
         },
         /**
