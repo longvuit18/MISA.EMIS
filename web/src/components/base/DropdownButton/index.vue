@@ -152,24 +152,16 @@ export default {
     // Lắng nghe sự kiện click ra bên ngoài combobox
     mounted() {
         window.addEventListener("scroll", this.handleScrollOutSide, true);
-        document.addEventListener("click", this.handleClickOutside);
     },
     // xóa sự kiện này khi thoát khỏi xóa component
     destroyed() {
         document.removeEventListener("click", this.handleClickOutside);
-        window.removeEventListener("scroll", this.handleScrollOutSide, true);
     },
     methods: {
         // phương thức khi người dùng click ra bên ngoài combobox
         handleClickOutside(event) {
             const datepickerPopup = document.getElementsByClassName("mx-datepicker-main mx-datepicker-popup");
             if (!this.$el.contains(event.target) && !this.$refs.options?.contains(event.target) && datepickerPopup.length === 0) {
-                this.isOpen = false;
-            }
-        },
-        // phương thức khi người dùng scroll ở bên ngoài combobox
-        handleScrollOutSide(event) {
-            if (!this.$el.contains(event.target)) {
                 this.isOpen = false;
             }
         },

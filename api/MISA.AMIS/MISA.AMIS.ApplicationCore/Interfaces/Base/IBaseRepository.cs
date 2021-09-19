@@ -26,7 +26,7 @@ namespace MISA.AMIS.ApplicationCore.Interfaces
         /// <param name="id"></param>
         /// <returns></returns>
         /// Created by: VLVU (27/7/2021)
-        Task<TEntity> GetOne(string id);
+        Task<TEntity> GetOne(Guid id);
         /// <summary>
         /// Thêm 1 entity
         /// </summary>
@@ -47,7 +47,7 @@ namespace MISA.AMIS.ApplicationCore.Interfaces
         /// <param name="id"></param>
         /// <returns></returns>
         /// Created by: VLVU (27/7/2021)
-        Task<int> DeleteOne(string id);
+        Task<int> DeleteOne(Guid id);
         /// <summary>
         /// Lấy entity bằng 1 thuộc tính nào đó
         /// </summary>

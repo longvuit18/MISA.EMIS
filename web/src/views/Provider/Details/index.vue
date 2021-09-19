@@ -148,6 +148,8 @@
                                         tabindex="7"
                                         ref="7"
                                         name="Nhóm nhà cung cấp"
+                                        :items="groupProviderData"
+                                        v-model="groupProvider"
                                     />
                                 </BaseCol>
                             </BaseRow>
@@ -300,7 +302,18 @@ export default {
 
             currentState: this.state,
 
-            tab: "contact"
+            tab: "contact",
+
+            groupProviderData: [
+                { Code: "122345", Name: "Vũ Long Vũ1", key: 1 },
+                { Code: "12345", Name: "Vũ Long Vũ2", key: 12 },
+                { Code: "12245", Name: "Vũ Long Vũ3", key: 145 },
+                { Code: "12235", Name: "Vũ Long Vũ4", key: 154 },
+                { Code: "12234", Name: "Vũ Long Vũ5", key: 1542 },
+                { Code: "1223425", Name: "Vũ Long Vũ6", key: 153 },
+                { Code: "1223445", Name: "Vũ Long Vũ7", key: 1223 }
+            ],
+            groupProvider: []
 
         };
     },

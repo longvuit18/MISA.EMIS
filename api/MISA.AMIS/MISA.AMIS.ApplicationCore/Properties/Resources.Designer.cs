@@ -106,6 +106,15 @@ namespace MISA.AMIS.ApplicationCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bạn đã lấy thông tin thành công!.
+        /// </summary>
+        public static string GetSuccessfully {
+            get {
+                return ResourceManager.GetString("GetSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Id bạn gửi lên không đúng định dạng..
         /// </summary>
         public static string IdInconrect {

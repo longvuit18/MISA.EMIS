@@ -183,6 +183,10 @@ h1, h2, h3, h4, h5, h6 {
 	background-position: -128px -360px;
 }
 
+.mi-close--small {
+	background-position: -80px -312px;
+}
+
 .flex {
 	display: flex;
 }

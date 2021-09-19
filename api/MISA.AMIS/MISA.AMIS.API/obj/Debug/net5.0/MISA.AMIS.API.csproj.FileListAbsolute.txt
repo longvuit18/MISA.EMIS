@@ -34,3 +34,4 @@ D:\misa\phase1\api\MISA.AMIS\MISA.AMIS.API\bin\Debug\net5.0\MISA.AMIS.Applicatio
 D:\misa\phase1\api\MISA.AMIS\MISA.AMIS.API\bin\Debug\net5.0\MISA.AMIS.Infrastructure.dll
 D:\misa\phase1\api\MISA.AMIS\MISA.AMIS.API\bin\Debug\net5.0\MISA.AMIS.ApplicationCore.pdb
 D:\misa\phase1\api\MISA.AMIS\MISA.AMIS.API\bin\Debug\net5.0\MISA.AMIS.Infrastructure.pdb
+D:\misa\phase1\api\MISA.AMIS\MISA.AMIS.API\bin\Debug\net5.0\Npgsql.dll

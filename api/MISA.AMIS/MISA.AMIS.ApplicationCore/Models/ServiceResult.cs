@@ -23,7 +23,7 @@ namespace MISA.AMIS.ApplicationCore.Models
         /// <summary>
         /// Dữ liệu kết quả trả về
         /// </summary>
-        public  object Data { get; set; }
+        public object Data { get; set; }
         /// <summary>
         /// Thông báo lỗi cho dev
         /// </summary>

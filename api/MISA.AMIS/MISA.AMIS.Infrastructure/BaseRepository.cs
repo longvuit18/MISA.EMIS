@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using MISA.AMIS.ApplicationCore.Enums;
+using Npgsql;
 
 namespace MISA.AMIS.Infrastructure
 {
@@ -28,9 +29,10 @@ namespace MISA.AMIS.Infrastructure
         #region Initializaiton
         public BaseRepository(IConfiguration configuration)
         {
-            _tableName = typeof(TEntity).Name;
+            _tableName = typeof(TEntity).Name.ToLower();
             var connectionString = configuration.GetConnectionString("MISAAMISLocalConnectionString");
-            _dbConnection = new MySqlConnection(connectionString);
+            _dbConnection = new NpgsqlConnection(connectionString);
+            // (_dbConnection as NpgsqlConnection).TypeMapper.MapComposite<Employee>();
         }
         #endregion
 
@@ -43,13 +45,13 @@ namespace MISA.AMIS.Infrastructure
             {
                 var mapEntity = MappingDbType(entity);
 
-                rowCount = await _dbConnection.ExecuteAsync($"Proc_Insert{_tableName}", mapEntity, commandType: CommandType.StoredProcedure, transaction: transaction);
+                rowCount = await _dbConnection.ExecuteAsync($"func_insert_{_tableName}", mapEntity, commandType: CommandType.StoredProcedure, transaction: transaction);
                 transaction.Commit();
             }
             return rowCount;
         }
 
-        public async Task<int> DeleteOne(string entityId)
+        public async Task<int> DeleteOne(Guid entityId)
         {
             int rowAffected;
             // add transaction
@@ -57,8 +59,8 @@ namespace MISA.AMIS.Infrastructure
             using (var transaction = _dbConnection.BeginTransaction())
             {
                 var parameter = new DynamicParameters();
-                parameter.Add($"{_tableName}Id", entityId);
-                rowAffected = await _dbConnection.ExecuteAsync($"Proc_Delete{_tableName}ById", parameter, commandType: CommandType.StoredProcedure, transaction: transaction);
+                parameter.Add($"p_{_tableName}_id", entityId);
+                rowAffected = await _dbConnection.ExecuteScalarAsync<int>($"func_delete_{_tableName}_by_id", parameter, commandType: CommandType.StoredProcedure, transaction: transaction);
                 transaction.Commit();
             }
             return rowAffected;
@@ -67,19 +69,14 @@ namespace MISA.AMIS.Infrastructure
 
         public async Task<IEnumerable<TEntity>> GetAll()
         {
-            var entities = await _dbConnection.QueryAsync<TEntity>($"Proc_Get{_tableName}s", commandType: CommandType.StoredProcedure);
+            var entities = await _dbConnection.QueryAsync<TEntity>($"select * from func_get_{_tableName}s()", commandType: CommandType.Text);
             return entities;
 
         }
 
         public async Task<TEntity> GetEntityByProperty(DynamicParameters parameters)
         {
-            var entity = parameters.Get<TEntity>("@entity");
-            var propertyId = entity.GetType().GetProperty($"{_tableName}Id");
-            // lấy id của entity
-            var entityId = propertyId.GetValue(entity);
-            parameters.Add("@entityId", entityId, DbType.String);
-            var entityState = entity.EntityState;
+            var entityState = parameters.Get<EntityState>("@entityState");
             // command sql
             var command = string.Empty;
             if (entityState == EntityState.POST)
@@ -88,18 +85,18 @@ namespace MISA.AMIS.Infrastructure
             }
             if (entityState == EntityState.PUT)
             {
-                command = $"select * from {_tableName} where {parameters.Get<string>("@propertyName")} = @propertyValue and {_tableName}Id <> @entityId";
+                command = $"select * from {_tableName} where {parameters.Get<string>("@propertyName")} = @propertyValue and {_tableName}_id <> @entityId";
             }
             // query database
             var entityDb = await _dbConnection.QueryFirstOrDefaultAsync<TEntity>(command, parameters, commandType: CommandType.Text);
             return entityDb;
         }
 
-        public async Task<TEntity> GetOne(string entityId)
+        public async Task<TEntity> GetOne(Guid entityId)
         {
             var parameter = new DynamicParameters();
-            parameter.Add($"{_tableName}Id", entityId);
-            var entity = await _dbConnection.QueryFirstOrDefaultAsync<TEntity>($"Proc_Get{_tableName}ById", parameter, commandType: CommandType.StoredProcedure);
+            parameter.Add($"{_tableName}_id", entityId);
+            var entity = await _dbConnection.QueryFirstOrDefaultAsync<TEntity>($"func_get_{_tableName}_by_id", parameter, commandType: CommandType.StoredProcedure);
             return entity;
         }
 
@@ -110,7 +107,7 @@ namespace MISA.AMIS.Infrastructure
             using (var transaction = _dbConnection.BeginTransaction())
             {
                 var mapEntity = MappingDbType(entity);
-                rowCount = await _dbConnection.ExecuteAsync($"Proc_Update{_tableName}", mapEntity, commandType: CommandType.StoredProcedure, transaction: transaction);
+                rowCount = await _dbConnection.ExecuteScalarAsync<int>($"func_update_{_tableName}", mapEntity, commandType: CommandType.StoredProcedure, transaction: transaction);
                 transaction.Commit();
             }
             return rowCount;
@@ -134,10 +131,6 @@ namespace MISA.AMIS.Infrastructure
                 if (propertyType == typeof(EntityState))
                 {
                     continue;
-                }
-                if (propertyType == typeof(Guid) || propertyType == typeof(Guid?))
-                {
-                    parameters.Add($"@{propertyName}", propertyValue, DbType.String);
                 }
                 else
                 {

@@ -19,14 +19,14 @@ namespace MISA.AMIS.ApplicationCore.Interfaces
         /// </summary>
         /// <returns>1 mảng entity</returns>
         /// Created by: VLVU (27/7/2021)
-        Task<IEnumerable<TEntity>> GetAll();
+        Task<ServiceResult> GetAll();
         /// <summary>
         /// Lấy entity theo id
         /// </summary>
         /// <param name="id">id của entity</param>
         /// <returns></returns>
         /// Created by: VLVU (27/7/2021)
-        Task<TEntity> GetOne(string id);
+        Task<ServiceResult> GetOne(Guid id);
         /// <summary>
         /// Thêm 1 entity
         /// </summary>
@@ -47,6 +47,6 @@ namespace MISA.AMIS.ApplicationCore.Interfaces
         /// <param name="entity"></param>
         /// <returns></returns>
         /// Created by: VLVU (27/7/2021)
-        Task<ServiceResult> DeleteOne(string entity);
+        Task<ServiceResult> DeleteOne(Guid entity);
     }
 }

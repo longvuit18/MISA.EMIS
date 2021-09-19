@@ -194,6 +194,10 @@
             "Microsoft.Extensions.Configuration.Abstractions": {
               "target": "Package",
               "version": "[5.0.0, )"
+            },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[5.0.10, )"
             }
           },
           "imports": [

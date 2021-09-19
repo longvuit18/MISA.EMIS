@@ -40,13 +40,8 @@ namespace MISA.AMIS.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var entities = await _baseService.GetAll();
-            if (!entities.Any())
-            {
-                return NoContent();
-            }
-
-            return Ok(entities);
+            var result = await _baseService.GetAll();
+            return Ok(result);
         }
         /// <summary>
         /// Lấy 1 entity theo Id
@@ -56,13 +51,25 @@ namespace MISA.AMIS.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var entity = await _baseService.GetOne(id);
+            // convert string to guid
+            var isToGuid = Guid.TryParse(id, out Guid guid);
+            if (!isToGuid)
+            {
+                var errorResult = CreateErrorResult();
+                errorResult.Code = MisaCode.Fail;
+                errorResult.State = false;
+                errorResult.MsgDev = Resources.IdInconrect;
+                errorResult.MsgUser = Resources.IdInconrect;
+                return Ok(errorResult);
+            }
 
-            if (entity == null)
+            var result = await _baseService.GetOne(guid);
+
+            if (result.Data == null)
             {
                 return NoContent();
             }
-            return Ok(entity);
+            return Ok(result);
 
         }
 
@@ -92,14 +99,13 @@ namespace MISA.AMIS.API.Controllers
         public async Task<IActionResult> UpdateOne(TEntity entity, string id)
         {
             // name entity
-            var entityName = entity.GetType().Name;
-            // lấy id từ route truyền xuống body
-            var guid = new Guid();
+            var entityName = entity.GetType().Name.ToLower();
+
             // convert string to guid
-            var isToGuid = Guid.TryParse(id, out guid);
+            var isToGuid = Guid.TryParse(id, out Guid guid);
             if (isToGuid)
             {
-                entity.GetType().GetProperty($"{entityName}Id").SetValue(entity, guid);
+                entity.GetType().GetProperty($"{entityName}_id").SetValue(entity, guid);
             }
             else
             {
@@ -125,7 +131,18 @@ namespace MISA.AMIS.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOne(string id)
         {
-            var serviceResult = await _baseService.DeleteOne(id);
+            // convert string to guid
+            var isToGuid = Guid.TryParse(id, out Guid guid);
+            if (!isToGuid)
+                    {
+                        var errorResult = CreateErrorResult();
+                        errorResult.Code = MisaCode.Fail;
+                        errorResult.State = false;
+                        errorResult.MsgDev = Resources.IdInconrect;
+                        errorResult.MsgUser = Resources.IdInconrect;
+                        return Ok(errorResult);
+                    }
+            var serviceResult = await _baseService.DeleteOne(guid);
             if (!serviceResult.State)
             {
                 return Ok(serviceResult);

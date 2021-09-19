@@ -9,7 +9,36 @@
                 class="box"
                 :class="{'border-red': error}"
             >
+                <div
+                    class="chip-group"
+                    v-if="multiple"
+                    ref="chip"
+                >
+                    <BaseChip
+                        v-for="(item, chipIndex) in chips"
+                        :key="item + chipIndex"
+                        :value="item"
+                        @deleteChip="deleteChip"
+                    />
+
+                    <input
+                        type="text"
+                        :tabindex="tabindex"
+                        @input="onChange"
+                        v-model="search"
+                        @keydown.down="onArrowDown"
+                        @keydown.up="onArrowUp"
+                        @keydown.tab="onTab"
+                        @keydown.enter="onEnter"
+                        @blur="onBlur"
+                        ref="BaseInput"
+                        v-bind="$attrs"
+                        :title="errorMessage"
+                        :placeholder="placeholder"
+                    />
+                </div>
                 <input
+                    v-if="!multiple"
                     type="text"
                     :tabindex="tabindex"
                     @input="onChange"
@@ -43,24 +72,41 @@
         <portal to="combobox">
             <ul
                 :style="{...styleOption}"
-                v-if="isOpen"
+                v-if="isOpen && !optionsTable"
                 class='combobox-options'
+                ref="options"
             >
                 <li
                     v-for="(option) in options"
                     :key="option.value"
                     @click="setResult(option)"
                     class="combobox-result"
-                    :class="{ 'is-active': result && result.text === option.text }"
+                    :class="{ 'is-active':search === option.text }"
                 >
                     {{ option.text }}
                 </li>
             </ul>
+            <div
+                :style="{...styleOption}"
+                v-if="isOpen && optionsTable"
+                class='combobox-options'
+                ref="options"
+            >
+                <OptionsTable
+                    :columnNames="columnNames"
+                    :data="options"
+                    :multiple="multiple"
+                    :selected="rowSelected"
+                    @handleClickRow="setResult"
+                    :currentCheck="currentCheck"
+                />
+            </div>
         </portal>
     </div>
 </template>
 
 <script>
+import OptionsTable from "./OptionsTable.vue";
 
 /**
  * Cmbobox
@@ -69,7 +115,9 @@
 
 // thông báo lỗi bắt buộc nhập
 const ErrorRequire = (name) => `${name} là trường bắt buộc phải nhập!`;
+const ErrorInCorrect = (name) => `Dữ liệu <${name}> không có trong danh mục!`;
 export default {
+    components: { OptionsTable },
     name: "BaseCombobox",
     model: {
         prop: "value",
@@ -96,6 +144,16 @@ export default {
             default: () => false
         },
 
+        optionsTable: {
+            type: Boolean,
+            default: () => true
+        },
+
+        multiple: {
+            type: Boolean,
+            default: () => false
+        },
+
         name: {
             type: String
 
@@ -105,20 +163,39 @@ export default {
             default: () => "Nhập/Chọn"
         },
         value: {
-            type: [String, Number]
+            type: [String, Number, Array]
+        },
+        // columnNames là 1 Array chứa object {key: string, text: string, align: string, sort: boolean, format: string, width: number}
+        columnNames: {
+            type: Array,
+            default: () => []
+        },
+
+        // Xác định khóa chính của từng option
+        optionId: {
+            type: String,
+            default: () => "key"
+        },
+
+        // Xác định key của label hiện thị khi đã chọn được option
+        keyLabel: {
+            type: String,
+            default: () => "key"
         }
     },
     data() {
         return {
             isOpen: false,
-            options: this.items,
+            fixedOptions: this.toOptions(),
+            options: this.toOptions(),
             search: this.defaultItem()?.text,
-            result: this.defaultItem(),
             arrowCounter: -1,
             error: false,
             errorMessage: "",
 
-            positonCombobox: null
+            positonCombobox: null,
+
+            currentCheck: null
         };
     },
 
@@ -157,14 +234,51 @@ export default {
          */
         styleOption() {
             return this.positionOption === "bottom"
-                ? { top: this.top, left: this.left, width: this.width }
-                : { bottom: this.bottom, left: this.left, width: this.width };
+                ? { top: this.top, left: this.left, "min-width": this.width }
+                : { bottom: this.bottom, left: this.left, "min-width": this.width };
+        },
+
+        /**
+         * map dữ liệu cho chip
+         * Created by: VLVU (16/9/2021)
+         */
+        chips() {
+            const nameFirstColumn = this.columnNames[0].key;
+            return this.options
+                .filter(x => this.value.findIndex(i => i === x.optionId) > -1)
+                .map(item => ({ key: item.optionId, text: item[nameFirstColumn] }));
+        },
+
+        /**
+         * những option nào đã được chọn
+         * Created by: VLVU(16/9/2021)
+         */
+        rowSelected() {
+            if (this.multiple) {
+                return this.options.filter(item => this.value.findIndex(x => x === item.optionId) > -1);
+            }
+            return [this.options.find(item => item.optionId === this.value)];
         }
     },
 
     watch: {
+        /**
+         * lắng nghe mỗi khi isOpen thay đổi để xét lại vị trí của hộp thoại options
+         * Created by: VLVU (19/9/2021)
+         */
         isOpen() {
             this.positonCombobox = this.$refs.combobox.getBoundingClientRect();
+        },
+
+        /**
+         * lắng nghe mỗi khi value thay đổi để xét lại vị trí của hộp thoại options
+         * Created by: VLVU (19/9/2021)
+         */
+        value: {
+            handler() {
+                this.positonCombobox = this.$refs.combobox.getBoundingClientRect();
+            },
+            deep: true
         }
     },
     // Lắng nghe sự kiện click ra bên ngoài combobox
@@ -177,55 +291,113 @@ export default {
         document.removeEventListener("click", this.handleClickOutside);
         window.removeEventListener("scroll", this.handleScrollOutSide, true);
     },
+
     methods: {
-        // phương thức khi người dùng click ra bên ngoài combobox
+        /**
+         * sự kiến click ra ngoài element
+         * Created by: VLVU (19/9/2021)
+         */
         handleClickOutside(event) {
-            if (!this.$el.contains(event.target)) {
+            if (!this.$el.contains(event.target) &&
+                !this.$refs.options?.contains(event.target) &&
+                !this.$refs.chip?.contains(event.target)
+            ) {
                 this.isOpen = false;
             }
         },
-        // phương thức khi người dùng scroll ở bên ngoài combobox
+        /**
+         * Sự kiện scoll bên ngoài combobox
+         * Created by: VLVU (19/9/2021)
+         */
         handleScrollOutSide(event) {
-            if (!this.$el.contains(event.target)) {
+            if (!this.$el.contains(event.target) && !this.$refs.options?.contains(event.target)) {
                 this.isOpen = false;
             }
         },
-        // lấy giá trị mặc định
+        /**
+         * set giá trị ban đầu combobox
+         * Created by: VLVU (19/9/2021)
+         */
         defaultItem() {
             return this.items.find(i => i.value === this.value);
         },
-        // khi người dùng ấn vào 1 kết quả
+
+        /**
+         * map lại giá trị cho option
+         * Created by: VLVU (19/9/2021)
+         */
+        toOptions() {
+            return this.items.map(item => {
+                // const itemText = item;
+                // delete itemText[this.optionId];
+                return {
+                    ...item,
+                    optionId: item[this.optionId],
+                    text: Object.values(item).join(" ")
+                };
+            });
+        },
+        /**
+         * sự kiện khi người dùng click 1 option
+         * Created by: VLVU (19/9/2021)
+         */
         setResult(option) {
-            this.search = option.text;
+            if (this.multiple) {
+                this.$refs.BaseInput.focus();
+                // set laị giá trị cho search
+                this.search = "";
+                // check xem người dùng click vào hàng mới hay cũ
+                const rowIndex = this.value.findIndex(item => item === option.optionId);
+
+                if (rowIndex > -1) {
+                    const newValue = this.value;
+                    newValue.splice(rowIndex, 1);
+                    this.$emit("result", newValue);
+                    return;
+                }
+                // this.result = [...this.result, option];
+                this.$emit("result", [...this.value, option.optionId]);
+                return;
+            }
+            this.search = this.displayText(option.optionId);
             this.isOpen = false;
-            this.result = option;
-            this.$emit("result", this.result.value);
             // chắc chắn người dùng đã chọn
             this.error = false;
             this.errorMessage = "";
+            this.$emit("result", option.optionId);
         },
-        // lọc kết quả của options khi người dùng nhập search
+
+        /**
+         * thực hiện lọc cho combobox
+         * Created by: VLVU (19/9/2021)
+         */
         filterOptions() {
-            const filters = this.items.filter((item) => {
+            const filters = this.fixedOptions.filter((item) => {
                 return item.text?.toLowerCase()?.indexOf(this.search.toLowerCase()) > -1;
             });
 
             if (filters.length === 0) {
                 this.isOpen = false;
-                this.result = null;
             } else {
                 this.isOpen = true;
                 this.options = filters;
             }
         },
-        // khi người dùng nhập thì sẽ bắt đầu lọc
+        /**
+         * onChange input
+         * Created by: VLVU (19/9/2021)
+         */
         onChange() {
             this.filterOptions();
         },
 
+        /**
+         * show option
+         * Created by: VLVU (19/9/2021)
+         */
         showOptions() {
             this.error = false;
-            this.options = this.items;
+            this.options = this.toOptions();
             // vì phải sử lý sự kiện focus nên phải xử lý riêng từng trường hợp của isOpen
             if (!this.isOpen) {
                 this.isOpen = true;
@@ -236,7 +408,10 @@ export default {
             }
         },
 
-        // sự kiện khi người dùng ấn mũi tên xuống
+        /**
+         * sự kiến ấn mũi tên xuống
+         * Created by: VLVU (19/9/2021)
+         */
         onArrowDown() {
             if (!this.isOpen) {
                 this.isOpen = true;
@@ -244,15 +419,18 @@ export default {
             }
             if (this.arrowCounter < this.options.length - 1) {
                 this.arrowCounter = this.arrowCounter + 1;
-                this.search = this.options[this.arrowCounter].text;
-                this.result = this.options[this.arrowCounter];
+                this.search = !this.multiple ? this.displayText(this.options[this.arrowCounter].optionId) : this.search;
+                this.currentCheck = this.options[this.arrowCounter];
             } else {
                 this.arrowCounter = 0;
-                this.search = this.options[0].text;
-                this.result = this.options[0];
+                this.search = !this.multiple ? this.displayText(this.options[0].optionId) : this.search;
+                this.currentCheck = this.options[0];
             }
         },
-        // sự kiện khi người dùng ấn mũi tên lên
+        /**
+         * sự kiện ấn mũi tên lên
+         * Created by: VLVU (19/9/2021)
+         */
         onArrowUp() {
             if (!this.isOpen) {
                 this.isOpen = true;
@@ -261,32 +439,39 @@ export default {
 
             if (this.arrowCounter > 0) {
                 this.arrowCounter = this.arrowCounter - 1;
-                this.search = this.options[this.arrowCounter].text;
-                this.result = this.options[this.arrowCounter];
             } else {
                 this.arrowCounter = this.options.length - 1;
-                this.search = this.options[this.arrowCounter].text;
-                this.result = this.options[this.arrowCounter];
             }
+            this.search = !this.multiple ? this.displayText(this.options[this.arrowCounter].optionId) : this.search;
+            this.currentCheck = this.options[this.arrowCounter];
         },
-        // sự kiện khi người dùng ấn enter
+        /**
+         * sự kiện ấn enter
+         * Created by: VLVU (19/9/2021)
+         */
         onEnter() {
             if (this.isOpen && this.options.length !== 0) {
-                this.search = this.options[this.arrowCounter].text;
-                this.result = this.options[this.arrowCounter];
-                this.isOpen = false;
+                this.search = !this.multiple ? this.displayText(this.options[this.arrowCounter].optionId) : "";
+
+                // nếu là chọn nhiều thì không cần đóng options
+                this.isOpen = this.multiple;
                 // chắc chắn người dùng đã chọn
                 this.error = false;
-                this.$emit("result", this.result.value);
+
+                this.$emit("result", !this.multiple ? this.options[this.arrowCounter].optionId : [...this.value, this.options[this.arrowCounter].optionId]);
             }
         },
 
+        /**
+         * sự kiện ấn tab
+         * Created by: VLVU (19/9/2021)
+         */
         onTab() {
             if (this.arrowCounter !== -1) {
-                this.search = this.options[this.arrowCounter].text;
-                this.result = this.options[this.arrowCounter];
+                this.search = !this.multiple ? this.displayText(this.options[this.arrowCounter].optionId) : "";
+
                 this.isOpen = false;
-                this.$emit("result", this.result.value);
+                this.$emit("result", !this.multiple ? this.options[this.arrowCounter].optionId : [...this.value, this.options[this.arrowCounter].optionId]);
 
                 // chắc chắn người dùng đã chọn
                 this.error = false;
@@ -295,23 +480,51 @@ export default {
             }
         },
 
+        /**
+         * sự kiện ấn blur ra ngoài
+         * Created by: VLVU (19/9/2021)
+         */
         onBlur() {
-            const indexItem = this.items.findIndex(item => item.text === this.search);
-            if (indexItem > -1) {
-                this.result = this.items[indexItem];
-                this.error = false;
+            if (this.multiple) {
+                if (this.search === "") {
+                    this.error = false;
+                } else {
+                    this.error = true;
+                    this.errorMessage = ErrorInCorrect(this.name);
+                }
             } else {
-                this.error = true;
-                if (this.required) {
-                    this.errorMessage = ErrorRequire(this.name);
+                if (!this.required && !this.search) {
+                    this.error = false;
+                    this.errorMessage = "";
+                    return;
+                }
+                const indexItem = this.options.findIndex(item => this.displayText(item.optionId) === this.search);
+                if (indexItem > -1) {
+                    this.error = false;
+                } else {
+                    this.error = true;
+                    this.errorMessage = ErrorInCorrect(this.name);
+                    if (this.required) {
+                        this.errorMessage = ErrorRequire(this.name);
+                    }
                 }
             }
-            if (!this.result?.value) {
-                if (this.required) {
-                    this.errorMessage = ErrorRequire(this.name);
-                }
-                this.error = true;
-            }
+        },
+
+        /**
+         * xóa chip
+         * Created by: VLVU (19/9/2021)
+         */
+        deleteChip(chip) {
+            this.value = this.value.filter(item => item !== chip.key);
+        },
+
+        /**
+         * text hiện thi trên combox khi được chọn
+         * Created by: VLVU (19/9/2021)
+         */
+        displayText(value) {
+            return this.options.find(item => item.optionId === value)[this.keyLabel];
         }
 
     }

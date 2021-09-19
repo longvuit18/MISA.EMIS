@@ -132,6 +132,9 @@
   <data name="ExceptionError" xml:space="preserve">
     <value>Đã có lỗi xảy ra, vui lòng liên hệ Misa để biết thêm chi tiết.</value>
   </data>
+  <data name="GetSuccessfully" xml:space="preserve">
+    <value>Bạn đã lấy thông tin thành công!</value>
+  </data>
   <data name="IdInconrect" xml:space="preserve">
     <value>Id bạn gửi lên không đúng định dạng.</value>
   </data>

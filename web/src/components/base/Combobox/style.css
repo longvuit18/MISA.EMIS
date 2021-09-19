@@ -17,6 +17,7 @@ input {
 input {
 	background-color: #fff;
 	color: #111;
+	flex-grow: 1;
 }
 
 .form-item {
@@ -82,14 +83,15 @@ label {
 
 .combobox-options {
 	height: auto;
+	width: auto;
 	overflow: auto;
 	position: absolute;
 	background-color: #fff;
 	z-index: 1000;
-	width: 100%;
 	border-radius: 2px;
 	padding: 3px 0;
 	border: 1px solid #c7c7c7;
+	max-height: 250px;
 }
 
 .combobox-icon {
@@ -141,4 +143,15 @@ label {
 	background-position: -560px -359px;
 	transform: rotate( 180deg);
 	transition: transform .15s linear;
+}
+
+.chip-group {
+	display: flex;
+	flex-basis: 100%;
+	flex-grow: 1;
+	flex-wrap: wrap;
+}
+
+.chip-group input {
+	width: auto;
 }

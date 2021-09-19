@@ -63,7 +63,7 @@ namespace MISA.AMIS.ApplicationCore.Services
             return serviceResult;
         }
 
-        public async Task<ServiceResult> DeleteOne(string entityId)
+        public async Task<ServiceResult> DeleteOne(Guid entityId)
         {
             // TODO validate
             var rowCount = await _baseRepository.DeleteOne(entityId);
@@ -83,14 +83,28 @@ namespace MISA.AMIS.ApplicationCore.Services
             return serviceResult;
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll()
+        public async Task<ServiceResult> GetAll()
         {
-            return await _baseRepository.GetAll();
+            var entities = await _baseRepository.GetAll();
+            var serviceResult = new ServiceResult
+            {
+                Code = MisaCode.Success,
+                Data = entities,
+                MsgUser = Properties.Resources.GetSuccessfully
+            };
+            return serviceResult;
         }
 
-        public async Task<TEntity> GetOne(string entityId)
+        public async Task<ServiceResult> GetOne(Guid entityId)
         {
-            return await _baseRepository.GetOne(entityId);
+            var entity = await _baseRepository.GetOne(entityId);
+            var serviceResult = new ServiceResult
+            {
+                Code = MisaCode.Success,
+                Data = entity,
+                MsgUser = Properties.Resources.GetSuccessfully
+            };
+            return serviceResult;
         }
 
         public async Task<ServiceResult> UpdateOne(TEntity entity)
@@ -132,7 +146,8 @@ namespace MISA.AMIS.ApplicationCore.Services
             errorValidate = string.Empty;
             // Lấy ra các properties của entity
             var properties = entity.GetType().GetProperties();
-
+            var entityName = entity.GetType().Name;
+            var entityId = entity.GetType().GetProperty($"{entityName}_id");
             foreach (var property in properties)
             {
 
@@ -142,7 +157,7 @@ namespace MISA.AMIS.ApplicationCore.Services
                 var propertyDisplayName = property.GetCustomAttributes(typeof(DisplayNameAttribute), true).FirstOrDefault() as DisplayNameAttribute;
                 // Lấy các attibutes của từng property
                 var attributes = property.GetCustomAttributes(true);
-
+                
                 foreach (var attribute in attributes)
                 {
                     if (attribute is Required)
@@ -169,11 +184,13 @@ namespace MISA.AMIS.ApplicationCore.Services
                         var parameters = new DynamicParameters();
                         parameters.Add("@propertyName", propertyName);
                         parameters.Add("@propertyValue", propertyValue);
-                        parameters.Add("@entity", entity, DbType.Object);
+                        parameters.Add("@entityId", entityId);
+                        parameters.Add("@entityState", entity.EntityState);
+                        //parameters.Add(":entity", entity, DbType.Object);
                         var entityDuplicate = await _baseRepository.GetEntityByProperty(parameters);
                         if (entityDuplicate != null)
                         {
-                            errorValidate = string.Format(Properties.Resources.Duplicated, propertyDisplayName.DisplayName, propertyValue);
+                            errorValidate = string.Format(Properties.Resources.Duplicated, propertyDisplayName?.DisplayName ?? "Trường", propertyValue);
                             return false;
                         }
 
