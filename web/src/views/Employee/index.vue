@@ -52,9 +52,10 @@
                         <BaseCombobox
                             positionOption="top"
                             :items="pageSizes"
-                            :defaultItem="pageSize"
                             v-model.number="pageSize"
                             readonly
+                            optionId="value"
+                            keyLabel="text"
                         />
                     </div>
                     <div
@@ -197,29 +198,29 @@
 <script>
 
 import EmployeeApi from "../../api/service/employee";
-import DepartmentApi from "../../api/service/department";
+// import DepartmentApi from "../../api/service/department";
 import EmployeeDetails from "./Details";
 import { mapActions, mapMutations } from "vuex";
 import enums from "../../enums";
 import resources from "../../resources";
 import EmployeeTable from "./Table";
 const columnNames = [
-    { key: "EmployeeCode", text: "Mã nhân viên", width: 145 },
-    { key: "EmployeeName", text: "Họ và tên", sort: true, width: 250 },
-    { key: "GenderName", text: "Giới tính", width: 120 },
-    { key: "DateOfBirth", text: "Ngày sinh", width: 150, align: "center", format: "date" },
-    { key: "IdentityNumber", text: "Số CMND", width: 200 },
-    { key: "IdentityDate", text: "Ngày cấp", width: 150, align: "center", format: "date" },
-    { key: "IdentityPlace", text: "Nơi cấp", width: 150 },
-    { key: "EmployeePosition", text: "Chức danh", width: 250 },
-    { key: "DepartmentName", text: "Tên đơn vị", width: 250 },
-    { key: "BankAccountNumber", text: "Số tài khoản", width: 150 },
-    { key: "BankName", text: "Tên ngân hàng", width: 250 },
-    { key: "BankBranchName", text: "Tên chi nhánh ngân hàng", width: 250 },
-    { key: "BankProvinceName", text: "Tỉnh/TP ngân hàng", width: 200 },
-    { key: "PhoneNumber", text: "Điện thoại", width: 200 },
-    { key: "Email", text: "Email", width: 200 },
-    { key: "Address", text: "Địa chỉ", width: 200 }
+    { key: "employee_code", text: "Mã nhân viên", width: 145 },
+    { key: "employee_name", text: "Họ và tên", sort: true, width: 250 },
+    { key: "gender_name", text: "Giới tính", width: 120 },
+    { key: "date_of_birth", text: "Ngày sinh", width: 150, align: "center", format: "date" },
+    { key: "identity_number", text: "Số CMND", width: 200 },
+    { key: "identity_date", text: "Ngày cấp", width: 150, align: "center", format: "date" },
+    { key: "identity_place", text: "Nơi cấp", width: 150 },
+    { key: "employee_position", text: "Chức danh", width: 250 },
+    { key: "department_name", text: "Tên đơn vị", width: 250 },
+    { key: "BankAccount_number", text: "Số tài khoản", width: 150 },
+    { key: "bank_name", text: "Tên ngân hàng", width: 250 },
+    { key: "bank_branch_name", text: "Tên chi nhánh ngân hàng", width: 250 },
+    { key: "bank_province_name", text: "Tỉnh/TP ngân hàng", width: 200 },
+    { key: "phone_number", text: "Điện thoại", width: 200 },
+    { key: "email", text: "Email", width: 200 },
+    { key: "address", text: "Địa chỉ", width: 200 }
 ];
 
 // các giá trị mặc định của paging và filter
@@ -354,15 +355,15 @@ export default {
         async getData() {
             try {
                 const promise = await Promise.all([
-                    EmployeeApi.getEmployeeFilterPaging("", this.pageNumber, this.pageSize),
-                    DepartmentApi.getAll()
+                    EmployeeApi.getEmployeeFilterPaging("", this.pageNumber, this.pageSize)
+                    // DepartmentApi.getAll()
                 ]);
 
                 this.employees = promise[0]?.data?.Data ?? [];
-                this.departments = promise[1]?.data?.map(item => ({ value: item.DepartmentId, text: item.DepartmentName })) ?? [];
+                // this.departments = promise[1]?.data?.map(item => ({ value: item.DepartmentId, text: item.DepartmentName })) ?? [];
 
-                this.totalPage = promise[0]?.data?.TotalPage === 0 ? 1 : promise[0]?.data?.TotalPage || 1; // số page luôn là 1
-                this.totalRecord = promise[0]?.data?.TotalRecord;
+                this.totalPage = promise[0]?.data?.total_page === 0 ? 1 : promise[0]?.data?.total_page || 1; // số page luôn là 1
+                this.totalRecord = promise[0]?.data?.total_record;
             } catch (error) {
                 this.employees = [];
                 if (error?.response?.status === enums.statusCode.serverError) {
@@ -388,8 +389,8 @@ export default {
                 const promise = await EmployeeApi.getEmployeeFilterPaging(this.filterText.trim(), this.pageNumber, this.pageSize);
 
                 this.employees = promise?.data.Data;
-                this.totalPage = promise?.data?.TotalPage === 0 ? 1 : promise?.data?.TotalPage || 1;
-                this.totalRecord = promise?.data.TotalRecord;
+                this.totalPage = promise?.data?.total_page === 0 ? 1 : promise?.data?.total_page || 1;
+                this.totalRecord = promise?.data.total_record;
             } catch (error) {
                 this.employees = [];
                 if (error?.response?.status === enums.statusCode.serverError) {

@@ -104,7 +104,16 @@ label {
 	border-radius: 0 4px 4px 0;
 }
 
-.combobox-icon:hover {
+.icon-plus {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	background-color: #fff;
+	cursor: pointer;
+}
+
+.combobox-icon:hover, .icon-plus:hover {
 	background-color: #e9ebee;
 }
 

@@ -4,18 +4,34 @@
             type="checkbox"
             v-on="$listeners"
             v-bind="$attrs"
+            :checked="value"
+            @change="onChange"
         >
         <span></span>
-        <div v-if="label">{{label}}</div>
+        <div v-if="item">{{item.label}}</div>
     </label>
 </template>
 <script>
 export default {
     name: "BaseCheckbox",
+    model: {
+        prop: "value",
+        event: "onChange"
+    },
     props: {
-        label: {
-            type: String,
-            default: () => ""
+        item: {
+            type: Object,
+            default: () => null
+        },
+
+        value: {
+            default: () => false
+        }
+    },
+
+    methods: {
+        onChange(e) {
+            this.$emit("onChange", e.target.checked);
         }
     }
 };

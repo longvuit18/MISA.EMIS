@@ -93,7 +93,7 @@ export default {
 
         // giá trị của input
         value: {
-            type: String
+            type: [String, Number]
         },
 
         // Tên của input
@@ -110,9 +110,15 @@ export default {
         enterRightToLeft: {
             type: Boolean,
             default: false
+        },
+
+        focusInput: {
+            type: Boolean,
+            default: () => false
         }
 
     },
+
     data() {
         return {
             error: false,
@@ -131,6 +137,12 @@ export default {
         },
         hasCurrencyFormat() {
             return this.format === "currency";
+        }
+    },
+
+    mounted() {
+        if (this.focusInput === true) {
+            this.$refs.BaseInput.focus();
         }
     },
     methods: {

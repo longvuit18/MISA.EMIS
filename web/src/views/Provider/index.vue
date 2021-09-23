@@ -132,14 +132,14 @@
                     </div>
                     <div
                         class="reload-icon"
-                        @click="reloadEmployees"
+                        @click="reloadProviders"
                     ></div>
                 </div>
             </div>
             <div class="grid">
-                <EmployeeTable
+                <ProviderTable
                     :columnNames="columnNames"
-                    :dataProps="employees"
+                    :dataProps="providers"
                     @handleClickEdit="handleClickEdit"
                     @handleClickDelete="handleClickDelete"
                     @handleClickRelication="handleClickRelication"
@@ -157,9 +157,10 @@
                         <BaseCombobox
                             positionOption="top"
                             :items="pageSizes"
-                            :defaultItem="pageSize"
-                            @result="(result) => pageSize = result"
+                            v-model="pageSize"
                             readonly
+                            optionId="value"
+                            labelKey="text"
                         />
                     </div>
                     <div
@@ -287,13 +288,12 @@
                 </div>
             </div>
         </div>
-        <EmployeeDetails
+        <ProviderDetails
             v-if="openDialog"
             @onClose="onCloseDialog"
-            :employee="currentEmployee"
-            :departments="departments"
+            :provider="currentProvider"
             :state="stateDialog"
-            @reloadEmployees="reloadEmployees"
+            @reloadProviders="reloadProviders"
         />
     </div>
 
@@ -301,31 +301,23 @@
 
 <script>
 
-import EmployeeApi from "../../api/service/employee";
-import DepartmentApi from "../../api/service/department";
-import EmployeeDetails from "./Details";
+import ProviderApi from "../../api/service/provider";
+import ProviderDetails from "./Details";
 import { mapActions, mapMutations } from "vuex";
 import enums from "../../enums";
 import resources from "../../resources";
-import EmployeeTable from "./Table";
+import ProviderTable from "./Table";
 import FilterDropdown from "./dropdown/FilterDropdown.vue";
 const columnNames = [
-    { key: "EmployeeCode", text: "Mã nhân viên", width: 145 },
-    { key: "EmployeeName", text: "Họ và tên", sort: true, width: 250 },
-    { key: "GenderName", text: "Giới tính", width: 120 },
-    { key: "DateOfBirth", text: "Ngày sinh", width: 150, align: "center", format: "date" },
-    { key: "IdentityNumber", text: "Số CMND", width: 200 },
-    { key: "IdentityDate", text: "Ngày cấp", width: 150, align: "center", format: "date" },
-    { key: "IdentityPlace", text: "Nơi cấp", width: 150 },
-    { key: "EmployeePosition", text: "Chức danh", width: 250 },
-    { key: "DepartmentName", text: "Tên đơn vị", width: 250 },
-    { key: "BankAccountNumber", text: "Số tài khoản", width: 150 },
-    { key: "BankName", text: "Tên ngân hàng", width: 250 },
-    { key: "BankBranchName", text: "Tên chi nhánh ngân hàng", width: 250 },
-    { key: "BankProvinceName", text: "Tỉnh/TP ngân hàng", width: 200 },
-    { key: "PhoneNumber", text: "Điện thoại", width: 200 },
-    { key: "Email", text: "Email", width: 200 },
-    { key: "Address", text: "Địa chỉ", width: 200 }
+    { key: "provider_code", text: "Mã nhà cung cấp", width: 180 },
+    { key: "provider_name", text: "Mã nhà cung cấp", width: 430 },
+    { key: "address", text: "Địa chỉ", width: 250 },
+    { key: "description", text: "Diễn giải", width: 500 },
+    { key: "todo", text: "Công nợ", width: 180, align: "right" },
+    { key: "provider_group", text: "Nhóm KH, nhà cung cấp", width: 180 },
+    { key: "tax_code", text: "Mã số thuế", width: 180 },
+    { key: "phone_number", text: "Số điện thoại", width: 180 },
+    { key: "personal_contact_identity_number", text: "Số CMND", width: 180 }
 ];
 
 // các giá trị mặc định của paging và filter
@@ -339,16 +331,22 @@ const defaultPageSizes = [
     { value: 50, text: "50 bản ghi trên 1 trang" },
     { value: 100, text: "100 bản ghi trên 1 trang" }
 ];
-const defaultPageSize = defaultPageSizes[2];
+
+const defaultFilter = {
+    CustomFilter: "",
+    PageIndex: 1,
+    PageSize: 20
+};
+const defaultPageSize = 20;
 export default {
     name: "Provider",
-    components: { EmployeeDetails, EmployeeTable, FilterDropdown },
+    components: { ProviderDetails, ProviderTable, FilterDropdown },
     data() {
         return {
             columnNames: columnNames,
-            employees: [],
+            providers: [],
             openDialog: false,
-            currentEmployee: {},
+            currentProvider: {},
             stateDialog: enums.dialogState.post,
             departments: [],
 
@@ -359,6 +357,8 @@ export default {
             totalPage: defaultTotalPage,
             totalRecord: defaultTotalRecord,
             filterText: defaultFilterText,
+
+            filter: defaultFilter,
 
             idTimeout: null, // id của setTimeOut khi thực hiện filter,
 
@@ -386,8 +386,8 @@ export default {
          * Created by: VLVU (18/8/2021)
          */
         pageNumber() {
-            this.employees = null;
-            this.loadEmployees();
+            this.providers = null;
+            this.loadProviders();
         },
 
         /**
@@ -395,11 +395,11 @@ export default {
          * Created by: VLVU (18/8/2021)
          */
         pageSize() {
-            this.employees = null;
+            this.providers = null;
             this.pageNumber = defaultPageNumber;
 
-            this.$router.push({ path: "employee", query: { page: defaultPageNumber } }).catch(() => { });
-            this.loadEmployees();
+            this.$router.push({ path: "provider", query: { page: defaultPageNumber } }).catch(() => { });
+            this.loadProviders();
         },
 
         /**
@@ -412,8 +412,8 @@ export default {
             this.idTimeout = setTimeout(() => {
                 this.pageNumber = defaultPageNumber;
 
-                this.$router.push({ path: "employee", query: { page: defaultPageNumber } }).catch(() => { });
-                this.loadEmployees();
+                this.$router.push({ path: "provider", query: { page: defaultPageNumber } }).catch(() => { });
+                this.loadProviders();
             }, 700);
         }
     },
@@ -463,23 +463,20 @@ export default {
         },
 
         /**
-         * Hàm lấy dữ liệu và thông tin đơn vị
+         * Hàm lấy dữ liệu
          * Created by: Vũ Long Vũ (19/7/2021)
          */
         async getData() {
             try {
-                const promise = await Promise.all([
-                    EmployeeApi.getEmployeeFilterPaging("", this.pageNumber, this.pageSize.value),
-                    DepartmentApi.getAll()
-                ]);
+                const promise = await ProviderApi.getProviderFilterPaging(this.filter);
 
-                this.employees = promise[0]?.data?.Data ?? [];
-                this.departments = promise[1]?.data?.map(item => ({ value: item.DepartmentId, text: item.DepartmentName })) ?? [];
+                this.providers = promise.data?.Data.result ?? [];
 
-                this.totalPage = promise[0]?.data?.TotalPage === 0 ? 1 : promise[0]?.data?.TotalPage || 1; // số page luôn là 1
-                this.totalRecord = promise[0]?.data?.TotalRecord;
+                this.totalPage = promise?.data?.Data?.total_page === 0 ? 1 : promise?.data?.Data?.total_page || 1; // số page luôn là 1
+                this.totalRecord = promise?.data?.Data?.total_record;
             } catch (error) {
-                this.employees = [];
+                console.error(error);
+                this.providers = [];
                 if (error?.response?.status === enums.statusCode.serverError) {
                     this.setToast({
                         content: error.response.data.MsgUser,
@@ -495,18 +492,25 @@ export default {
         },
 
         /**
-         * Hàm tải lại dữ liệu nhân viên
+         * Hàm tải lại dữ liệu nhà cung cấp
          * Created by: VLVU (10/8/2021)
          */
-        async loadEmployees() {
+        async loadProviders() {
             try {
-                const promise = await EmployeeApi.getEmployeeFilterPaging(this.filterText.trim(), this.pageNumber, this.pageSize.value);
+                this.filter = {
+                    ...this.filter,
+                    CustomFilter: this.filterText,
+                    PageIndex: this.pageNumber,
+                    PageSize: this.pageSize
+                };
+                const promise = await ProviderApi.getProviderFilterPaging(this.filter);
 
-                this.employees = promise?.data.Data;
-                this.totalPage = promise?.data?.TotalPage === 0 ? 1 : promise?.data?.TotalPage || 1;
-                this.totalRecord = promise?.data.TotalRecord;
+                this.providers = promise.data?.Data.result ?? [];
+                this.totalPage = promise?.data?.Data?.total_page === 0 ? 1 : promise?.data?.Data?.total_page || 1; // số page luôn là 1
+                this.totalRecord = promise?.data?.Data?.total_record;
             } catch (error) {
-                this.employees = [];
+                console.error(error);
+                this.providers = [];
                 if (error?.response?.status === enums.statusCode.serverError) {
                     this.setToast({
                         content: error.response.data.MsgUser,
@@ -522,18 +526,19 @@ export default {
         },
 
         /**
-         * Hàm reload hoàn toàn lại bảng nhân viên
-         * Created by: Vũ Long Vũ (19/7/2021)
+         * Hàm reload hoàn toàn lại bảng nhà cung cấp
+         * Created by: Vũ Long Vũ (20/9/2021)
          */
-        reloadEmployees() {
-            this.employees = null;
+        reloadProviders() {
+            this.providers = null;
             this.pageNumber = defaultPageNumber;
-            this.$router.push({ path: "employee", query: { page: defaultPageNumber } }).catch(() => { });
+            this.$router.push({ path: "provider", query: { page: defaultPageNumber } }).catch(() => { });
             this.totalPage = defaultTotalPage;
             this.totalRecord = defaultTotalRecord;
             this.filterText = defaultFilterText;
+            this.filter = defaultFilter;
 
-            this.loadEmployees();
+            this.loadProviders();
         },
 
         /**
@@ -551,18 +556,18 @@ export default {
          */
         onCloseDialog(params) {
             this.openDialog = false;
-            this.currentEmployee = {};
-            if (params?.hasReloadEmployees) {
-                this.employees = null;
-                this.reloadEmployees();
+            this.currentProvider = {};
+            if (params?.hasReloadProviders) {
+                this.providers = null;
+                this.reloadProviders();
             }
         },
         /**
          * Hàm khi người dùng dblclick vào 1 hàng hoặc ấn vào chữ sửa trên hàng đó
          * Created by: Vũ Long Vũ (19/7/2021)
          */
-        handleClickEdit(employee) {
-            this.currentEmployee = employee;
+        handleClickEdit(provider) {
+            this.currentProvider = provider;
             this.stateDialog = enums.dialogState.put;
             this.openDialog = true;
         },
@@ -571,21 +576,22 @@ export default {
          * Hàm khi người dùng dblclick vào 1 hàng hoặc ấn vào chữ sửa trên hàng đó
          * Created by: Vũ Long Vũ (19/7/2021)
          */
-        async handleClickDelete(employee) {
-            this.currentEmployee = employee;
-            const ok = await this.confirmPopup(resources.popup.deleteEmployee(employee.EmployeeCode));
-            if (!ok) {
-                return;
-            }
-            this.onDelete();
+        async handleClickDelete(provider) {
+            // this.currentProvider = provider;
+            // // TODO
+            // const ok = await this.confirmPopup(resources.popup.deleteEmployee(provider.EmployeeCode));
+            // if (!ok) {
+            //     return;
+            // }
+            // this.onDelete();
         },
 
         /**
-         * Hàm khi người dùng dblclick vào 1 hàng hoặc ấn vào chữ sửa trên hàng đó
+         * Hàm khi người dùng ấn vào nhân bản
          * Created by: Vũ Long Vũ (19/7/2021)
          */
-        handleClickRelication(employee) {
-            this.currentEmployee = employee;
+        handleClickRelication(provider) {
+            this.currentProvider = provider;
             this.stateDialog = enums.dialogState.post;
             this.openDialog = true;
         },
@@ -597,9 +603,10 @@ export default {
 
         async onDelete() {
             try {
-                await EmployeeApi.deleteOne(this.currentEmployee.EmployeeId);
-                this.setToast(resources.toast.deleteEmployeeSuccess(this.currentEmployee.EmployeeCode));
-                this.reloadEmployees();
+                await ProviderApi.deleteOne(this.currentProvider.provider_id);
+                // TODO
+                this.setToast(resources.toast.deleteEmployeeSuccess(this.currentProvider.EmployeeCode));
+                this.reloadProviders();
             } catch (error) {
                 if (error.response.status === enums.statusCode.serverError) {
                     this.setToast({
@@ -612,7 +619,7 @@ export default {
                     type: "error"
                 });
             }
-            this.currentEmployee = {};
+            this.currentProvider = {};
         },
 
         /**
@@ -622,20 +629,20 @@ export default {
         // #region paging
 
         onPagination(page) {
-            this.$router.push({ path: "employee", query: { page: page } }).catch(() => { });
+            this.$router.push({ path: "provider", query: { page: page } }).catch(() => { });
         },
 
         nextPage() {
             if (this.pageNumber === this.totalPage) {
                 return;
             }
-            this.$router.push({ path: "employee", query: { page: this.pageNumber + 1 } }).catch(() => { });
+            this.$router.push({ path: "provider", query: { page: this.pageNumber + 1 } }).catch(() => { });
         },
         prevPage() {
             if (this.pageNumber - 1 === 0) {
                 return;
             }
-            this.$router.push({ path: "employee", query: { page: Math.max(0, this.pageNumber - 1) } }).catch(() => { });
+            this.$router.push({ path: "provider", query: { page: Math.max(0, this.pageNumber - 1) } }).catch(() => { });
         }
         // #endregion
     },

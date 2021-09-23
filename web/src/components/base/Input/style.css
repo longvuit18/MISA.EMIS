@@ -6,6 +6,7 @@ input, select, textarea {
 	padding: 6px 10px;
 	display: inline-block;
 	box-sizing: border-box;
+	font-family: inherit;
 }
 
 textarea {
@@ -29,22 +30,24 @@ label {
 }
 
 ::-webkit-input-placeholder {
-	/* Edge */
-	font-size: 11px;
-	color: #bbb;
+	font-size: 12px;
 	font-style: italic;
+	color: #949494;
+	font-family: inherit;
 }
 
 :-ms-input-placeholder {
-	/* Internet Explorer 10-11 */
-	font-size: 11px;
-	color: #bbb;
+	font-size: 12px;
+	font-style: italic;
+	color: #949494;
+	font-family: inherit;
 }
 
 ::placeholder {
-	font-size: 11px;
-	color: #bbb;
+	font-size: 12px;
 	font-style: italic;
+	color: #949494;
+	font-family: inherit;
 }
 
 .end-icon {

@@ -55,6 +55,15 @@
                     :placeholder="placeholder"
                 />
                 <div
+                    v-if="hasAddIcon"
+                    class="icon-plus"
+                    style="border-right: 1px solid #babec5;"
+                    v-tooltip="'Tính năng đang phát triển'"
+                >
+                    <div class="icon icon-size-16 mi-plus--success">
+                    </div>
+                </div>
+                <div
                     class="combobox-icon"
                     @click="showOptions"
                 >
@@ -146,7 +155,7 @@ export default {
 
         optionsTable: {
             type: Boolean,
-            default: () => true
+            default: () => false
         },
 
         multiple: {
@@ -181,6 +190,16 @@ export default {
         keyLabel: {
             type: String,
             default: () => "key"
+        },
+
+        hasAddIcon: {
+            type: Boolean,
+            default: () => false
+        },
+
+        focusInput: {
+            type: Boolean,
+            default: () => false
         }
     },
     data() {
@@ -281,9 +300,13 @@ export default {
             deep: true
         }
     },
-    // Lắng nghe sự kiện click ra bên ngoài combobox
     mounted() {
+        // focus input nếu focusInput == true (nghĩa là có thể set focus input từ props)
+        if (this.focusInput === true) {
+            this.$refs.BaseInput.focus();
+        }
         window.addEventListener("scroll", this.handleScrollOutSide, true);
+        // Lắng nghe sự kiện click ra bên ngoài combobox
         document.addEventListener("click", this.handleClickOutside);
     },
     // xóa sự kiện này khi thoát khỏi xóa component
@@ -319,7 +342,7 @@ export default {
          * Created by: VLVU (19/9/2021)
          */
         defaultItem() {
-            return this.items.find(i => i.value === this.value);
+            return this.toOptions().find(item => item[this.optionId] === this.value);
         },
 
         /**
@@ -328,12 +351,12 @@ export default {
          */
         toOptions() {
             return this.items.map(item => {
-                // const itemText = item;
-                // delete itemText[this.optionId];
+                const itemText = { ...item };
+                delete itemText[this.optionId];
                 return {
                     ...item,
                     optionId: item[this.optionId],
-                    text: Object.values(item).join(" ")
+                    text: Object.values(itemText).join(" ")
                 };
             });
         },
@@ -342,6 +365,7 @@ export default {
          * Created by: VLVU (19/9/2021)
          */
         setResult(option) {
+            this.currentCheck = null;
             if (this.multiple) {
                 this.$refs.BaseInput.focus();
                 // set laị giá trị cho search
@@ -485,6 +509,11 @@ export default {
          * Created by: VLVU (19/9/2021)
          */
         onBlur() {
+            if (!this.required && !this.search) {
+                this.error = false;
+                this.errorMessage = "";
+                return;
+            }
             if (this.multiple) {
                 if (this.search === "") {
                     this.error = false;
@@ -493,11 +522,6 @@ export default {
                     this.errorMessage = ErrorInCorrect(this.name);
                 }
             } else {
-                if (!this.required && !this.search) {
-                    this.error = false;
-                    this.errorMessage = "";
-                    return;
-                }
                 const indexItem = this.options.findIndex(item => this.displayText(item.optionId) === this.search);
                 if (indexItem > -1) {
                     this.error = false;

@@ -62,11 +62,11 @@
                         </div>
                     </td>
                     <td
-                        v-for="(value, key) in mapDataFlowHeader(item)"
+                        v-for="(value, key, cellIndex) in mapDataFlowHeader(item)"
                         :key="key"
                         :class="{...setAlign(key)}"
                         class="td-viewer"
-                        @click="(e) => handleClick(e, rowIndex)"
+                        @click="(e) => handleClick(e, rowIndex, cellIndex)"
                     >
                         <div
                             :style="{width: width(key)}"
@@ -80,12 +80,14 @@
                                 :enterRightToLeft="formatCol(key) === 'number' || formatCol(key) === 'curreny'"
                                 :format="formatCol(key)"
                                 rows="1"
+                                :focusInput="cellIndex === cellFocus"
                             />
                             <BaseCombobox
                                 v-else-if="typeCol(key) === 'combobox' && rowSelected(rowIndex)"
                                 fullWidth
                                 :items="comboboxOptions(key)"
                                 v-model="item[key]"
+                                :focusInput="cellIndex === cellFocus"
                             />
                             <span
                                 v-else
@@ -166,8 +168,10 @@ export default {
             alignColumns: this.columnNames.filter(item => item.align),
             // lọc ra những cột nào cần set width
             widthColumns: this.columnNames.filter(item => item.width),
-            // lọc ra những cột nào cần set fixed,
-            rowsSelected: 0
+
+            rowsSelected: 0,
+            // ô cần được focus input
+            cellFocus: -1
         };
     },
 
@@ -180,6 +184,10 @@ export default {
         data: {
             handler(value, oldValue) {
                 this.$emit("getData", value);
+                if (value.length !== oldValue.length) {
+                    this.rowsSelected = value.length - 1;
+                    this.cellFocus = 0;
+                }
             },
             deep: true
         }
@@ -208,11 +216,12 @@ export default {
         * Sự kiện khi  click vào 1 row
         * CreatedBy: Vũ Long Vũ 19/7/2021
         */
-        handleClick(e, index) {
+        handleClick(e, index, cellIndex) {
             e.preventDefault();
 
             // nếu cho phép chọn nhiều thì cập nhập array không thì chỉ truyền vào 1
             this.rowsSelected = index;
+            this.cellFocus = cellIndex;
         },
 
         /**
@@ -327,6 +336,15 @@ export default {
          */
         handleClickDelete(index) {
             this.$emit("deleteRow", index);
+        },
+
+        /**
+         * @param {number} index vị trí của ô cần fucus
+         * kiểm tra focus
+         * Created by: VLVU (23/9/2021)
+         */
+        isFocus(index) {
+            return this.cellFocus === index;
         }
 
     }

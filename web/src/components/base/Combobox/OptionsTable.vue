@@ -8,7 +8,7 @@
                         :key="columnName.key"
                     >
                         <div
-                            :style="{width: width(columnName.key), 'min-width': width(columnName.key), 'background': '#ECEEF1'}"
+                            :style="{width: width(columnName.key), 'min-width': width(columnName.key)}"
                             :class="{'align-center': columnName.align === 'center', 'align-right': columnName.align === 'right'}"
                         >
                             {{columnName.text}}
@@ -186,7 +186,8 @@ export default {
          * Created by: VLVU (16/9/2021)
          */
         isSurfing(item) {
-            return this.currentCheck && this.currentCheck?.optionId === item.optionId;
+            return (this.currentCheck && this.currentCheck?.optionId === item.optionId) ||
+                (!this.currentCheck && this.selected[0]?.optionId === item.optionId);
         },
 
         /**
@@ -219,7 +220,7 @@ table {
 }
 
 table thead th {
-    background-color: #ebedf0 !important;
+    background-color: #f4f5f8 !important;
     white-space: nowrap;
     position: sticky;
     position: -webkit-sticky;

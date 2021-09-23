@@ -151,7 +151,7 @@ export default {
     },
     // Lắng nghe sự kiện click ra bên ngoài combobox
     mounted() {
-        window.addEventListener("scroll", this.handleScrollOutSide, true);
+        document.addEventListener("click", this.handleClickOutside);
     },
     // xóa sự kiện này khi thoát khỏi xóa component
     destroyed() {

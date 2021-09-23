@@ -138,5 +138,14 @@
 	margin: 0 1px 1px;
 	z-index: 1;
 	margin-top: -1px;
+	position: relative;
+}
+
+.other-information .details .wrap {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: inherit;
 	padding: 11px 8px;
 }

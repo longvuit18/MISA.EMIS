@@ -1,26 +1,35 @@
 <template>
     <BaseRow>
-        <BaseCol :cols="6">
+        <BaseCol
+            :cols="6"
+            style="padding-right: 26px"
+        >
             <BaseRow>
                 <BaseCol
                     :cols="6"
-                    style="padding-right: 12px;"
+                    style="padding: 0 6px 0px 0;"
                 >
                     <BaseCombobox label="Vị trí địa lý" />
                 </BaseCol>
-                <BaseCol :cols="6">
-                    <BaseInput label="Vị trí địa lý" />
+                <BaseCol
+                    :cols="6"
+                    style="margin: 20px 13px 0 0; padding-left: 6px"
+                >
+                    <BaseCombobox />
                 </BaseCol>
             </BaseRow>
             <BaseRow>
                 <BaseCol
                     :cols="6"
-                    style="padding-right: 12px;"
+                    style="padding: 0 6px 0px 0;"
                 >
                     <BaseCombobox />
                 </BaseCol>
-                <BaseCol :cols="6">
-                    <BaseInput />
+                <BaseCol
+                    :cols="6"
+                    style="margin-right: 13px; padding-left: 6px"
+                >
+                    <BaseCombobox />
                 </BaseCol>
             </BaseRow>
         </BaseCol>

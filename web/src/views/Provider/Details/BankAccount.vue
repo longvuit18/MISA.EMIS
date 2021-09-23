@@ -37,21 +37,39 @@ import resources from "../../../resources";
 import TableCommon from "../../../components/common/Table";
 
 const columnNames = [
-    { key: "a", text: "Số tài khoản", width: 150, type: "input" },
-    { key: "b", text: "Tên ngân hàng", width: 200, type: "input" },
-    { key: "c", text: "Chi nhánh", width: 180, type: "input" },
-    { key: "d", text: "Tỉnh/Tp của nhân hàng", width: 240, type: "input" }
+    { key: "bank_account_number", text: "Số tài khoản", width: 150, type: "input" },
+    { key: "bank_name", text: "Tên ngân hàng", width: 200, type: "input" },
+    { key: "bank_branch_name", text: "Chi nhánh", width: 180, type: "input" },
+    { key: "province_or_city", text: "Tỉnh/Tp của nhân hàng", width: 240, type: "input" }
 ];
 export default {
     name: "BankAccount",
     components: { TableCommon },
+
+    model: {
+        prop: "value",
+        event: "onChangeValue"
+    },
+    props: {
+        value: {
+            type: String,
+            default: () => "[{\"bank_account_number\": \"\", \"bank_name\": \"\", \"bank_branch_name\": \"\", \"province_or_city\": \"\"}]"
+        }
+    },
     data() {
         return {
-            columnNames: columnNames,
-            dataTable: [{
-                a: "", b: "", c: "", d: ""
-            }]
+            columnNames,
+            dataTable: this.toDataTable()
         };
+    },
+
+    watch: {
+        dataTable: {
+            handler(value) {
+                this.$emit("onChangeValue", JSON.stringify(value));
+            },
+            deep: true
+        }
     },
 
     methods: {
@@ -67,7 +85,7 @@ export default {
          * Created by: VLVU(9/9/2018)
          */
         addRow() {
-            const newRow = { a: "abc", b: "abc", c: "abc", d: "abc", e: "abc", f: "abc" };
+            const newRow = JSON.parse("{\"bank_account_number\": \"\", \"bank_name\": \"\", \"bank_branch_name\": \"\", \"province_or_city\": \"\"}");
             this.dataTable = [...this.dataTable, newRow];
         },
         /**
@@ -89,6 +107,11 @@ export default {
          */
         deleteRow(index) {
             this.dataTable.splice(index, 1);
+        },
+
+        toDataTable() {
+            const data = this.value === "" ? "[{\"bank_account_number\": \"\", \"bank_name\": \"\", \"bank_branch_name\": \"\", \"province_or_city\": \"\"}]" : this.value;
+            return JSON.parse(data);
         }
     }
 };

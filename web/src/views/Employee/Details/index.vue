@@ -50,7 +50,7 @@
                                         label="Mã nhân viên"
                                         required
                                         tabindex="1"
-                                        v-model="currentEmployee.EmployeeCode"
+                                        v-model="currentEmployee.employee_code"
                                         ref="1"
                                         name="Mã nhân viên"
                                     />
@@ -64,7 +64,7 @@
                                         label="Tên"
                                         required
                                         tabindex="2"
-                                        v-model="currentEmployee.EmployeeName"
+                                        v-model="currentEmployee.employee_name"
                                         ref="2"
                                         name="Họ và tên"
                                     />
@@ -84,7 +84,7 @@
                                         name="Đơn vị"
                                         :items="currentDepartments"
                                         :defaultItem="defaultDepartment"
-                                        v-model="currentEmployee.DepartmentId"
+                                        v-model="currentEmployee.department_id"
                                     />
                                 </BaseCol>
                             </BaseRow>
@@ -97,7 +97,7 @@
                                         fullWidth
                                         label="Chức danh"
                                         tabindex="4"
-                                        v-model="currentEmployee.EmployeePosition"
+                                        v-model="currentEmployee.employee_position"
                                         name="Chức danh"
                                     />
                                 </BaseCol>
@@ -118,7 +118,7 @@
                                         fullWidth
                                         label="Ngày sinh"
                                         tabindex="5"
-                                        v-model="currentEmployee.DateOfBirth"
+                                        v-model="currentEmployee.date_of_birth"
                                         format="DD/MM/YYYY"
                                         value-type="YYYY-MM-DD"
                                         name="Ngày sinh"
@@ -136,7 +136,7 @@
                                                 label="Nam"
                                                 :value="0"
                                                 @change="getGender"
-                                                :checked="!currentEmployee.Gender || currentEmployee.Gender === 0"
+                                                :checked="!currentEmployee.gender || currentEmployee.gender === 0"
                                                 style="margin-right: 20px"
                                                 tabindex="6"
                                             />
@@ -144,7 +144,7 @@
                                                 label="Nữ"
                                                 :value="1"
                                                 @change="getGender"
-                                                :checked="currentEmployee.Gender === 1"
+                                                :checked="currentEmployee.gender === 1"
                                                 style="margin-right: 20px"
                                                 tabindex="7"
                                             />
@@ -152,7 +152,7 @@
                                                 label="Khác"
                                                 :value="2"
                                                 @change="getGender"
-                                                :checked="currentEmployee.Gender === 2"
+                                                :checked="currentEmployee.gender === 2"
                                                 tabindex="8"
                                             />
                                         </div>
@@ -169,7 +169,7 @@
                                         fullWidth
                                         label="Số CMND"
                                         tabindex="9"
-                                        v-model="currentEmployee.IdentityNumber"
+                                        v-model="currentEmployee.identity_number"
                                         name="Số chưng minh thư"
                                     />
                                 </BaseCol>
@@ -180,7 +180,7 @@
                                     <BaseDatePicker
                                         label="Ngày Cấp"
                                         tabindex="10"
-                                        v-model="currentEmployee.IdentityDate"
+                                        v-model="currentEmployee.identity_date"
                                         name="Ngày cấp"
                                         format="DD/MM/YYYY"
                                         value-type="YYYY-MM-DD"
@@ -196,7 +196,7 @@
                                         fullWidth
                                         label="Nơi cấp"
                                         tabindex="11"
-                                        v-model="currentEmployee.IdentityPlace"
+                                        v-model="currentEmployee.identity_place"
                                         name="Nơi cấp"
                                     />
                                 </BaseCol>
@@ -212,7 +212,7 @@
                                 fullWidth
                                 label="Địa chỉ"
                                 tabindex="12"
-                                v-model="currentEmployee.Address"
+                                v-model="currentEmployee.address"
                                 name="Địa chỉ"
                             />
                         </BaseCol>
@@ -227,7 +227,7 @@
                                 fullWidth
                                 label="ĐT di động"
                                 tabindex="13"
-                                v-model="currentEmployee.PhoneNumber"
+                                v-model="currentEmployee.phone_number"
                                 name="Điện thoại di động"
                             />
                         </BaseCol>
@@ -240,7 +240,7 @@
                                 fullWidth
                                 label="ĐT cố định"
                                 tabindex="14"
-                                v-model="currentEmployee.TelephoneNumber"
+                                v-model="currentEmployee.telephone_number"
                                 name="Điện thoại cố định"
                             />
                         </BaseCol>
@@ -253,7 +253,7 @@
                                 fullWidth
                                 label="Email"
                                 tabindex="15"
-                                v-model="currentEmployee.Email"
+                                v-model="currentEmployee.email"
                                 name="Email"
                             />
                         </BaseCol>
@@ -268,7 +268,7 @@
                                 fullWidth
                                 label="Tài khoản ngân hàng"
                                 tabindex="16"
-                                v-model="currentEmployee.BankAccountNumber"
+                                v-model="currentEmployee.bank_account_number"
                                 name="Tài khoản ngân hàng"
                             />
                         </BaseCol>
@@ -281,7 +281,7 @@
                                 fullWidth
                                 label="Tên ngân hàng"
                                 tabindex="17"
-                                v-model="currentEmployee.BankName"
+                                v-model="currentEmployee.bank_name"
                                 name="Tên ngân hàng"
                             />
                         </BaseCol>
@@ -294,7 +294,7 @@
                                 fullWidth
                                 label="Chi nhánh"
                                 tabindex="18"
-                                v-model="currentEmployee.BankBranchName"
+                                v-model="currentEmployee.bank_branch_name"
                                 name="Tên chi nhánh"
                             />
                         </BaseCol>
@@ -363,9 +363,9 @@ export default {
             currentDepartments: this.departments,
             currentEmployee: {
                 ...this.employee,
-                DateOfBirth: utils.formatDateValueInput(this.employee?.DateOfBirth),
-                Gender: this.employee?.Gender || 0,
-                IdentityDate: utils.formatDateValueInput(this.employee?.IdentityDate)
+                date_of_birth: utils.formatDateValueInput(this.employee?.date_of_birth),
+                gender: this.employee?.gender || 0,
+                identity_date: utils.formatDateValueInput(this.employee?.identity_date)
             },
             disabledButton: true,
             // kiểm tra xem người dùng đã sửa hay thao tác gì với form chưa
@@ -403,10 +403,10 @@ export default {
          * Created by: VLVU (18/8/2021)
          */
         defaultDepartment() {
-            if (!this.currentEmployee?.DepartmentId) {
+            if (!this.currentEmployee?.department_id) {
                 return null;
             }
-            return this.currentDepartments.find(item => item.value === this.currentEmployee.DepartmentId);
+            return this.currentDepartments.find(item => item.value === this.currentEmployee.department_id);
         }
     },
 
@@ -424,7 +424,7 @@ export default {
         async setNewEmployeeCode() {
             try {
                 const promise = await EmployeeApi.getEmployeeCode();
-                this.currentEmployee = { ...this.currentEmployee, EmployeeCode: promise.data };
+                this.currentEmployee = { ...this.currentEmployee, employee_code: promise.data };
             } catch (error) {
                 console.log(error);
             }
@@ -434,7 +434,7 @@ export default {
          * Created by: VLVU (15/8/2021)
          */
         getGender(e) {
-            this.currentEmployee = { ...this.currentEmployee, Gender: Number(e.target.value) };
+            this.currentEmployee = { ...this.currentEmployee, gender: Number(e.target.value) };
         },
         /**
          * handle ấn vào đóng dialog
@@ -463,7 +463,7 @@ export default {
          * Created by: VLVU (2021)
          */
         getDepartment(result) {
-            this.currentEmployee = { ...this.currentEmployee, DepartmentId: result.value };
+            this.currentEmployee = { ...this.currentEmployee, department_id: result.value };
         },
         /**
          * Hàm kiểm tra validate dữ liệu trước khi gửi lên

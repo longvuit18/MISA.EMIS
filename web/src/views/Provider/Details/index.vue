@@ -5,26 +5,18 @@
                 <div class="dialog-header">
                     <div class="header-left">
                         <div class="title">Thông tin nhà cung cấp</div>
-
                         <BaseRadioGroup
                             style="padding: 0 13px;"
                             :values="[{value: 0, text: 'Tổ chức'}, {value: 1, text: 'Cá nhân'}]"
-                            :value="0"
+                            v-model.number="currentProvider.provider_type"
                             horizontal
                         />
-                        <div
-                            style="margin-left: 100px;"
-                            v-tooltip="'Tính năng đang phát triển'"
-                        >
-                            <BaseCheckbox label="Là khách hàng" />
+                        <div style="margin-left: 100px;">
+                            <BaseCheckbox
+                                :item="{value: 1,label: 'Là khách hàng'}"
+                                v-model="currentProvider.is_customer"
+                            />
                         </div>
-                        <!--
-                        <div
-                            style="padding:0 20px;"
-                            v-tooltip="'Tính năng đang phát triển'"
-                        >
-                            <BaseCheckbox label="Là nhà cung cấp" />
-                        </div> -->
                     </div>
                     <div class="header-right">
 
@@ -47,11 +39,11 @@
                             :cols="6"
                             style="padding-right: 13px"
                         >
-                            <BaseRow>
+                            <BaseRow v-show="currentProvider.provider_type === 0">
                                 <BaseCol
                                     :padding="0"
                                     :cols="5"
-                                    style="padding-right: 6px"
+                                    style="padding-right: 12px"
                                 >
                                     <BaseInput
                                         fullWidth
@@ -59,6 +51,7 @@
                                         tabindex="1"
                                         ref="1"
                                         name="Mã số thuế"
+                                        v-model="currentProvider.tax_code"
                                     />
                                 </BaseCol>
                                 <BaseCol
@@ -72,6 +65,37 @@
                                         tabindex="2"
                                         ref="2"
                                         name="Mã nhà cung cấp"
+                                        v-model="currentProvider.provider_code"
+                                    />
+                                </BaseCol>
+                            </BaseRow>
+                            <BaseRow v-show="currentProvider.provider_type === 1">
+                                <BaseCol
+                                    :padding="0"
+                                    :cols="7"
+                                    style="padding-right: 12px"
+                                >
+                                    <BaseInput
+                                        fullWidth
+                                        label="Mã nhà cung cấp"
+                                        required
+                                        tabindex="1"
+                                        ref="2"
+                                        name="Mã nhà cung cấp"
+                                        v-model="currentProvider.provider_code"
+                                    />
+                                </BaseCol>
+                                <BaseCol
+                                    :padding="0"
+                                    :cols="5"
+                                >
+                                    <BaseInput
+                                        fullWidth
+                                        label="Mã số thuế"
+                                        tabindex="2"
+                                        ref="1"
+                                        name="Mã số thuế"
+                                        v-model="currentProvider.tax_code"
                                     />
                                 </BaseCol>
                             </BaseRow>
@@ -79,6 +103,7 @@
                                 <BaseCol
                                     :padding="0"
                                     :cols="12"
+                                    v-show="currentProvider.provider_type === 0"
                                 >
                                     <BaseInput
                                         fullWidth
@@ -87,6 +112,38 @@
                                         tabindex="3"
                                         ref="3"
                                         name="Tên nhà cung cấp"
+                                        v-model="currentProvider.provider_name"
+                                    />
+                                </BaseCol>
+                                <BaseCol
+                                    :padding="0"
+                                    :cols="4"
+                                    v-show="currentProvider.provider_type === 1"
+                                    style="margin-right:12px"
+                                >
+                                    <BaseCombobox
+                                        fullWidth
+                                        label="Xưng hô"
+                                        tabindex="3"
+                                        ref="3"
+                                        name="Xưng hô"
+                                        v-model="currentProvider.prefix"
+                                        :items="prefixItems"
+                                    />
+                                </BaseCol>
+                                <BaseCol
+                                    :padding="0"
+                                    :cols="8"
+                                    v-show="currentProvider.provider_type === 1"
+                                >
+                                    <BaseInput
+                                        fullWidth
+                                        label="Tên nhà cung cấp"
+                                        required
+                                        tabindex="4"
+                                        ref="3"
+                                        name="Tên nhà cung cấp"
+                                        v-model="currentProvider.provider_name"
                                     />
                                 </BaseCol>
                             </BaseRow>
@@ -102,6 +159,7 @@
                                         name="Địa chỉ"
                                         placeholder="VD: Số 82 Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội"
                                         isTextarea
+                                        v-model="currentProvider.address"
                                         :rows="3"
                                     />
                                 </BaseCol>
@@ -112,7 +170,7 @@
                             :cols="6"
                             style="padding-left: 13px"
                         >
-                            <BaseRow>
+                            <BaseRow v-if="currentProvider.provider_type === 0">
                                 <BaseCol
                                     :padding="0"
                                     :cols="5"
@@ -123,6 +181,7 @@
                                         label="Điện thoại"
                                         tabindex="5"
                                         name="Điện thoại"
+                                        v-model="currentProvider.phone_number"
                                     />
                                 </BaseCol>
                                 <BaseCol
@@ -134,6 +193,7 @@
                                         label="Website"
                                         tabindex="6"
                                         name="Website"
+                                        v-model="currentProvider.website"
                                     />
                                 </BaseCol>
                             </BaseRow>
@@ -148,8 +208,15 @@
                                         tabindex="7"
                                         ref="7"
                                         name="Nhóm nhà cung cấp"
+                                        placeholder=""
                                         :items="groupProviderData"
                                         v-model="groupProvider"
+                                        :columnNames="columnNamesProriverGroup"
+                                        optionId="provider_group_code"
+                                        keyLabel="provider_group_name"
+                                        hasAddIcon
+                                        optionsTable
+                                        multiple
                                     />
                                 </BaseCol>
                             </BaseRow>
@@ -164,6 +231,8 @@
                                         tabindex="8"
                                         ref="8"
                                         name="Nhân viên mua hàng"
+                                        hasAddIcon
+                                        placeholder=""
                                     />
                                 </BaseCol>
                             </BaseRow>
@@ -198,20 +267,48 @@
                             >Ghi chú</div>
                         </div>
                         <div class="details">
-                            <Contact v-if="tab === 'contact'" />
-                            <Terms v-if="tab === 'terms'" />
-                            <BankAccount v-if="tab === 'bankAccount'" />
-                            <Address v-if="tab === 'address'" />
-                            <div
-                                class="note"
-                                v-if="tab === 'note'"
-                            >
-                                <BaseInput
-                                    isTextarea
-                                    rows="11"
-                                    fullWidth
+                            <transition name="slide">
+                                <Contact
+                                    class="wrap"
+                                    v-if="tab === 'contact'"
+                                    :providerType="currentProvider.provider_type"
+                                    :data="currentProvider"
                                 />
-                            </div>
+                            </transition>
+                            <transition name="slide">
+                                <Terms
+                                    class="wrap"
+                                    v-if="tab === 'terms'"
+                                    :isCustomer="currentProvider.is_customer"
+                                    :data="currentProvider"
+                                />
+                            </transition>
+                            <transition name="slide">
+                                <BankAccount
+                                    class="wrap"
+                                    v-if="tab === 'bankAccount'"
+                                    v-model="currentProvider.bank_account_group"
+                                />
+                            </transition>
+                            <transition name="slide">
+                                <Address
+                                    class="wrap"
+                                    v-if="tab === 'address'"
+                                />
+                            </transition>
+                            <transition name="slide">
+                                <div
+                                    class="note wrap"
+                                    v-if="tab === 'note'"
+                                >
+                                    <BaseInput
+                                        isTextarea
+                                        rows="9"
+                                        fullWidth
+                                        v-model="currentProvider.description"
+                                    />
+                                </div>
+                            </transition>
                         </div>
 
                     </div>
@@ -259,7 +356,7 @@
 </template>
 
 <script>
-import EmployeeApi from "../../../api/service/employee";
+import ProviderApi from "../../../api/service/provider";
 import { mapActions, mapMutations } from "vuex";
 import resources from "../../../resources";
 import enums from "../../../enums";
@@ -269,24 +366,34 @@ import Terms from "./Terms.vue";
 import BankAccount from "./BankAccount.vue";
 import Address from "./Address.vue";
 
+const columnNamesProriverGroup = [
+    { key: "provider_group_code", text: "Mã nhóm KH, NCC", width: 170 },
+    { key: "provider_group_name", text: "Tên nhóm KH, NCC", width: 190 }
+];
+
+const prefixItems = [
+    { key: "Anh", text: "Anh" },
+    { key: "Chị", text: "Chị" },
+    { key: "Ông", text: "Ông" },
+    { key: "Bà", text: "Bà" },
+    { key: "Miss", text: "Miss" },
+    { key: "Mr", text: "Mr" },
+    { key: "Mrs", text: "Mrs" }
+];
 export default {
     name: "ProviderDetails",
     components: { Contact, Terms, BankAccount, Address },
     props: {
-        employee: Object,
-        departments: Array,
+        provider: Object,
         state: Number
     },
 
     data: function () {
         return {
-            format: enums.format,
-            currentDepartments: this.departments,
-            currentEmployee: {
-                ...this.employee,
-                DateOfBirth: utils.formatDateValueInput(this.employee?.DateOfBirth),
-                Gender: this.employee?.Gender || 0,
-                IdentityDate: utils.formatDateValueInput(this.employee?.IdentityDate)
+            currentProvider: {
+                ...this.provider,
+                provider_type: this.provider?.provider_type ?? 0,
+                DateOfBirth: utils.formatDateValueInput(this.employee?.DateOfBirth)
             },
 
             genders: [
@@ -304,16 +411,19 @@ export default {
 
             tab: "contact",
 
+            columnNamesProriverGroup,
             groupProviderData: [
-                { Code: "122345", Name: "Vũ Long Vũ1", key: 1 },
-                { Code: "12345", Name: "Vũ Long Vũ2", key: 12 },
-                { Code: "12245", Name: "Vũ Long Vũ3", key: 145 },
-                { Code: "12235", Name: "Vũ Long Vũ4", key: 154 },
-                { Code: "12234", Name: "Vũ Long Vũ5", key: 1542 },
-                { Code: "1223425", Name: "Vũ Long Vũ6", key: 153 },
-                { Code: "1223445", Name: "Vũ Long Vũ7", key: 1223 }
+                { provider_group_code: "NCC-1", provider_group_name: "Vũ Long Vũ 1" },
+                { provider_group_code: "NCC-2", provider_group_name: "Vũ Long Vũ 2" },
+                { provider_group_code: "NCC-3", provider_group_name: "Vũ Long Vũ 3" },
+                { provider_group_code: "NCC-4", provider_group_name: "Vũ Long Vũ 4" },
+                { provider_group_code: "NCC-5", provider_group_name: "Vũ Long Vũ 5" },
+                { provider_group_code: "NCC-6", provider_group_name: "Vũ Long Vũ 6" },
+                { provider_group_code: "NCC-7", provider_group_name: "Vũ Long Vũ 7" }
             ],
-            groupProvider: []
+            groupProvider: [],
+
+            prefixItems
 
         };
     },
@@ -370,7 +480,7 @@ export default {
          */
         async setNewEmployeeCode() {
             try {
-                const promise = await EmployeeApi.getEmployeeCode();
+                const promise = await ProviderApi.getEmployeeCode();
                 this.currentEmployee = { ...this.currentEmployee, EmployeeCode: promise.data };
             } catch (error) {
                 console.log(error);
@@ -462,9 +572,9 @@ export default {
             try {
                 this.loading = true;
                 if (this.currentState === enums.dialogState.post) {
-                    promise = await EmployeeApi.insertOne(this.currentEmployee);
+                    promise = await ProviderApi.insertOne(this.currentEmployee);
                 } else {
-                    promise = await EmployeeApi.updateOne(this.currentEmployee.EmployeeId, this.currentEmployee);
+                    promise = await ProviderApi.updateOne(this.currentEmployee.EmployeeId, this.currentEmployee);
                 }
 
                 // lỗi validate
@@ -491,10 +601,10 @@ export default {
                     // this.defaultDepartment = null;
                     // set lại currentState là post để nó có thể thêm mới
                     this.currentState = enums.dialogState.post;
-                    this.$emit("reloadEmployees");
+                    this.$emit("reloadProviders");
                     return;
                 }
-                this.$emit("onClose", { hasReloadEmployees: true });
+                this.$emit("onClose", { hasReloadProviders: true });
             } catch (error) {
                 this.loading = false;
                 if (error?.response?.status === enums.statusCode.serverError) {
