@@ -127,6 +127,7 @@
                             placeholder="Tìm theo mã, tên, số điện thoại"
                             fullWidth
                             v-model="filterText"
+                            focusInput
                         />
 
                     </div>
@@ -134,6 +135,8 @@
                         class="reload-icon"
                         @click="reloadProviders"
                     ></div>
+                    <div class="icon icon-size-24 mi-excel__nav ml-12 mr-12"></div>
+                    <div class="icon icon-size-24 mi-setting__list"></div>
                 </div>
             </div>
             <div class="grid">
@@ -161,7 +164,7 @@
                             v-model="pageSize"
                             readonly
                             optionId="value"
-                            labelKey="text"
+                            keyLabel="text"
                         />
                     </div>
                     <div

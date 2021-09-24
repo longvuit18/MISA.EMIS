@@ -37,22 +37,7 @@ export default {
     name: "TheNavbar",
     data() {
         return {
-            routesDeveloping: [
-                { key: "dashboard", text: "Tổng quan" },
-                { key: "cash", text: "Tiền mặt" },
-                { key: "bank", text: "TIền gửi" },
-                { key: "bag", text: "Mua hàng" },
-                { key: "cart", text: "Bán hàng" },
-                { key: "invoice", text: "Quản lý hóa đơn" },
-                { key: "stock", text: "Kho" },
-                { key: "tools", text: "Công cụ dụng cụ" },
-                { key: "fixed-assets", text: "Tài sản cố định" },
-                { key: "tax", text: "Thuế" },
-                { key: "price", text: "Giá thành" },
-                { key: "general", text: "Tổng hợp" },
-                { key: "budget", text: "Ngân sách" },
-                { key: "report", text: "Báo cáo" },
-                { key: "finance", text: "Phân tích tài chính" }]
+            routesDeveloping: [{ key: "cash", text: "Tiền mặt" }]
         };
     },
     props: {

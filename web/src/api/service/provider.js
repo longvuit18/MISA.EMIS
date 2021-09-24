@@ -12,7 +12,7 @@ class ProviderApi extends BaseApi {
 	 * Created by: VLVU (20/9/2021)
 	 */
 	async getProviderCode() {
-		return await axios.get(`${this.route}/newProvider`);
+		return await axios.get(`${this.route}/newProviderCode`);
 	}
 
 	/**

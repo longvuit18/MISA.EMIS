@@ -54,8 +54,8 @@
                                         tabindex="1"
                                         name="Mã số thuế"
                                         v-model="currentProvider.tax_code"
-                                        focusInput
                                         :disabled="viewMode"
+                                        ref="1"
                                     />
                                 </BaseCol>
                                 <BaseCol
@@ -68,7 +68,7 @@
                                         label="Mã nhà cung cấp"
                                         required
                                         tabindex="2"
-                                        ref="1"
+                                        ref="2"
                                         name="Mã nhà cung cấp"
                                         v-model="currentProvider.provider_code"
                                         :disabled="viewMode"
@@ -103,6 +103,7 @@
                                         fullWidth
                                         label="Mã số thuế"
                                         tabindex="2"
+                                        ref="2"
                                         name="Mã số thuế"
                                         v-model="currentProvider.tax_code"
                                         :disabled="viewMode"
@@ -467,16 +468,15 @@ export default {
     },
 
     async mounted() {
-        // if (this.currentState === enums.dialogState.post) {
-        //     await this.setNewEmployeeCode();
-        //     this.$refs["1"].$refs.BaseInput.focus();
-        //     this.edited = false;
-        // } else {
-        //     this.$refs["1"].$refs.BaseInput.focus();
-        // }
-
         try {
             this.loading = true;
+            if (this.currentState === enums.dialogState.post) {
+                await this.setNewProviderCode();
+                this.$refs["1"].$refs.BaseInput.focus();
+                this.edited = false;
+            } else {
+                this.$refs["1"].$refs.BaseInput.focus();
+            }
             await this.getAllEmployees();
             this.loading = false;
         } catch (error) {
@@ -521,8 +521,8 @@ export default {
          */
         async setNewProviderCode() {
             try {
-                const promise = await ProviderApi.getEmployeeCode();
-                this.currentEmployee = { ...this.currentEmployee, EmployeeCode: promise.data };
+                const promise = await ProviderApi.getProviderCode();
+                this.currentProvider = { ...this.currentProvider, provider_code: promise.data ?? "" };
             } catch (error) {
                 console.log(error);
             }
