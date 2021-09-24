@@ -76,7 +76,7 @@ namespace MISA.AMIS.API.Controllers
         /// <summary>
         /// Thêm 1 entity vào database
         /// </summary>
-        /// <param name="employee"></param>
+        /// <param name="entity"></param>
         /// <returns>Trả về thành công nếu thêm thành công</returns>
         [HttpPost]
         public async Task<IActionResult> AddOne([FromBody] TEntity entity)

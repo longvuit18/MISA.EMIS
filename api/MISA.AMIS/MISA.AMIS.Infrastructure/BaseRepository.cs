@@ -45,7 +45,7 @@ namespace MISA.AMIS.Infrastructure
             {
                 var mapEntity = MappingDbType(entity);
 
-                rowCount = await _dbConnection.ExecuteAsync($"func_insert_{_tableName}", mapEntity, commandType: CommandType.StoredProcedure, transaction: transaction);
+                rowCount = await _dbConnection.ExecuteScalarAsync<int>($"func_insert_{_tableName}", mapEntity, commandType: CommandType.StoredProcedure, transaction: transaction);
                 transaction.Commit();
             }
             return rowCount;
@@ -95,8 +95,8 @@ namespace MISA.AMIS.Infrastructure
         public async Task<TEntity> GetOne(Guid entityId)
         {
             var parameter = new DynamicParameters();
-            parameter.Add($"{_tableName}_id", entityId);
-            var entity = await _dbConnection.QueryFirstOrDefaultAsync<TEntity>($"func_get_{_tableName}_by_id", parameter, commandType: CommandType.StoredProcedure);
+            parameter.Add($"p_{_tableName}_id", entityId);
+            var entity = await _dbConnection.QuerySingleOrDefaultAsync<TEntity>($"func_get_{_tableName}_by_id", parameter, commandType: CommandType.StoredProcedure);
             return entity;
         }
 
