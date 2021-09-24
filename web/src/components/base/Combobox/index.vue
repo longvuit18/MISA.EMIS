@@ -96,6 +96,12 @@
                 >
                     {{ option.text }}
                 </li>
+                <li
+                    v-if="options.length === 0"
+                    class="combobox-result"
+                >
+                    Không có dữ liệu
+                </li>
             </ul>
             <div
                 :style="{...styleOption}"

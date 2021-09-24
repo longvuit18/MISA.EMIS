@@ -43,7 +43,7 @@
                             <div class="debit-color">
                                 <div class="mouse-pointer">
                                     <div class="data">
-                                        <div class="total-money">100</div>
+                                        <div class="total-money">0,0</div>
                                     </div>
                                     <div class="label">Nợ quá hạn</div>
                                     <div class="icon icon-size-18 mi-funnel icon-area"></div>
@@ -60,7 +60,7 @@
                             <div class="total-debit-color">
                                 <div class="mouse-pointer">
                                     <div class="data">
-                                        <div class="total-money">100</div>
+                                        <div class="total-money">10.073.000,0</div>
                                     </div>
                                     <div class="label">Tổng phải trả</div>
                                     <div class="icon icon-size-18 mi-funnel icon-area"></div>
@@ -80,7 +80,7 @@
                             <div class="payment-color">
                                 <div class="mouse-pointer">
                                     <div class="data">
-                                        <div class="total-money">100</div>
+                                        <div class="total-money">0,0</div>
                                     </div>
                                     <div class="label">Đã thanh toán (30 ngày gần nhất)</div>
                                 </div>
@@ -577,13 +577,12 @@ export default {
          * Created by: Vũ Long Vũ (19/7/2021)
          */
         async handleClickDelete(provider) {
-            // this.currentProvider = provider;
-            // // TODO
-            // const ok = await this.confirmPopup(resources.popup.deleteEmployee(provider.EmployeeCode));
-            // if (!ok) {
-            //     return;
-            // }
-            // this.onDelete();
+            this.currentProvider = provider;
+            const ok = await this.confirmPopup(resources.popup.deleteProvider(provider.provider_code));
+            if (!ok) {
+                return;
+            }
+            this.onDelete();
         },
 
         /**
@@ -603,15 +602,15 @@ export default {
         },
 
         /**
-         * Hàm xóa 1 nhân viên
-         * Created by: Vũ Long Vũ (19/7/2021)
+         * Hàm xóa 1 nhà cung cấp
+         * Created by: Vũ Long Vũ (124/9/2021)
          */
 
         async onDelete() {
             try {
                 await ProviderApi.deleteOne(this.currentProvider.provider_id);
-                // TODO
-                this.setToast(resources.toast.deleteEmployeeSuccess(this.currentProvider.EmployeeCode));
+
+                this.setToast(resources.toast.deleteSuccess(this.currentProvider.provider_code, "nhà cung cấp"));
                 this.reloadProviders();
             } catch (error) {
                 if (error.response.status === enums.statusCode.serverError) {

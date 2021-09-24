@@ -633,9 +633,9 @@ export default {
                     return;
                 }
                 if (this.currentState === enums.dialogState.post) {
-                    this.setToast(resources.toast.addEmployeeSuccess(this.currentProvider.provider_code));
+                    this.setToast(resources.toast.addSuccess(this.currentProvider.provider_code, "nhà cung cấp"));
                 } else {
-                    this.setToast(resources.toast.updateEmployeeSuccess(this.currentProvider.provider_code));
+                    this.setToast(resources.toast.updateSuccess(this.currentProvider.provider_code, "nhà cung cấp"));
                 }
                 this.currentEmployee = {};
                 if (keepCreating) {

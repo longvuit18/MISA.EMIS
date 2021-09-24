@@ -161,7 +161,8 @@ export default {
         // phương thức khi người dùng click ra bên ngoài combobox
         handleClickOutside(event) {
             const datepickerPopup = document.getElementsByClassName("mx-datepicker-main mx-datepicker-popup");
-            if (!this.$el.contains(event.target) && !this.$refs.options?.contains(event.target) && datepickerPopup.length === 0) {
+            const comboboxOptions = document.getElementsByClassName("combobox-options");
+            if (!this.$el.contains(event.target) && !this.$refs.options?.contains(event.target) && datepickerPopup.length === 0 && comboboxOptions.length === 0) {
                 this.isOpen = false;
             }
         },

@@ -15,35 +15,36 @@ const toast = {
 		type: "info"
 	},
 	/**
-	 * thông báo thêm nhân viên thành công
-	 * @param {string} employeeCode mã nhân viên
+	 * thông báo thêm  thành công
+	 * @param {string} employeeCode mã
 	 * @returns object toast message
 	 */
-	addEmployeeSuccess(employeeCode) {
+	addSuccess(code, name) {
 		return {
-			content: `Bạn đã thêm nhân viên <${employeeCode}> thành công!`,
+			content: `Bạn đã thêm ${name} <${code}> thành công!`,
 			type: "success"
 		};
 	},
 	/**
-	 * thông báo sửa nhân viên thành công
-	 * @param {string} employeeCode mã nhân viên
+	 * thông báo sửa  thành công
+	 * @param {string} code mã
 	 * @returns object toast message
 	 */
-	updateEmployeeSuccess(employeeCode) {
+	updateSuccess(code, name) {
 		return {
-			content: `Bạn đã sửa nhân viên <${employeeCode}> thành công!`,
+			content: `Bạn đã sửa ${name} <${code}> thành công!`,
 			type: "success"
 		};
 	},
 	/**
-	 * thông báo xóa nhân viên thành công
-	 * @param {string} employeeCode mã nhân viên
+	 * thông báo xóa  thành công
+	 * @param {string} code mã
+	 * @param {string} name tên toast
 	 * @returns object toast message
 	 */
-	deleteEmployeeSuccess(employeeCode) {
+	deleteSuccess(code, name) {
 		return {
-			content: `Bạn đã xóa nhân viên <${employeeCode}> thành công!`,
+			content: `Bạn đã xóa ${name} <${code}> thành công!`,
 			type: "success"
 		};
 	}
@@ -63,6 +64,19 @@ const popup = {
 	deleteEmployee(employeeCode) {
 		return {
 			content: `Bạn có thực sự muốn xóa nhân viên <${employeeCode}> này không?`,
+			state: "confirm",
+			type: "warning"
+		};
+	},
+
+	/**
+	 * popup xóa nhà cung cấp thành công
+	 * @param {string} providerCode mã nhân viên
+	 * @returns object popup message
+	 */
+	deleteProvider(providerCode) {
+		return {
+			content: `Bạn có thực sự muốn xóa nhà cung cấp <${providerCode}> này không?`,
 			state: "confirm",
 			type: "warning"
 		};

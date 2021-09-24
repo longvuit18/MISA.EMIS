@@ -22,6 +22,7 @@
         <portal-target
             name="combobox"
             multiple
+            slim
         >
         </portal-target>
         <portal-target
