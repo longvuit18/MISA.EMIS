@@ -35,6 +35,7 @@
                         v-bind="$attrs"
                         :title="errorMessage"
                         :placeholder="placeholder"
+                        :disabled="disabled"
                     />
                 </div>
                 <input
@@ -53,6 +54,7 @@
                     v-bind="$attrs"
                     :title="errorMessage"
                     :placeholder="placeholder"
+                    :disabled="disabled"
                 />
                 <div
                     v-if="hasAddIcon"
@@ -200,6 +202,11 @@ export default {
         focusInput: {
             type: Boolean,
             default: () => false
+        },
+
+        disabled: {
+            type: Boolean,
+            default: () => false
         }
     },
     data() {
@@ -207,7 +214,7 @@ export default {
             isOpen: false,
             fixedOptions: this.toOptions(),
             options: this.toOptions(),
-            search: this.defaultItem()?.text,
+            search: this.defaultItem()?.[this.keyLabel],
             arrowCounter: -1,
             error: false,
             errorMessage: "",
@@ -298,6 +305,13 @@ export default {
                 this.positonCombobox = this.$refs.combobox.getBoundingClientRect();
             },
             deep: true
+        },
+
+        /**
+         * Khi thay đổi focusInput từ false sang true hoặc ngược lại thì đều fucus input đó
+         */
+        focusInput() {
+            this.$refs.BaseInput.focus();
         }
     },
     mounted() {
@@ -420,6 +434,9 @@ export default {
          * Created by: VLVU (19/9/2021)
          */
         showOptions() {
+            if (this.disabled) {
+                return;
+            }
             this.error = false;
             this.options = this.toOptions();
             // vì phải sử lý sự kiện focus nên phải xử lý riêng từng trường hợp của isOpen
@@ -540,6 +557,9 @@ export default {
          * Created by: VLVU (19/9/2021)
          */
         deleteChip(chip) {
+            if (this.disabled) {
+                return;
+            }
             this.value = this.value.filter(item => item !== chip.key);
         },
 

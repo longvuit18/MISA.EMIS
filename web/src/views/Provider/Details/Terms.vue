@@ -16,6 +16,8 @@
                         optionId="id"
                         keyLabel="code"
                         v-model="data.payment_term_id"
+                        :focusInput="true"
+                        :disabled="disabled"
                     />
                 </BaseCol>
             </BaseRow>
@@ -33,6 +35,7 @@
                         optionsTable
                         :columnNames="accountColumnNames"
                         v-model="data.pay_account"
+                        :disabled="disabled"
                     />
                     <BaseCombobox
                         v-show="isCustomer"
@@ -46,6 +49,7 @@
                         optionsTable
                         :columnNames="accountColumnNames"
                         v-model="data.receive_account"
+                        :disabled="disabled"
                     />
                 </BaseCol>
             </BaseRow>
@@ -63,6 +67,7 @@
                     enterRightToLeft
                     name="Số ngày đươc nợ"
                     v-model.number="data.due_time_debt"
+                    :disabled="disabled"
                 />
             </BaseRow>
             <BaseRow>
@@ -78,6 +83,7 @@
                     optionsTable
                     :columnNames="accountColumnNames"
                     v-model="data.pay_account"
+                    :disabled="disabled"
                 />
             </BaseRow>
         </BaseCol>
@@ -93,6 +99,7 @@
                 enterRightToLeft
                 name="Số ngày đươc nọ tối đa"
                 v-model.number="data.maximize_debt_amount"
+                :disabled="disabled"
             />
         </BaseCol>
     </BaseRow>
@@ -135,6 +142,10 @@ export default {
         data: {
             type: Object,
             default: () => { }
+        },
+        disabled: {
+            type: Boolean,
+            default: () => false
         }
     },
 

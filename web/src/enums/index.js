@@ -24,7 +24,8 @@ const dialogState = {
 	post: 0,
 	put: 1,
 	get: 2,
-	delete: 3
+	delete: 3,
+	view: 4
 };
 
 /**

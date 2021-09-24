@@ -10,11 +10,13 @@
                             :values="[{value: 0, text: 'Tổ chức'}, {value: 1, text: 'Cá nhân'}]"
                             v-model.number="currentProvider.provider_type"
                             horizontal
+                            :disabled="viewMode"
                         />
                         <div style="margin-left: 100px;">
                             <BaseCheckbox
                                 :item="{value: 1,label: 'Là khách hàng'}"
                                 v-model="currentProvider.is_customer"
+                                :disabled="viewMode"
                             />
                         </div>
                     </div>
@@ -32,70 +34,78 @@
                     </div>
                 </div>
 
-                <div id="employee-details">
+                <div id="provider-details">
                     <BaseRow>
                         <BaseCol
                             :padding="0"
                             :cols="6"
                             style="padding-right: 13px"
                         >
-                            <BaseRow v-show="currentProvider.provider_type === 0">
+                            <BaseRow>
                                 <BaseCol
                                     :padding="0"
                                     :cols="5"
                                     style="padding-right: 12px"
+                                    v-if="currentProvider.provider_type === 0"
                                 >
                                     <BaseInput
                                         fullWidth
                                         label="Mã số thuế"
                                         tabindex="1"
-                                        ref="1"
                                         name="Mã số thuế"
                                         v-model="currentProvider.tax_code"
+                                        focusInput
+                                        :disabled="viewMode"
                                     />
                                 </BaseCol>
                                 <BaseCol
                                     :padding="0"
                                     :cols="7"
+                                    v-if="currentProvider.provider_type === 0"
                                 >
                                     <BaseInput
                                         fullWidth
                                         label="Mã nhà cung cấp"
                                         required
                                         tabindex="2"
-                                        ref="2"
+                                        ref="1"
                                         name="Mã nhà cung cấp"
                                         v-model="currentProvider.provider_code"
+                                        :disabled="viewMode"
                                     />
                                 </BaseCol>
                             </BaseRow>
-                            <BaseRow v-show="currentProvider.provider_type === 1">
+                            <BaseRow>
                                 <BaseCol
                                     :padding="0"
                                     :cols="7"
                                     style="padding-right: 12px"
+                                    v-if="currentProvider.provider_type === 1"
                                 >
                                     <BaseInput
                                         fullWidth
                                         label="Mã nhà cung cấp"
                                         required
                                         tabindex="1"
-                                        ref="2"
+                                        ref="1"
                                         name="Mã nhà cung cấp"
                                         v-model="currentProvider.provider_code"
+                                        focusInput
+                                        :disabled="viewMode"
                                     />
                                 </BaseCol>
                                 <BaseCol
                                     :padding="0"
                                     :cols="5"
+                                    v-if="currentProvider.provider_type === 1"
                                 >
                                     <BaseInput
                                         fullWidth
                                         label="Mã số thuế"
                                         tabindex="2"
-                                        ref="1"
                                         name="Mã số thuế"
                                         v-model="currentProvider.tax_code"
+                                        :disabled="viewMode"
                                     />
                                 </BaseCol>
                             </BaseRow>
@@ -103,7 +113,7 @@
                                 <BaseCol
                                     :padding="0"
                                     :cols="12"
-                                    v-show="currentProvider.provider_type === 0"
+                                    v-if="currentProvider.provider_type === 0"
                                 >
                                     <BaseInput
                                         fullWidth
@@ -113,28 +123,31 @@
                                         ref="3"
                                         name="Tên nhà cung cấp"
                                         v-model="currentProvider.provider_name"
+                                        :disabled="viewMode"
                                     />
                                 </BaseCol>
+                            </BaseRow>
+                            <BaseRow>
                                 <BaseCol
                                     :padding="0"
                                     :cols="4"
-                                    v-show="currentProvider.provider_type === 1"
+                                    v-if="currentProvider.provider_type === 1"
                                     style="margin-right:12px"
                                 >
                                     <BaseCombobox
                                         fullWidth
                                         label="Xưng hô"
                                         tabindex="3"
-                                        ref="3"
                                         name="Xưng hô"
                                         v-model="currentProvider.prefix"
                                         :items="prefixItems"
+                                        :disabled="viewMode"
                                     />
                                 </BaseCol>
                                 <BaseCol
                                     :padding="0"
                                     :cols="8"
-                                    v-show="currentProvider.provider_type === 1"
+                                    v-if="currentProvider.provider_type === 1"
                                 >
                                     <BaseInput
                                         fullWidth
@@ -144,6 +157,7 @@
                                         ref="3"
                                         name="Tên nhà cung cấp"
                                         v-model="currentProvider.provider_name"
+                                        :disabled="viewMode"
                                     />
                                 </BaseCol>
                             </BaseRow>
@@ -161,6 +175,7 @@
                                         isTextarea
                                         v-model="currentProvider.address"
                                         :rows="3"
+                                        :disabled="viewMode"
                                     />
                                 </BaseCol>
                             </BaseRow>
@@ -182,6 +197,7 @@
                                         tabindex="5"
                                         name="Điện thoại"
                                         v-model="currentProvider.phone_number"
+                                        :disabled="viewMode"
                                     />
                                 </BaseCol>
                                 <BaseCol
@@ -194,6 +210,7 @@
                                         tabindex="6"
                                         name="Website"
                                         v-model="currentProvider.website"
+                                        :disabled="viewMode"
                                     />
                                 </BaseCol>
                             </BaseRow>
@@ -206,7 +223,7 @@
                                         fullWidth
                                         label="Nhóm nhà cung cấp"
                                         tabindex="7"
-                                        ref="7"
+                                        ref="4"
                                         name="Nhóm nhà cung cấp"
                                         placeholder=""
                                         :items="groupProviderData"
@@ -217,6 +234,7 @@
                                         hasAddIcon
                                         optionsTable
                                         multiple
+                                        :disabled="viewMode"
                                     />
                                 </BaseCol>
                             </BaseRow>
@@ -229,10 +247,17 @@
                                         fullWidth
                                         label="Nhân viên mua hàng"
                                         tabindex="8"
-                                        ref="8"
+                                        ref="5"
                                         name="Nhân viên mua hàng"
                                         hasAddIcon
                                         placeholder=""
+                                        :columnNames="columnNamesEmployee"
+                                        :items="employees"
+                                        optionsTable
+                                        optionId="employee_id"
+                                        keyLabel="employee_code"
+                                        v-model="currentProvider.employee_id"
+                                        :disabled="viewMode"
                                     />
                                 </BaseCol>
                             </BaseRow>
@@ -273,6 +298,8 @@
                                     v-if="tab === 'contact'"
                                     :providerType="currentProvider.provider_type"
                                     :data="currentProvider"
+                                    :isClicked="hasClickTab"
+                                    :disabled="viewMode"
                                 />
                             </transition>
                             <transition name="slide">
@@ -281,6 +308,7 @@
                                     v-if="tab === 'terms'"
                                     :isCustomer="currentProvider.is_customer"
                                     :data="currentProvider"
+                                    :disabled="viewMode"
                                 />
                             </transition>
                             <transition name="slide">
@@ -288,12 +316,14 @@
                                     class="wrap"
                                     v-if="tab === 'bankAccount'"
                                     v-model="currentProvider.bank_account_group"
+                                    :disabled="viewMode"
                                 />
                             </transition>
                             <transition name="slide">
                                 <Address
                                     class="wrap"
                                     v-if="tab === 'address'"
+                                    :disabled="viewMode"
                                 />
                             </transition>
                             <transition name="slide">
@@ -306,6 +336,9 @@
                                         rows="9"
                                         fullWidth
                                         v-model="currentProvider.description"
+                                        focusInput
+                                        tabindex="9"
+                                        :disabled="viewMode"
                                     />
                                 </div>
                             </transition>
@@ -357,6 +390,7 @@
 
 <script>
 import ProviderApi from "../../../api/service/provider";
+import EmployeeApi from "../../../api/service/employee";
 import { mapActions, mapMutations } from "vuex";
 import resources from "../../../resources";
 import enums from "../../../enums";
@@ -380,6 +414,12 @@ const prefixItems = [
     { key: "Mr", text: "Mr" },
     { key: "Mrs", text: "Mrs" }
 ];
+
+const columnNamesEmployee = [
+    { key: "employee_code", text: "Mã nhân viên", width: 180 },
+    { key: "employee_name", text: "Tên nhân viên", width: 210 }
+
+];
 export default {
     name: "ProviderDetails",
     components: { Contact, Terms, BankAccount, Address },
@@ -393,14 +433,8 @@ export default {
             currentProvider: {
                 ...this.provider,
                 provider_type: this.provider?.provider_type ?? 0,
-                DateOfBirth: utils.formatDateValueInput(this.employee?.DateOfBirth)
+                personal_contact_identity_date: utils.formatDateValueInput(this.provider?.personal_contact_identity_date)
             },
-
-            genders: [
-                { value: 0, text: "Name" },
-                { value: 1, text: "Nữ" },
-                { value: 2, text: "Khác" }
-            ],
             disabledButton: true,
             // kiểm tra xem người dùng đã sửa hay thao tác gì với form chưa
             edited: false,
@@ -408,8 +442,10 @@ export default {
             loading: false,
 
             currentState: this.state,
+            viewMode: this.state === enums.dialogState.view,
 
             tab: "contact",
+            hasClickTab: false,
 
             columnNamesProriverGroup,
             groupProviderData: [
@@ -421,42 +457,46 @@ export default {
                 { provider_group_code: "NCC-6", provider_group_name: "Vũ Long Vũ 6" },
                 { provider_group_code: "NCC-7", provider_group_name: "Vũ Long Vũ 7" }
             ],
-            groupProvider: [],
+            groupProvider: this.provider?.provider_group?.split(";") || [],
 
-            prefixItems
+            prefixItems,
+            columnNamesEmployee,
+            employees: []
 
         };
     },
 
     async mounted() {
-        if (this.currentState === enums.dialogState.post) {
-            await this.setNewEmployeeCode();
-            this.$refs["1"].$refs.BaseInput.focus();
-            this.edited = false;
-        } else {
-            this.$refs["1"].$refs.BaseInput.focus();
+        // if (this.currentState === enums.dialogState.post) {
+        //     await this.setNewEmployeeCode();
+        //     this.$refs["1"].$refs.BaseInput.focus();
+        //     this.edited = false;
+        // } else {
+        //     this.$refs["1"].$refs.BaseInput.focus();
+        // }
+
+        try {
+            this.loading = true;
+            await this.getAllEmployees();
+            this.loading = false;
+        } catch (error) {
+            console.error(error);
+            this.loading = false;
         }
     },
 
     watch: {
-        currentEmployee: {
+        currentProvider: {
             handler(value) {
                 this.edited = true;
             },
             deep: true
-        }
-    },
+        },
 
-    computed: {
-        /**
-         * Set giá trị mặc định cho đơn vị
-         * Created by: VLVU (18/8/2021)
-         */
-        defaultDepartment() {
-            if (!this.currentEmployee?.DepartmentId) {
-                return null;
+        "currentProvider.provider_type": {
+            handler() {
+                this.hasClickTab = false;
             }
-            return this.currentDepartments.find(item => item.value === this.currentEmployee.DepartmentId);
         }
     },
 
@@ -473,12 +513,13 @@ export default {
          */
         getTab(name) {
             this.tab = name;
+            this.hasClickTab = true;
         },
         /**
-         * Set 1 mã nhân viên mới lấy từ server về
-         * Created by: VLVU (18/8/2021)
+         * Set 1 mã nhà cung cấp mới lấy từ server về
+         * Created by: VLVU (24/9/2021)
          */
-        async setNewEmployeeCode() {
+        async setNewProviderCode() {
             try {
                 const promise = await ProviderApi.getEmployeeCode();
                 this.currentEmployee = { ...this.currentEmployee, EmployeeCode: promise.data };
@@ -486,13 +527,20 @@ export default {
                 console.log(error);
             }
         },
+
         /**
-         * Lấy dữ liệu về giới tính
-         * Created by: VLVU (15/8/2021)
+         * lấy toàn bộ nhân viên
+         * Created by: VLVU (24/9/2021)
          */
-        getGender(e) {
-            this.currentEmployee = { ...this.currentEmployee, Gender: Number(e.target.value) };
+        async getAllEmployees() {
+            try {
+                const promise = await EmployeeApi.getAll();
+                this.employees = promise.data?.Data ?? [];
+            } catch (error) {
+                console.log(error);
+            }
         },
+
         /**
          * handle ấn vào đóng dialog
          * @param {boolean} confirm có hiện xác nhận popup hay không
@@ -500,7 +548,7 @@ export default {
          */
         async onClose(confirm = true) {
             if (this.edited && confirm) {
-                const ok = await this.confirmPopup(resources.popup.confirmCloseEmployeeDetailForm);
+                const ok = await this.confirmPopup(resources.popup.confirmCloseDetailForm);
                 // không làm gì cả
                 if (ok === null) {
                     return;
@@ -515,13 +563,6 @@ export default {
             this.$emit("onClose");
         },
 
-        /**
-         * Lấy dữ liệu phòng ban
-         * Created by: VLVU (2021)
-         */
-        getDepartment(result) {
-            this.currentEmployee = { ...this.currentEmployee, DepartmentId: result.value };
-        },
         /**
          * Hàm kiểm tra validate dữ liệu trước khi gửi lên
          * Created by: VLVU (10/8/2021)
@@ -564,6 +605,10 @@ export default {
          * Created by: VLVU (21/8/2021)
          */
         async onSave(keepCreating = false) {
+            // trạng thái xem không xảy ra gì cả
+            if (this.viewMode) {
+                return;
+            }
             const validate = await this.validate();
             if (!validate) {
                 return;
@@ -572,9 +617,9 @@ export default {
             try {
                 this.loading = true;
                 if (this.currentState === enums.dialogState.post) {
-                    promise = await ProviderApi.insertOne(this.currentEmployee);
+                    promise = await ProviderApi.insertOne({ ...this.currentProvider, provider_group: this.groupProvider.join(";") });
                 } else {
-                    promise = await ProviderApi.updateOne(this.currentEmployee.EmployeeId, this.currentEmployee);
+                    promise = await ProviderApi.updateOne(this.currentProvider.provider_id, { ...this.currentProvider, provider_group: this.groupProvider.join(";") });
                 }
 
                 // lỗi validate
@@ -588,9 +633,9 @@ export default {
                     return;
                 }
                 if (this.currentState === enums.dialogState.post) {
-                    this.setToast(resources.toast.addEmployeeSuccess(this.currentEmployee.EmployeeCode));
+                    this.setToast(resources.toast.addEmployeeSuccess(this.currentProvider.provider_code));
                 } else {
-                    this.setToast(resources.toast.updateEmployeeSuccess(this.currentEmployee.EmployeeCode));
+                    this.setToast(resources.toast.updateEmployeeSuccess(this.currentProvider.provider_code));
                 }
                 this.currentEmployee = {};
                 if (keepCreating) {

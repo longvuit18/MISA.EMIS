@@ -78,7 +78,7 @@ const popup = {
 		type: "warning"
 	},
 
-	confirmCloseEmployeeDetailForm: {
+	confirmCloseDetailForm: {
 		content: "Dữ liệu đã bị thay đổi. Bạn có muốn cất không?",
 		state: "hyper-confirm",
 		type: "info",

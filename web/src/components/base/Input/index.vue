@@ -89,7 +89,7 @@ export default {
         label: String,
 
         // vị trí của tab
-        tabindex: String,
+        tabindex: [String, Number],
 
         // giá trị của input
         value: {
@@ -124,6 +124,15 @@ export default {
             error: false,
             errorMessage: ""
         };
+    },
+
+    watch: {
+        /**
+         * Khi thay đổi focusInput từ false sang true hoặc ngược lại thì đều fucus input đó
+         */
+        focusInput() {
+            this.$refs.BaseInput.focus();
+        }
     },
 
     computed: {

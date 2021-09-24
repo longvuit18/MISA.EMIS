@@ -11,6 +11,7 @@
             @change="onChangeValue"
             :checked="checked[key]"
             :style="{'margin-right': 20 + 'px'}"
+            :disabled="disabled"
         />
     </div>
 </template>
@@ -40,6 +41,11 @@ export default {
         },
 
         horizontal: {
+            type: Boolean,
+            default: () => false
+        },
+
+        disabled: {
             type: Boolean,
             default: () => false
         }

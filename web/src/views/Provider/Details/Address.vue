@@ -9,13 +9,21 @@
                     :cols="6"
                     style="padding: 0 6px 0px 0;"
                 >
-                    <BaseCombobox label="Vị trí địa lý" />
+                    <BaseCombobox
+                        label="Vị trí địa lý"
+                        :focusInput="true"
+                        tabindex="9"
+                        :disabled="disabled"
+                    />
                 </BaseCol>
                 <BaseCol
                     :cols="6"
                     style="margin: 20px 13px 0 0; padding-left: 6px"
                 >
-                    <BaseCombobox />
+                    <BaseCombobox
+                        tabindex="10"
+                        :disabled="disabled"
+                    />
                 </BaseCol>
             </BaseRow>
             <BaseRow>
@@ -23,13 +31,19 @@
                     :cols="6"
                     style="padding: 0 6px 0px 0;"
                 >
-                    <BaseCombobox />
+                    <BaseCombobox
+                        tabindex="11"
+                        :disabled="disabled"
+                    />
                 </BaseCol>
                 <BaseCol
                     :cols="6"
                     style="margin-right: 13px; padding-left: 6px"
                 >
-                    <BaseCombobox />
+                    <BaseCombobox
+                        tabindex="12"
+                        :disabled="disabled"
+                    />
                 </BaseCol>
             </BaseRow>
         </BaseCol>
@@ -43,7 +57,10 @@
                         Địa chỉ giao hàng
                     </div>
                     <div class="ml-10 mr-10">
-                        <BaseCheckbox label="Địa chỉ giống địa chỉ nhập" />
+                        <BaseCheckbox
+                            label="Địa chỉ giống địa chỉ nhập"
+                            tabindex="13"
+                        />
                     </div>
                 </div>
                 <div class="grid">
@@ -55,6 +72,8 @@
                         disabledLastWhiteSpace
                         disabledIndexColumn
                         disabledHeader
+                        tabindex="14"
+                        :disabled="disabled"
                     />
                 </div>
                 <div class="btn-grid-control flex mt-10">
@@ -92,6 +111,12 @@ const columnNames = [
 export default {
     name: "Address",
     components: { TableCommon },
+    props: {
+        disabled: {
+            type: Boolean,
+            default: () => false
+        }
+    },
     data() {
         return {
             columnNames: columnNames,
@@ -114,7 +139,10 @@ export default {
          * Created by: VLVU(9/9/2018)
          */
         addRow() {
-            const newRow = { a: "abc", b: "abc", c: "abc", d: "abc", e: "abc", f: "abc" };
+            if (this.disabled) {
+                return;
+            }
+            const newRow = { a: "" };
             this.dataTable = [...this.dataTable, newRow];
         },
         /**
@@ -122,6 +150,9 @@ export default {
          * Created by: VLVU (9/9/2021)
          */
         async deleteAllRows() {
+            if (this.disabled) {
+                return;
+            }
             const ok = await this.confirmPopup(resources.popup.deleteAllRows);
             if (!ok) {
                 return;

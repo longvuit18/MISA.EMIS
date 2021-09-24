@@ -8,6 +8,9 @@
                 disabledFirstWhiteSpace
                 disabledLastWhiteSpace
                 disabledIndexColumn
+                focus
+                tabindex="10"
+                :disabled="disabled"
             />
         </div>
         <div class="btn-grid-control flex mt-10">
@@ -54,12 +57,17 @@ export default {
         value: {
             type: String,
             default: () => "[{\"bank_account_number\": \"\", \"bank_name\": \"\", \"bank_branch_name\": \"\", \"province_or_city\": \"\"}]"
+        },
+        disabled: {
+            type: Boolean,
+            default: () => false
         }
     },
     data() {
         return {
             columnNames,
-            dataTable: this.toDataTable()
+            dataTable: this.toDataTable(),
+            focusFirstInput: false
         };
     },
 
@@ -82,9 +90,12 @@ export default {
         }),
         /**
          * Thêm 1 hàng mới vào bảng
-         * Created by: VLVU(9/9/2018)
+         * Created by: VLVU(9/9/2021)
          */
         addRow() {
+            if (this.disabled) {
+                return;
+            }
             const newRow = JSON.parse("{\"bank_account_number\": \"\", \"bank_name\": \"\", \"bank_branch_name\": \"\", \"province_or_city\": \"\"}");
             this.dataTable = [...this.dataTable, newRow];
         },
@@ -93,6 +104,9 @@ export default {
          * Created by: VLVU (9/9/2021)
          */
         async deleteAllRows() {
+            if (this.disabled) {
+                return;
+            }
             const ok = await this.confirmPopup(resources.popup.deleteAllRows);
             if (!ok) {
                 return;
@@ -110,7 +124,7 @@ export default {
         },
 
         toDataTable() {
-            const data = this.value === "" ? "[{\"bank_account_number\": \"\", \"bank_name\": \"\", \"bank_branch_name\": \"\", \"province_or_city\": \"\"}]" : this.value;
+            const data = (!this.value || this.value === "") ? "[{\"bank_account_number\": \"\", \"bank_name\": \"\", \"bank_branch_name\": \"\", \"province_or_city\": \"\"}]" : this.value;
             return JSON.parse(data);
         }
     }

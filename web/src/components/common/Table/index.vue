@@ -81,6 +81,8 @@
                                 :format="formatCol(key)"
                                 rows="1"
                                 :focusInput="cellIndex === cellFocus"
+                                :tabindex="tabindexNumber + columnNames.length * (rowIndex) + cellIndex"
+                                :disabled="disabled"
                             />
                             <BaseCombobox
                                 v-else-if="typeCol(key) === 'combobox' && rowSelected(rowIndex)"
@@ -88,6 +90,8 @@
                                 :items="comboboxOptions(key)"
                                 v-model="item[key]"
                                 :focusInput="cellIndex === cellFocus"
+                                :tabindex="tabindexNumber + columnNames.length * (rowIndex) + cellIndex"
+                                :disabled="disabled"
                             />
                             <span
                                 v-else
@@ -159,6 +163,20 @@ export default {
         headerSticky: {
             type: Boolean,
             default: () => false
+        },
+
+        focus: {
+            type: Boolean,
+            default: () => false
+        },
+        tabindex: {
+            type: [String, Number],
+            default: () => "0"
+        },
+
+        disabled: {
+            type: Boolean,
+            default: false
         }
     },
 
@@ -190,6 +208,24 @@ export default {
                 }
             },
             deep: true
+        },
+
+        focus() {
+            this.rowsSelected = 0;
+            this.cellFocus = 0;
+        }
+    },
+
+    mounted() {
+        if (this.focus) {
+            this.rowsSelected = 0;
+            this.cellFocus = 0;
+        }
+    },
+
+    computed: {
+        tabindexNumber() {
+            return Number(this.tabindex.toString());
         }
     },
 
@@ -335,6 +371,9 @@ export default {
          * Created by: VLVU (17/8/2021)
          */
         handleClickDelete(index) {
+            if (this.disabled) {
+                return;
+            }
             this.$emit("deleteRow", index);
         },
 

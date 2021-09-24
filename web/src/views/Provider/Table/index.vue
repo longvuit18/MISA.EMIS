@@ -10,7 +10,7 @@
                     >
                         <BaseCheckbox
                             @click="handleClickCheckboxAll"
-                            :checked="selectedAll"
+                            :value="selectedAll"
                         />
                     </th>
                     <th
@@ -48,7 +48,7 @@
                         <div>
                             <BaseCheckbox
                                 @click="(e) =>handleClickCheckbox(e, rowIndex)"
-                                :checked="hasCheck(rowIndex)"
+                                :value="hasCheck(rowIndex)"
                             />
                         </div>
                     </td>
@@ -66,7 +66,7 @@
                     <td class="last-column-fixed align-center td-viewer">
                         <div class="feature-column">
                             <span
-                                @click="() =>handleClickEdit(item)"
+                                @click="() =>handleClickView(item)"
                                 style="cursor: pointer;"
                             >Xem</span>
                             <div>
@@ -83,7 +83,7 @@
                                 :class="rowIndex === data.length - 1 || rowIndex === data.length - 2 ? 'popup-top' : 'popup-bottom'"
                             >
                                 <li
-                                    @click="() =>handleClickReplication(item)"
+                                    @click="() =>handleClickEdit(item)"
                                     style="cursor: pointer;"
                                 >Sửa</li>
                                 <li
@@ -336,6 +336,15 @@ export default {
          */
         showFeature(rowIndex) {
             return rowIndex === this.showedFeature;
+        },
+
+        /**
+         * sự kiện ấn để xem row
+         * Created by: VLVU (24/9/2021)
+         */
+        handleClickView(item) {
+            this.showedFeature = -1;
+            this.$emit("handleClickView", item);
         },
 
         /**

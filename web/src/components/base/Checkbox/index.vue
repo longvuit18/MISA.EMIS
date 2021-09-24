@@ -6,6 +6,7 @@
             v-bind="$attrs"
             :checked="value"
             @change="onChange"
+            :tabindex="tabindex"
         >
         <span></span>
         <div v-if="item">{{item.label}}</div>
@@ -26,6 +27,9 @@ export default {
 
         value: {
             default: () => false
+        },
+        tabindex: {
+            type: String
         }
     },
 

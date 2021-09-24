@@ -141,6 +141,7 @@
                     :columnNames="columnNames"
                     :dataProps="providers"
                     @handleClickEdit="handleClickEdit"
+                    @handleClickView="handleClickView"
                     @handleClickDelete="handleClickDelete"
                     @handleClickRelication="handleClickRelication"
                     @clickCheckbox="handleClickCheckbox"
@@ -458,10 +459,6 @@ export default {
             console.log(t);
         },
 
-        handleCollapseOverview() {
-
-        },
-
         /**
          * Hàm lấy dữ liệu
          * Created by: Vũ Long Vũ (19/7/2021)
@@ -593,6 +590,12 @@ export default {
         handleClickRelication(provider) {
             this.currentProvider = provider;
             this.stateDialog = enums.dialogState.post;
+            this.openDialog = true;
+        },
+
+        handleClickView(provider) {
+            this.currentProvider = provider;
+            this.stateDialog = enums.dialogState.view;
             this.openDialog = true;
         },
 

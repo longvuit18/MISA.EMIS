@@ -21,7 +21,7 @@ input[type=checkbox] {
 	appearance: none;
 	border: 1px solid #c7c7c7;
 	border-radius: 2px;
-	outline: none;
+	outline-color: #cce4f9;
 	transition-duration: 0.3s;
 	background-color: #fff;
 	cursor: pointer;

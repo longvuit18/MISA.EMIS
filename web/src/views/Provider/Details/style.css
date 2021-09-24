@@ -1,13 +1,13 @@
-#employee-details {
+#provider-details {
 	padding: 0px 32px 20px 32px;
 	width: 900px;
 }
 
-#employee-details .divider {
+#provider-details .divider {
 	margin: 32px 0 20px 0;
 }
 
-#employee-details .divider hr {
+#provider-details .divider hr {
 	border-top: 1px solid #e0e0e0;
 }
 
@@ -148,4 +148,12 @@
 	width: 100%;
 	height: inherit;
 	padding: 11px 8px;
+}
+
+.view-mode {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
 }
