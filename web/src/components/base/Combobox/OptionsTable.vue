@@ -1,5 +1,8 @@
 <template>
-    <div style="height: 100%">
+    <div
+        style="height: 100%"
+        ref="optionTable"
+    >
         <table>
             <thead>
                 <tr>

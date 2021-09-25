@@ -1,6 +1,8 @@
 import PortalVue from "portal-vue";
 import VTooltip from "v-tooltip";
 import Vue from "vue";
+import { RecycleScroller } from "vue-virtual-scroller";
+import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 import { axiosConfig } from "./api/axiosConfig";
 import App from "./App.vue";
 import Button from "./components/base/Button";
@@ -42,8 +44,10 @@ Vue.component("BaseRadio", Radio);
 Vue.component("BaseChip", Chip);
 Vue.component("BaseRadioGroup", RadioGroup);
 Vue.component("BaseDatePicker", DatePicker);
+Vue.component("RecycleScroller", RecycleScroller);
 Vue.use(VTooltip);
 Vue.use(PortalVue);
+
 Vue.config.productionTip = false;
 new Vue({
 	router,

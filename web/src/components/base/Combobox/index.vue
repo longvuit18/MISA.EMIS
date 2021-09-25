@@ -227,7 +227,9 @@ export default {
 
             positonCombobox: null,
 
-            currentCheck: null
+            currentCheck: null,
+
+            scrollPosition: 0
         };
     },
 
@@ -318,6 +320,13 @@ export default {
          */
         focusInput() {
             this.$refs.BaseInput.focus();
+        },
+
+        /**
+         * watch để set vị trí của scroll trong option
+         */
+        scrollPosition(value) {
+            this.$refs.options.scrollTo(0, value);
         }
     },
     mounted() {
@@ -460,6 +469,13 @@ export default {
          * Created by: VLVU (19/9/2021)
          */
         onArrowDown() {
+            // tính toán vị trí của scroll trong option
+            if (this.items.length < 6) {
+                this.scrollPosition = 0;
+            } else {
+                this.scrollPosition = 32 * (this.arrowCounter + 1);
+            }
+
             if (!this.isOpen) {
                 this.isOpen = true;
                 return;
@@ -472,6 +488,7 @@ export default {
                 this.arrowCounter = 0;
                 this.search = !this.multiple ? this.displayText(this.options[0].optionId) : this.search;
                 this.currentCheck = this.options[0];
+                this.scrollPosition = 0;
             }
         },
         /**
@@ -479,6 +496,12 @@ export default {
          * Created by: VLVU (19/9/2021)
          */
         onArrowUp() {
+            // tính toán vị trí của scroll trong option
+            if (this.items.length < 6) {
+                this.scrollPosition = 0;
+            } else {
+                this.scrollPosition = 32 * (this.arrowCounter - 1);
+            }
             if (!this.isOpen) {
                 this.isOpen = true;
                 return;
@@ -488,6 +511,7 @@ export default {
                 this.arrowCounter = this.arrowCounter - 1;
             } else {
                 this.arrowCounter = this.options.length - 1;
+                this.scrollPosition = (this.options.length - 1) * 32;
             }
             this.search = !this.multiple ? this.displayText(this.options[this.arrowCounter].optionId) : this.search;
             this.currentCheck = this.options[this.arrowCounter];
