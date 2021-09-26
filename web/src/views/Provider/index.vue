@@ -298,6 +298,7 @@
             :provider="currentProvider"
             :state="stateDialog"
             @reloadProviders="reloadProviders"
+            :countries="countries"
         />
     </div>
 
@@ -306,6 +307,7 @@
 <script>
 
 import ProviderApi from "../../api/service/provider";
+import LocationApi from "../../api/service/location";
 import ProviderDetails from "./Details";
 import { mapActions, mapMutations } from "vuex";
 import enums from "../../enums";
@@ -332,6 +334,7 @@ const defaultTotalRecord = 0;
 const defaultPageSizes = [
     { value: 10, text: "10 bản ghi trên 1 trang" },
     { value: 20, text: "20 bản ghi trên 1 trang" },
+    { value: 30, text: "30 bản ghi trên 1 trang" },
     { value: 50, text: "50 bản ghi trên 1 trang" },
     { value: 100, text: "100 bản ghi trên 1 trang" }
 ];
@@ -366,7 +369,9 @@ export default {
 
             idTimeout: null, // id của setTimeOut khi thực hiện filter,
 
-            showOverview: true
+            showOverview: true,
+
+            countries: []
 
         };
     },
@@ -468,12 +473,15 @@ export default {
          */
         async getData() {
             try {
-                const promise = await ProviderApi.getProviderFilterPaging(this.filter);
-
-                this.providers = promise.data?.Data.result ?? [];
-
-                this.totalPage = promise?.data?.Data?.total_page === 0 ? 1 : promise?.data?.Data?.total_page || 1; // số page luôn là 1
-                this.totalRecord = promise?.data?.Data?.total_record;
+                const promise = await Promise.all([
+                    ProviderApi.getProviderFilterPaging(this.filter),
+                    LocationApi.getCountries()
+                ]);
+                this.providers = promise[0].data?.Data.result ?? [];
+                delete promise[1].data.country_code;
+                this.countries = promise[1]?.data || [];
+                this.totalPage = promise[0]?.data?.Data?.total_page === 0 ? 1 : promise[0]?.data?.Data?.total_page || 1; // số page luôn là 1
+                this.totalRecord = promise[0]?.data?.Data?.total_record;
             } catch (error) {
                 console.error(error);
                 this.providers = [];

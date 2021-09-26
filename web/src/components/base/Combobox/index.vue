@@ -81,33 +81,35 @@
             </div>
         </div>
         <portal to="combobox">
-            <ul
+            <OptionWrapper
                 :style="{...styleOption}"
                 v-if="isOpen && !optionsTable"
                 class='combobox-options'
                 ref="options"
+                :scrollPosition="scrollPosition"
             >
-                <li
+                <div
                     v-for="(option) in options"
                     :key="option.value"
                     @click="setResult(option)"
                     class="combobox-result"
-                    :class="{ 'is-active':search === option.text }"
+                    :class="{ 'is-active':search === option[keyLabel] }"
                 >
-                    {{ option.text }}
-                </li>
+                    {{ option[keyLabel] }}
+                </div>
                 <li
                     v-if="options.length === 0"
                     class="combobox-result"
                 >
                     Không có dữ liệu
                 </li>
-            </ul>
-            <div
+            </OptionWrapper>
+            <OptionWrapper
                 :style="{...styleOption}"
                 v-if="isOpen && optionsTable"
                 class='combobox-options'
                 ref="options"
+                :scrollPosition="scrollPosition"
             >
                 <OptionsTable
                     :columnNames="columnNames"
@@ -117,13 +119,14 @@
                     @handleClickRow="setResult"
                     :currentCheck="currentCheck"
                 />
-            </div>
+            </OptionWrapper>
         </portal>
     </div>
 </template>
 
 <script>
 import OptionsTable from "./OptionsTable.vue";
+import OptionWrapper from "./OptionWrapper.vue";
 
 /**
  * Cmbobox
@@ -134,7 +137,7 @@ import OptionsTable from "./OptionsTable.vue";
 const ErrorRequire = (name) => `${name} là trường bắt buộc phải nhập!`;
 const ErrorInCorrect = (name) => `Dữ liệu <${name}> không có trong danh mục!`;
 export default {
-    components: { OptionsTable },
+    components: { OptionsTable, OptionWrapper },
     name: "BaseCombobox",
     model: {
         prop: "value",
@@ -300,8 +303,9 @@ export default {
          * lắng nghe mỗi khi isOpen thay đổi để xét lại vị trí của hộp thoại options
          * Created by: VLVU (19/9/2021)
          */
-        isOpen() {
+        isOpen(value) {
             this.positonCombobox = this.$refs.combobox.getBoundingClientRect();
+            // this.$refs.options.scrollTo(0, this.scrollPosition);
         },
 
         /**
@@ -322,11 +326,19 @@ export default {
             this.$refs.BaseInput.focus();
         },
 
-        /**
-         * watch để set vị trí của scroll trong option
-         */
-        scrollPosition(value) {
-            this.$refs.options.scrollTo(0, value);
+        // /**
+        //  * watch để set vị trí của scroll trong option
+        //  */
+        // scrollPosition(value) {
+        //     this.$refs.options.scrollTo(0, value);
+        // },
+
+        items: {
+            handler() {
+                this.fixedOptions = this.toOptions();
+                this.options = this.toOptions();
+            },
+            deep: true
         }
     },
     mounted() {
@@ -351,7 +363,7 @@ export default {
          */
         handleClickOutside(event) {
             if (!this.$el.contains(event.target) &&
-                !this.$refs.options?.contains(event.target) &&
+                !this.$refs.options?.$el?.contains(event.target) &&
                 !this.$refs.chip?.contains(event.target)
             ) {
                 this.isOpen = false;
@@ -362,7 +374,7 @@ export default {
          * Created by: VLVU (19/9/2021)
          */
         handleScrollOutSide(event) {
-            if (!this.$el.contains(event.target) && !this.$refs.options?.contains(event.target)) {
+            if (!this.$el.contains(event.target) && !this.$refs.options?.$el?.contains(event.target)) {
                 this.isOpen = false;
             }
         },
@@ -380,12 +392,10 @@ export default {
          */
         toOptions() {
             return this.items.map(item => {
-                const itemText = { ...item };
-                delete itemText[this.optionId];
                 return {
                     ...item,
                     optionId: item[this.optionId],
-                    text: Object.values(itemText).join(" ")
+                    text: Object.values(item).join(" ")
                 };
             });
         },
@@ -412,6 +422,11 @@ export default {
                 this.$emit("result", [...this.value, option.optionId]);
                 return;
             }
+
+            // tính toán lại vị trí của scroll khi click vao item
+            this.arrowCounter = this.fixedOptions.findIndex(item => item.optionId === option.optionId);
+            this.scrollPosition = 32 * (this.arrowCounter);
+
             this.search = this.displayText(option.optionId);
             this.isOpen = false;
             // chắc chắn người dùng đã chọn

@@ -325,6 +325,8 @@
                                     class="wrap"
                                     v-if="tab === 'address'"
                                     :disabled="viewMode"
+                                    :data="currentProvider"
+                                    :countries="countries"
                                 />
                             </transition>
                             <transition name="slide">
@@ -426,7 +428,11 @@ export default {
     components: { Contact, Terms, BankAccount, Address },
     props: {
         provider: Object,
-        state: Number
+        state: Number,
+        countries: {
+            type: Array,
+            default: () => []
+        }
     },
 
     data: function () {

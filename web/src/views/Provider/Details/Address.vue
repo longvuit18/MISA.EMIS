@@ -14,6 +14,11 @@
                         :focusInput="true"
                         tabindex="9"
                         :disabled="disabled"
+                        placeholder="Nước"
+                        :items="countries"
+                        optionId="country_id"
+                        keyLabel="country_name"
+                        v-model="data.country"
                     />
                 </BaseCol>
                 <BaseCol
@@ -115,6 +120,14 @@ export default {
         disabled: {
             type: Boolean,
             default: () => false
+        },
+        countries: {
+            type: Array,
+            default: () => []
+        },
+        data: {
+            type: Object,
+            default: () => { }
         }
     },
     data() {
