@@ -326,17 +326,11 @@ export default {
             this.$refs.BaseInput.focus();
         },
 
-        // /**
-        //  * watch để set vị trí của scroll trong option
-        //  */
-        // scrollPosition(value) {
-        //     this.$refs.options.scrollTo(0, value);
-        // },
-
         items: {
             handler() {
                 this.fixedOptions = this.toOptions();
                 this.options = this.toOptions();
+                this.search = this.defaultItem()?.[this.keyLabel];
             },
             deep: true
         }

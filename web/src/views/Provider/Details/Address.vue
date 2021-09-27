@@ -16,7 +16,7 @@
                         :disabled="disabled"
                         placeholder="Nước"
                         :items="countries"
-                        optionId="country_id"
+                        optionId="country_name"
                         keyLabel="country_name"
                         v-model="data.country"
                     />
@@ -28,6 +28,11 @@
                     <BaseCombobox
                         tabindex="10"
                         :disabled="disabled"
+                        placeholder="Tỉnh/Thành phố"
+                        :items="provinces"
+                        optionId="name"
+                        keyLabel="name"
+                        v-model="data.province_or_city"
                     />
                 </BaseCol>
             </BaseRow>
@@ -39,6 +44,11 @@
                     <BaseCombobox
                         tabindex="11"
                         :disabled="disabled"
+                        placeholder="Quận/Huyện"
+                        :items="districts"
+                        optionId="fullName"
+                        keyLabel="fullName"
+                        v-model="data.district"
                     />
                 </BaseCol>
                 <BaseCol
@@ -48,6 +58,11 @@
                     <BaseCombobox
                         tabindex="12"
                         :disabled="disabled"
+                        placeholder="Xã/Phường"
+                        :items="wards"
+                        optionId="fullName"
+                        keyLabel="fullName"
+                        v-model="data.ward_or_commune"
                     />
                 </BaseCol>
             </BaseRow>
@@ -65,6 +80,7 @@
                         <BaseCheckbox
                             label="Địa chỉ giống địa chỉ nhập"
                             tabindex="13"
+                            v-model="data.is_same_address"
                         />
                     </div>
                 </div>
@@ -108,9 +124,10 @@
 import { mapActions, mapMutations } from "vuex";
 import resources from "../../../resources";
 import TableCommon from "../../../components/common/Table";
+import LocationApi from "../../../api/service/location";
 
 const columnNames = [
-    { key: "a", text: "", width: 340, type: "input" }
+    { key: "location_name", text: "", width: 340, type: "input" }
 
 ];
 export default {
@@ -133,10 +150,90 @@ export default {
     data() {
         return {
             columnNames: columnNames,
-            dataTable: [{
-                a: ""
-            }]
+            dataTable: this.toDataTable(),
+
+            provinces: [],
+            districts: [],
+            wards: [],
+            countryId: "",
+            provinceId: "",
+            districtId: ""
         };
+    },
+
+    watch: {
+
+        "data.is_same_address"(value) {
+            if (value) {
+                if (this.dataTable.length < 2) {
+                    const newRow = JSON.parse(`{"location_name": "${this.data?.address ?? ""}"}`);
+                    this.dataTable = [newRow];
+                }
+            }
+        },
+
+        dataTable: {
+            handler(value) {
+                this.data.shipping_address = JSON.stringify(value);
+            },
+            deep: true
+        },
+        async "data.country"() {
+            const countryId = this.countries.find(item => item.country_name === this.data.country)?.country_id ?? "";
+            this.countryId = countryId;
+            try {
+                const provincesPromise = await LocationApi.getProvinces(countryId);
+                this.provinces = provincesPromise.data;
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async "data.province_or_city"() {
+            this.wards = [];
+            const provinceId = this.provinces.find(item => item.name === this.data.province_or_city)?.id ?? "";
+            this.provinceId = provinceId;
+            try {
+                const districtsPromise = await LocationApi.getDistricts(this.countryId, provinceId);
+                this.districts = districtsPromise.data.map(item => ({ ...item, fullName: item.prefix + " " + item.name }));
+            } catch (error) {
+                console.error(error);
+            }
+        },
+
+        async "data.district"() {
+            const districtId = this.districts.find(item => item.prefix + " " + item.name === this.data.district)?.id ?? "";
+            this.districtId = districtId;
+
+            try {
+                const districtsPromise = await LocationApi.getWards(this.countryId, this.provinceId, districtId);
+                this.wards = districtsPromise.data.map(item => ({ ...item, fullName: item.prefix + " " + item.name }));
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    },
+
+    async mounted() {
+        const countryId = this.countries.find(item => item.country_name === this.data.country)?.country_id ?? "";
+        this.countryId = countryId;
+        try {
+            const provincesPromise = await LocationApi.getProvinces(countryId);
+            this.provinces = provincesPromise.data;
+            if (this.data?.district) {
+                const provinceId = this.provinces.find(item => item.name === this.data.province_or_city)?.id ?? "";
+                this.provinceId = provinceId;
+                const districtsPromise = await LocationApi.getDistricts(this.countryId, provinceId);
+                this.districts = districtsPromise.data.map(item => ({ ...item, fullName: item.prefix + " " + item.name }));
+            }
+            if (this.data?.ward_or_commune) {
+                const districtId = this.districts.find(item => item.prefix + " " + item.name === this.data.district)?.id ?? "";
+                this.districtId = districtId;
+                const districtsPromise = await LocationApi.getWards(this.countryId, this.provinceId, districtId);
+                this.wards = districtsPromise.data.map(item => ({ ...item, fullName: item.prefix + " " + item.name }));
+            }
+        } catch (error) {
+            console.error(error);
+        }
     },
 
     methods: {
@@ -155,7 +252,7 @@ export default {
             if (this.disabled) {
                 return;
             }
-            const newRow = { a: "" };
+            const newRow = JSON.parse("{\"location_name\": \"\"}");
             this.dataTable = [...this.dataTable, newRow];
         },
         /**
@@ -180,6 +277,12 @@ export default {
          */
         deleteRow(index) {
             this.dataTable.splice(index, 1);
+        },
+
+        toDataTable() {
+            const data = (!this.data?.shipping_address || this.data?.shipping_address === "") ? "[{\"location_name\": \"\"}]" : this.data?.shipping_address;
+            console.log(data);
+            return JSON.parse(data);
         }
     }
 };

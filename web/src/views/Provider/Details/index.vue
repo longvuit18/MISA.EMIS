@@ -296,7 +296,7 @@
                             <transition name="slide">
                                 <Contact
                                     class="wrap"
-                                    v-if="tab === 'contact'"
+                                    v-show="tab === 'contact'"
                                     :providerType="currentProvider.provider_type"
                                     :data="currentProvider"
                                     :isClicked="hasClickTab"
@@ -306,7 +306,7 @@
                             <transition name="slide">
                                 <Terms
                                     class="wrap"
-                                    v-if="tab === 'terms'"
+                                    v-show="tab === 'terms'"
                                     :isCustomer="currentProvider.is_customer"
                                     :data="currentProvider"
                                     :disabled="viewMode"
@@ -315,7 +315,7 @@
                             <transition name="slide">
                                 <BankAccount
                                     class="wrap"
-                                    v-if="tab === 'bankAccount'"
+                                    v-show="tab === 'bankAccount'"
                                     v-model="currentProvider.bank_account_group"
                                     :disabled="viewMode"
                                 />
@@ -323,7 +323,7 @@
                             <transition name="slide">
                                 <Address
                                     class="wrap"
-                                    v-if="tab === 'address'"
+                                    v-show="tab === 'address'"
                                     :disabled="viewMode"
                                     :data="currentProvider"
                                     :countries="countries"
@@ -332,7 +332,7 @@
                             <transition name="slide">
                                 <div
                                     class="note wrap"
-                                    v-if="tab === 'note'"
+                                    v-show="tab === 'note'"
                                 >
                                     <BaseInput
                                         isTextarea
@@ -423,6 +423,8 @@ const columnNamesEmployee = [
     { key: "employee_name", text: "Tên nhân viên", width: 210 }
 
 ];
+
+const nameCountryDefault = "Viet Nam"; // khóa chính của VN trong db
 export default {
     name: "ProviderDetails",
     components: { Contact, Terms, BankAccount, Address },
@@ -439,6 +441,7 @@ export default {
         return {
             currentProvider: {
                 ...this.provider,
+                country: this.provider?.country ?? nameCountryDefault, // id của việt nam trong db
                 provider_type: this.provider?.provider_type ?? 0,
                 personal_contact_identity_date: utils.formatDateValueInput(this.provider?.personal_contact_identity_date)
             },
