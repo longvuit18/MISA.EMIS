@@ -24,6 +24,51 @@
                         >
                             {{columnName.text}}
                         </div>
+                        <div
+                            class="filter"
+                            style="display: none;"
+                        >
+                            <div
+                                class="icon icon-size-16 mi-header-option"
+                                @click="() => showedFilter = index"
+                            >
+                            </div>
+                            <BaseBoxPopup v-if="index === showedFilter">
+                                <div
+                                    class="base-table-filter"
+                                    v-click-outside="(e) => showedFilter = -1"
+                                >
+                                    <div
+                                        class="lock"
+                                        v-tooltip="'Tính năng đang phát triển'"
+                                    >
+                                        Cố định cột này
+                                    </div>
+                                    <div class="filter-text">
+                                        <div class="title">Lọc {{columnName.text}}</div>
+                                        <div class="mt-10 mb-10">
+                                            <BaseInput
+                                                fullWidth
+                                                placeholder="Nhập giá trị lọc"
+                                                focusInput
+                                                v-model="filter[columnName.key]"
+                                            />
+                                        </div>
+                                    </div>
+                                    <BaseRow class="justify-space-between">
+                                        <BaseButton
+                                            secondaryButton
+                                            buttonName="Bỏ lọc"
+                                            @click="() => discardFilter(columnName.key)"
+                                        />
+                                        <BaseButton
+                                            buttonName="Lọc"
+                                            @click="() =>handleFilter()"
+                                        />
+                                    </BaseRow>
+                                </div>
+                            </BaseBoxPopup>
+                        </div>
                     </th>
                     <th
                         class="last-column-fixed align-center"
@@ -41,7 +86,7 @@
                     :key="rowIndex"
                     @dblclick="(e) => handleDblClickRow(e, item)"
                     @contextmenu="(e) => handleRightClick(e, item)"
-                    :class="{'z-index-row': showFeature(rowIndex)}"
+                    :class="{'z-index-row': rowIndex === showedFeature}"
                 >
                     <th class="first-white-space"></th>
                     <td class="first-column-fixed align-center td-viewer">
@@ -72,14 +117,14 @@
                             <div>
                                 <button
                                     @click="handleClickFeature(rowIndex)"
-                                    :class="{'hide-border': !showFeature(rowIndex)}"
+                                    :class="{'hide-border': rowIndex  !== showedFeature}"
                                     class="td-viewer"
                                 >
                                     <div class="icon-arrow-down"></div>
                                 </button>
                             </div>
                             <ul
-                                v-if="showFeature(rowIndex)"
+                                v-if="rowIndex === showedFeature"
                                 :class="rowIndex === data.length - 1 || rowIndex === data.length - 2 ? 'popup-top' : 'popup-bottom'"
                             >
                                 <li
@@ -132,7 +177,7 @@ import utils from "../../../utils";
  */
 
 export default {
-    name: "EmployeeTable",
+    name: "ProviderTable",
     props: {
         // columnNames là 1 Array chứa object {key: string, text: string, align: string, sort: boolean, format: string, width: number}
         columnNames: {
@@ -142,6 +187,11 @@ export default {
         dataProps: {
             required: true,
             default: () => null
+        },
+
+        filterProp: {
+            type: Object,
+            default: () => { }
         }
     },
 
@@ -156,7 +206,10 @@ export default {
             rowsSelected: [],
             selectedAll: false,
 
-            showedFeature: -1
+            showedFeature: -1,
+            showedFilter: -1,
+
+            filter: {}
         };
     },
 
@@ -165,10 +218,39 @@ export default {
         dataProps() {
             this.data = this.dataProps;
             this.rowsSelected = [];
+        },
+
+        filterProp: {
+            handler(value) {
+                this.filter = { ...value };
+            },
+            deep: true
         }
     },
 
     methods: {
+        /**
+         * Hàm bỏ lọc
+         * Created by: VLVU (28/9/2021)
+         */
+        discardFilter(columnName) {
+            if (this.filter[columnName]) {
+                this.showedFilter = -1;
+                this.filter[columnName] = "";
+                this.$emit("filterValue", this.filter);
+                return;
+            }
+            this.showedFilter = -1;
+        },
+
+        /**
+         * Thưc hiện lọc
+         * Created by: VLVU (28/9/2021)
+         */
+        handleFilter() {
+            this.showedFilter = -1;
+            this.$emit("filterValue", this.filter);
+        },
         /**
         * Sự kiện khi double click vào 1 row
         * CreatedBy: Vũ Long Vũ 14/7/2021
@@ -186,26 +268,6 @@ export default {
             e.preventDefault();
             this.$emit("rightClick", item, e.pageX, e.pageY);
         },
-
-        /**
-        * Sự kiện khi  click vào 1 row
-        * CreatedBy: Vũ Long Vũ 19/7/2021
-        */
-        // handleClick(e, index, item) {
-        //     e.preventDefault();
-        //     // gắn lại những hàng đã chon trước đó
-        //     // check xem người dùng click vào hàng mới hay cũ
-        //     const rowIndex = this.rowsSelected.findIndex(row => row === index);
-
-        //     if (rowIndex > -1) {
-        //         this.rowsSelected.splice(rowIndex, 1);
-        //         this.$emit("click", null);
-        //     } else {
-        //         // nếu cho phép chọn nhiều thì cập nhập array không thì chỉ truyền vào 1
-        //         this.rowsSelected = this.allowsMultipleSelection ? [...this.rowsSelected, index] : [index];
-        //         this.$emit("click", item);
-        //     }
-        // },
 
         /**
          * sự kiện click vào checkbox
@@ -330,12 +392,16 @@ export default {
         },
 
         /**
-         * @param {number} rowIndex vị trí của hàng trong bảng
-         * check xem hàng đó có mở hay không
-         * Created by: VLVU (17/8/2021)
+         * @param {number} rowIndex vị trí của column trong bảng
+         * sự kiện ấn show filter
+         * Created by: VLVU (27/89/2021)
          */
-        showFeature(rowIndex) {
-            return rowIndex === this.showedFeature;
+        handleClickShowFilter(columnIndex) {
+            if (this.showedFilter === columnIndex) {
+                this.showedFilter = -1;
+            } else {
+                this.showedFilter = columnIndex;
+            }
         },
 
         /**
@@ -379,4 +445,39 @@ export default {
 </script>
 
 <style scoped src="./style.css">
+</style>
+<style>
+.base-table-filter {
+    font-weight: 400;
+    font-size: 13px;
+    border-radius: 2px;
+    box-shadow: 3px 3px 6px #ddd;
+    padding: 22px 17px;
+    border: 1px solid #babec5;
+}
+.base-table-filter .lock {
+    position: relative;
+    padding-left: 30px;
+    line-height: 24px;
+    cursor: pointer;
+    border-bottom: 1px solid #ebedf0;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    text-transform: none;
+}
+
+.base-table-filter .lock:before {
+    content: "";
+    position: absolute;
+    display: block;
+    height: 24px;
+    width: 24px;
+    top: 0;
+    left: 2px;
+    background: transparent url("../../../assets/icon/icon.svg") no-repeat -1726px -560px;
+}
+
+.base-table-filter.filter-text {
+    text-transform: none;
+}
 </style>

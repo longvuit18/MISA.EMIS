@@ -97,12 +97,13 @@
                 >
                     {{ option[keyLabel] }}
                 </div>
-                <li
+                <div
                     v-if="options.length === 0"
                     class="combobox-result"
+                    @click="isOpen = false"
                 >
                     Không có dữ liệu
-                </li>
+                </div>
             </OptionWrapper>
             <OptionWrapper
                 :style="{...styleOption}"
@@ -313,7 +314,10 @@ export default {
          * Created by: VLVU (19/9/2021)
          */
         value: {
-            handler() {
+            handler(value) {
+                if (!value) {
+                    this.search = "";
+                }
                 this.positonCombobox = this.$refs.combobox.getBoundingClientRect();
             },
             deep: true

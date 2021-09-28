@@ -1,10 +1,10 @@
 import PortalVue from "portal-vue";
+import vClickOutside from "v-click-outside";
 import VTooltip from "v-tooltip";
 import Vue from "vue";
-import { RecycleScroller } from "vue-virtual-scroller";
-import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 import { axiosConfig } from "./api/axiosConfig";
 import App from "./App.vue";
+import BoxPopup from "./components/base/BoxPopup";
 import Button from "./components/base/Button";
 import ButtonIcon from "./components/base/ButtonIcon";
 import Checkbox from "./components/base/Checkbox";
@@ -44,10 +44,11 @@ Vue.component("BaseRadio", Radio);
 Vue.component("BaseChip", Chip);
 Vue.component("BaseRadioGroup", RadioGroup);
 Vue.component("BaseDatePicker", DatePicker);
-Vue.component("RecycleScroller", RecycleScroller);
+Vue.component("BaseBoxPopup", BoxPopup);
 Vue.use(VTooltip);
 Vue.use(PortalVue);
 
+Vue.use(vClickOutside);
 Vue.config.productionTip = false;
 new Vue({
 	router,

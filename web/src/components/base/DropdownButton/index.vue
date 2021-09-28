@@ -8,7 +8,6 @@
                 v-bind:class="{ 'disabled-secondary-button': disabled && secondaryButton,'secondary-button': !disabled && secondaryButton, 'color-red': colorRed}"
                 v-on="$listeners"
                 v-bind="$attrs"
-                @click="handleClick"
                 :disabled="disabled"
             >
                 <img
@@ -29,7 +28,7 @@
         <div
             class="dropdown-icon"
             v-if="!secondaryButton"
-            @click="isOpen = !isOpen"
+            @click="onOpenBox"
         >
             <div class="line" />
             <button>
@@ -42,7 +41,8 @@
                     class="dropdown-button-options"
                     ref="options"
                     :style="{...styleOption}"
-                    v-if="isOpen"
+                    v-show="isOpen"
+                    v-click-outside="handleClickOutside"
                 >
                     <slot></slot>
                 </div>
@@ -82,12 +82,16 @@ export default {
         positionOption: {
             type: String,
             default: () => "bottom"
+        },
+
+        isOpen: {
+            type: Boolean,
+            default: () => false
         }
     },
 
     data() {
         return {
-            isOpen: false,
             positionDropdownButton: null
         };
     },
@@ -149,28 +153,17 @@ export default {
             this.positionDropdownButton = this.$refs.dropdownButton.getBoundingClientRect();
         }
     },
-    // Lắng nghe sự kiện click ra bên ngoài combobox
-    mounted() {
-        document.addEventListener("click", this.handleClickOutside);
-    },
-    // xóa sự kiện này khi thoát khỏi xóa component
-    destroyed() {
-        document.removeEventListener("click", this.handleClickOutside);
-    },
     methods: {
         // phương thức khi người dùng click ra bên ngoài combobox
         handleClickOutside(event) {
-            const datepickerPopup = document.getElementsByClassName("mx-datepicker-main mx-datepicker-popup");
-            const comboboxOptions = document.getElementsByClassName("combobox-options");
-            if (!this.$el.contains(event.target) && !this.$refs.options?.contains(event.target) && datepickerPopup.length === 0 && comboboxOptions.length === 0) {
-                this.isOpen = false;
+            if (this.$refs.dropdownButton?.contains(event.target) || event.target.className === "combobox-result") {
+                return;
             }
+            this.$emit("close");
         },
 
-        handleClick() {
-            if (this.secondaryButton) {
-                this.isOpen = !this.isOpen;
-            }
+        onOpenBox() {
+            this.$emit("openBox");
         }
     }
 

@@ -115,11 +115,39 @@
                         <BaseDropdownButton
                             buttonName="Lọc"
                             secondaryButton
+                            @click="isOpenFeatureFilter = true"
+                            :isOpen="isOpenFeatureFilter"
+                            @close="isOpenFeatureFilter = false"
                         >
-                            <FilterDropdown />
+
+                            <FilterDropdown
+                                :filterProp="filter"
+                                @close="isOpenFeatureFilter = false"
+                                @filterValue="getFilterValue"
+                            />
                         </BaseDropdownButton>
                     </div>
+                    <div class="filter-bar-center">
+                        <div
+                            class="filter-user-view-item"
+                            v-for="(value, index) in filterView"
+                            :key="index"
+                        >
+                            {{value[1]}}
+                            <div
+                                class="icon icon-size-16 mi-close--small"
+                                style="cursor: pointer;"
+                                @click="() => deleteAItemFilter(value[0])"
+                            ></div>
+                        </div>
+                        <div
+                            v-if="filterView.length !== 0"
+                            class="filter-user-view-item delete-condition"
+                            @click="reloadProviders"
+                        >Xóa điều kiện lọc</div>
+                    </div>
                 </div>
+
                 <div class="filter-bar-right-area">
                     <div class="search-input">
                         <BaseInput
@@ -143,11 +171,13 @@
                 <ProviderTable
                     :columnNames="columnNames"
                     :dataProps="providers"
+                    :filterProp="filter"
                     @handleClickEdit="handleClickEdit"
                     @handleClickView="handleClickView"
                     @handleClickDelete="handleClickDelete"
                     @handleClickRelication="handleClickRelication"
                     @clickCheckbox="handleClickCheckbox"
+                    @filterValue="getFilterValue"
                 />
             </div>
         </div>
@@ -164,7 +194,7 @@
                             v-model="pageSize"
                             readonly
                             optionId="value"
-                            keyLabel="text"
+                            keyLabel="label"
                         />
                     </div>
                     <div
@@ -305,7 +335,7 @@
 </template>
 
 <script>
-
+/* eslint-disable vue/no-unused-vars */
 import ProviderApi from "../../api/service/provider";
 import LocationApi from "../../api/service/location";
 import ProviderDetails from "./Details";
@@ -316,7 +346,7 @@ import ProviderTable from "./Table";
 import FilterDropdown from "./dropdown/FilterDropdown.vue";
 const columnNames = [
     { key: "provider_code", text: "Mã nhà cung cấp", width: 180 },
-    { key: "provider_name", text: "Mã nhà cung cấp", width: 430 },
+    { key: "provider_name", text: "Tên nhà cung cấp", width: 430 },
     { key: "address", text: "Địa chỉ", width: 250 },
     { key: "description", text: "Diễn giải", width: 500 },
     { key: "todo", text: "Công nợ", width: 180, align: "right" },
@@ -332,11 +362,11 @@ const defaultPageNumber = 1;
 const defaultTotalPage = 1;
 const defaultTotalRecord = 0;
 const defaultPageSizes = [
-    { value: 10, text: "10 bản ghi trên 1 trang" },
-    { value: 20, text: "20 bản ghi trên 1 trang" },
-    { value: 30, text: "30 bản ghi trên 1 trang" },
-    { value: 50, text: "50 bản ghi trên 1 trang" },
-    { value: 100, text: "100 bản ghi trên 1 trang" }
+    { value: 10, label: "10 bản ghi trên 1 trang" },
+    { value: 20, label: "20 bản ghi trên 1 trang" },
+    { value: 30, label: "30 bản ghi trên 1 trang" },
+    { value: 50, label: "50 bản ghi trên 1 trang" },
+    { value: 100, label: "100 bản ghi trên 1 trang" }
 ];
 
 const defaultFilter = {
@@ -371,7 +401,8 @@ export default {
 
             showOverview: true,
 
-            countries: []
+            countries: [],
+            isOpenFeatureFilter: false
 
         };
     },
@@ -442,6 +473,24 @@ export default {
          */
         threePagesCloseTogether() {
             return [this.pageNumber - 1, this.pageNumber, this.pageNumber + 1];
+        },
+
+        /**
+         * filter hiển thị cho người dùng
+         */
+        filterView() {
+            const vFilter = { ...this.filter };
+            delete vFilter.CustomFilter;
+            delete vFilter.PageIndex;
+            delete vFilter.PageSize;
+            return Object.entries(vFilter).filter(item => item[1])
+                .map(item => {
+                    const i = columnNames.findIndex(c => c.key === item[0]);
+                    if (i > -1) {
+                        return [item[0], `${columnNames[i].text} chứa "${item[1]}"`];
+                    }
+                    return item;
+                });
         }
     },
     /**
@@ -465,6 +514,28 @@ export default {
 
         handleClickCheckbox(t) {
             console.log(t);
+        },
+        /**
+         * Lấy thông tin filter từ bảng
+         * Created by: VLVU (28/9/2021)
+         */
+        getFilterValue(filter) {
+            this.filter = { ...this.filter, ...filter };
+            this.loadProviders();
+            this.isOpenFeatureFilter = false;
+        },
+
+        /**
+         * Xóa 1 điều kiện lọc
+         * @param {string} key key của trường cần xóa
+         * Created by: VLVU(29/9/2021)
+         */
+        deleteAItemFilter(key) {
+            const tFilter = { ...this.filter };
+            delete tFilter[key];
+            this.filter = tFilter;
+
+            this.loadProviders();
         },
 
         /**
@@ -544,7 +615,7 @@ export default {
             this.totalPage = defaultTotalPage;
             this.totalRecord = defaultTotalRecord;
             this.filterText = defaultFilterText;
-            this.filter = defaultFilter;
+            this.filter = { ...defaultFilter };
 
             this.loadProviders();
         },

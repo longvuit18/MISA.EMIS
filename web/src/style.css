@@ -199,6 +199,10 @@ h1, h2, h3, h4, h5, h6 {
 	background-position: -88px -200px;
 }
 
+.mi-header-option {
+	background-position: -1687px -564px;
+}
+
 .flex {
 	display: flex;
 }
@@ -268,7 +272,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .tooltip {
-	z-index: 200;
+	z-index: 600;
 }
 
 .tooltip .tooltip-inner {

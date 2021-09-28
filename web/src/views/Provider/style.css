@@ -34,8 +34,8 @@
 
 #provider .provider-body .filter-bar {
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
+	justify-content: space-between;
 	padding: 16px 16px 10px;
 	position: sticky;
 	position: -webkit-sticky;
@@ -67,6 +67,28 @@
 .filter-bar-right-area {
 	display: flex;
 	align-items: center;
+}
+
+.filter-bar-center {
+	padding-left: 10px;
+	display: flex;
+	width: 40%;
+	flex-basis: 100%;
+	flex-grow: 1;
+	flex-wrap: wrap;
+}
+
+.filter-bar-center .filter-user-view-item {
+	display: flex;
+	align-items: center;
+	color: #0075c0;
+	white-space: nowrap;
+	margin-right: 12px;
+}
+
+.filter-bar-center .delete-condition:hover {
+	cursor: pointer;
+	text-decoration: underline;
 }
 
 #provider .provider-body .search-input {

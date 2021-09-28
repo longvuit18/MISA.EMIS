@@ -22,13 +22,17 @@
         <portal-target
             name="combobox"
             multiple
-        >
-        </portal-target>
+        />
+
         <portal-target
             name="dropdown-button"
             multiple
-        >
-        </portal-target>
+        />
+
+        <portal-target
+            name="box-popup"
+            multiple
+        />
     </div>
 
 </template>

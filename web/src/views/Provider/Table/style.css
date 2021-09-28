@@ -25,6 +25,10 @@ table thead th {
 	text-transform: uppercase;
 }
 
+table thead th:hover .filter {
+	display: block !important;
+}
+
 table th, td {
 	border-bottom: 1px solid #c7c7c7;
 	border-right: 1px dotted #c7c7c7;
@@ -230,7 +234,7 @@ table tbody tr {
 	border: none;
 }
 
-button {
+.feature-column button {
 	border-spacing: 0;
 	margin: 0;
 	padding: 0;
@@ -239,4 +243,40 @@ button {
 	justify-content: center;
 	background-color: #fff;
 	border: 1px solid #0075c0;
+}
+
+.filter {
+	position: absolute;
+	top: 8px;
+	right: 10px;
+}
+
+.filter .icon {
+	cursor: pointer;
+}
+
+.filter .lock {
+	position: relative;
+	padding-left: 30px;
+	line-height: 24px;
+	cursor: pointer;
+	border-bottom: 1px solid #ebedf0;
+	padding-bottom: 14px;
+	margin-bottom: 14px;
+	text-transform: none;
+}
+
+.filter .lock:before {
+	content: "";
+	position: absolute;
+	display: block;
+	height: 24px;
+	width: 24px;
+	top: 0;
+	left: 2px;
+	background: transparent url("../../../assets/icon/icon.svg") no-repeat -1726px -560px;
+}
+
+.filter .filter-text {
+	text-transform: none;
 }
