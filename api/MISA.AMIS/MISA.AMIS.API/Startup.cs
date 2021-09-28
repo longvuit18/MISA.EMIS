@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MISA.AMIS.API.Middlewares;
 using MISA.AMIS.ApplicationCore.Interfaces;
+using MISA.AMIS.ApplicationCore.Interfaces.Repository;
 using MISA.AMIS.ApplicationCore.Services;
 using MISA.AMIS.Infrastructure;
 using System;
@@ -55,6 +56,7 @@ namespace MISA.AMIS.API
             // provider
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IProviderRepository, ProviderRepository>();
+            services.AddScoped<ILocationRepository, LocationRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

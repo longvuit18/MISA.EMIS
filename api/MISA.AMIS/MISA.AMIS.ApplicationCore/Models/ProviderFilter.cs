@@ -24,5 +24,49 @@ namespace MISA.AMIS.ApplicationCore.Models
         /// Số lượng record trong trang
         /// </summary>
         public int PageSize { get; set; } = 20;
+        /// <summary>
+        /// mã nhà cung cấp
+        /// </summary>
+        public string provider_code { get; set; }
+        /// <summary>
+        /// tên nhà cung cấp
+        /// </summary>
+        public string provider_name { get; set; }
+        /// <summary>
+        /// địa chỉ
+        /// </summary>
+        public string address { get; set; }
+        /// <summary>
+        /// mô tả
+        /// </summary>
+        public string description { get; set; }
+        /// <summary>
+        /// mã số thuế
+        /// </summary>
+        public string tax_code { get; set; }
+        /// <summary>
+        /// số điện thoại
+        /// </summary>
+        public string phone_number{ get; set; }
+        /// <summary>
+        /// só chứng minh thư
+        /// </summary>
+        public string personal_contact_identity_number { get; set; }
+        /// <summary>
+        /// tên tỉnh hoặc thành phố
+        /// </summary>
+        public string province_or_city { get; set; }
+        /// <summary>
+        /// tên huyện
+        /// </summary>
+        public string district { get; set; }
+        /// <summary>
+        /// tên xã
+        /// </summary>
+        public string ward_or_commune { get; set; } 
+        /// <summary>
+        ///nhóm nhà cung cấp
+        /// </summary>
+        public string provider_group { get; set; }
     }
 }

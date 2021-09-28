@@ -69,7 +69,7 @@ namespace MISA.AMIS.Infrastructure
 
         public async Task<IEnumerable<TEntity>> GetAll()
         {
-            var entities = await _dbConnection.QueryAsync<TEntity>($"select * from func_get_{_tableName}s()", commandType: CommandType.Text);
+            var entities = await _dbConnection.QueryAsync<TEntity>($"select * from func_get_{_tableName}()", commandType: CommandType.Text);
             return entities;
 
         }

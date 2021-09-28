@@ -36,7 +36,7 @@ namespace MISA.AMIS.Infrastructure
             parameters.Add("@employee_filter", employeeFilter);
 
             // query từ database
-            var employeeFiltered = await _dbConnection.QueryAsync<Employee>($"func_get_{_tableName}s_filter_paging", parameters, commandType: CommandType.StoredProcedure);
+            var employeeFiltered = await _dbConnection.QueryAsync<Employee>($"func_get_{_tableName}_filter_paging", parameters, commandType: CommandType.StoredProcedure);
 
             // lấy tổng số trang và tổng số bản ghi
             var totalRecord = employeeFiltered.Count();

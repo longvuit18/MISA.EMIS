@@ -33,10 +33,21 @@ namespace MISA.AMIS.Infrastructure
         {
             // Tạo và set dynamic parameter
             var parameters = new DynamicParameters();
-            parameters.Add("@custom_filter", filter.CustomFilter, DbType.String) ;
+            parameters.Add("@custom_filter", filter.CustomFilter, DbType.String);
+            parameters.Add("@p_provider_code", filter.provider_code, DbType.String);
+            parameters.Add("@p_provider_name", filter.provider_name, DbType.String);
+            parameters.Add("@p_address", filter.address, DbType.String);
+            parameters.Add("@p_description", filter.description, DbType.String);
+            parameters.Add("@p_tax_code", filter.tax_code, DbType.String);
+            parameters.Add("@p_phone_number", filter.phone_number, DbType.String);
+            parameters.Add("@p_personal_contact_identity_number", filter.personal_contact_identity_number, DbType.String);
+            parameters.Add("@p_province_or_city", filter.province_or_city, DbType.String);
+            parameters.Add("@p_district", filter.district, DbType.String);
+            parameters.Add("@p_ward_or_commune", filter.ward_or_commune, DbType.String);
+            parameters.Add("@p_provider_group", filter.provider_group, DbType.String);
 
             // query từ database
-            var employeeFiltered = await _dbConnection.QueryAsync<Provider>($"func_get_{_tableName}s_filter_paging", parameters, commandType: CommandType.StoredProcedure);
+            var employeeFiltered = await _dbConnection.QueryAsync<Provider>($"func_get_{_tableName}_filter_paging", parameters, commandType: CommandType.StoredProcedure);
 
             // lấy tổng số trang và tổng số bản ghi
             var totalRecord = employeeFiltered.Count();
@@ -50,7 +61,7 @@ namespace MISA.AMIS.Infrastructure
                 : employeeFiltered.Skip(offSet).ToList().GetRange(0, filter.PageSize);
 
             // trả về dưới dạng 1 object
-            return new {  total_page = totalPage, total_record = totalRecord, result };
+            return new { total_page = totalPage, total_record = totalRecord, result };
         }
         public async Task<string> GetNewProviderCode()
         {
@@ -60,9 +71,9 @@ namespace MISA.AMIS.Infrastructure
             var prefix = "NCC-";
             var suffixes = "";
 
-            foreach(char c in maxCode.Reverse())
+            foreach (char c in maxCode.Reverse())
             {
-                if(!Char.IsDigit(c))
+                if (!Char.IsDigit(c))
                 {
                     break;
                 }
