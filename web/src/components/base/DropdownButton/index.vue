@@ -139,8 +139,8 @@ export default {
          */
         styleOption() {
             return this.positionOption === "bottom"
-                ? { top: this.top, right: this.right, width: "auto", "min-width": this.width }
-                : { bottom: this.bottom, right: this.right, width: "auto", "min-width": this.width };
+                ? { top: this.top, right: this.right, width: "auto" }
+                : { bottom: this.bottom, right: this.right, width: "auto" };
         },
 
         styleIconDisabled() {

@@ -57,26 +57,27 @@ const popup = {
 		type: "info"
 	},
 	/**
-	 * popup xóa nhân viên thành công
-	 * @param {string} employeeCode mã nhân viên
+	 * popup hỏi muốn xóa 1 không
+	 * @param {string} code mã
+	 * @param {string} name tên đối tượng xóa
 	 * @returns object popup message
 	 */
-	deleteEmployee(employeeCode) {
+	deleteOne(code, name) {
 		return {
-			content: `Bạn có thực sự muốn xóa nhân viên <${employeeCode}> này không?`,
+			content: `Bạn có thực sự muốn xóa ${name} <${code}> này không?`,
 			state: "confirm",
 			type: "warning"
 		};
 	},
 
 	/**
-	 * popup xóa nhà cung cấp thành công
-	 * @param {string} providerCode mã nhân viên
+	 * popup hỏi muốn xóa nhiều không
+	 * @param {string} name tên đối tượng
 	 * @returns object popup message
 	 */
-	deleteProvider(providerCode) {
+	deleteMultiple(name) {
 		return {
-			content: `Bạn có thực sự muốn xóa nhà cung cấp <${providerCode}> này không?`,
+			content: `Bạn có thực sự muốn xóa tất cả ${name} đã chọn không?`,
 			state: "confirm",
 			type: "warning"
 		};

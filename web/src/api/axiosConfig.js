@@ -7,7 +7,7 @@ import axios from "axios";
 export const axiosConfig = () => {
 	axios.defaults.baseURL = "https://localhost:44329";
 	// axios.defaults.headers.common.Authorization = AUTH_TOKEN;
-	axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+	// axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
 	axios.interceptors.request.use(request => {
 		// console.log(request);

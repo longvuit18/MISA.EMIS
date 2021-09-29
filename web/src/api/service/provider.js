@@ -25,6 +25,18 @@ class ProviderApi extends BaseApi {
 		return await axios.post(`${this.route}/filterPaging`, { ...JSON.parse(JSON.stringify(filter)) });
 	}
 
+	/**
+	 * api filter
+	 * @param {Array} listId list id muốn xóa
+	 * @returns axios promise
+	 * Created by: VLVU (29/9/2021)
+	 */
+	async deleteMultiple(listId) {
+		return await axios.delete(`${this.route}/batch`, {
+			data: listId
+		});
+	}
+
 	// override here
 }
 

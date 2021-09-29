@@ -218,6 +218,7 @@ export default {
         dataProps() {
             this.data = this.dataProps;
             this.rowsSelected = [];
+            this.selectedAll = false;
         },
 
         filterProp: {

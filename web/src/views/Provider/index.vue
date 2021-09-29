@@ -108,14 +108,19 @@
                         <BaseDropdownButton
                             buttonName="Thực hiện hàng loạt"
                             secondaryButton
-                            disabled
-                        />
+                            :disabled="selected < 1"
+                            :isOpen="isOpenCheckAll"
+                            @click="isOpenCheckAll = !isOpenCheckAll"
+                            @close="isOpenCheckAll = false"
+                        >
+                            <BatchExecution @handleClickDeleteMulti="handleClickDeleteMulti" />
+                        </BaseDropdownButton>
                     </div>
                     <div class="filter">
                         <BaseDropdownButton
                             buttonName="Lọc"
                             secondaryButton
-                            @click="isOpenFeatureFilter = true"
+                            @click="isOpenFeatureFilter = !isOpenFeatureFilter"
                             :isOpen="isOpenFeatureFilter"
                             @close="isOpenFeatureFilter = false"
                         >
@@ -344,6 +349,7 @@ import enums from "../../enums";
 import resources from "../../resources";
 import ProviderTable from "./Table";
 import FilterDropdown from "./dropdown/FilterDropdown.vue";
+import BatchExecution from "./dropdown/BatchExecution.vue";
 const columnNames = [
     { key: "provider_code", text: "Mã nhà cung cấp", width: 180 },
     { key: "provider_name", text: "Tên nhà cung cấp", width: 430 },
@@ -377,7 +383,7 @@ const defaultFilter = {
 const defaultPageSize = 20;
 export default {
     name: "Provider",
-    components: { ProviderDetails, ProviderTable, FilterDropdown },
+    components: { ProviderDetails, ProviderTable, FilterDropdown, BatchExecution },
     data() {
         return {
             columnNames: columnNames,
@@ -402,7 +408,11 @@ export default {
             showOverview: true,
 
             countries: [],
-            isOpenFeatureFilter: false
+            isOpenFeatureFilter: false,
+
+            // index các phần tử đã chon trong bảng
+            selected: [],
+            isOpenCheckAll: false
 
         };
     },
@@ -512,8 +522,44 @@ export default {
             confirmPopup: "confirmPopup"
         }),
 
-        handleClickCheckbox(t) {
-            console.log(t);
+        /**
+         * Láy hết các index các hàng đã chọn
+         * Created by: VLVU (29/9/2021)
+         */
+        handleClickCheckbox(selected) {
+            this.selected = selected;
+        },
+
+        async handleClickDeleteMulti() {
+            this.isOpenCheckAll = false;
+            const listId = [];
+            this.selected.forEach(item => {
+                listId.push(this.providers[item].provider_id);
+            });
+
+            const ok = await this.confirmPopup(resources.popup.deleteMultiple("nhà cung cấp"));
+            if (!ok) {
+                return;
+            }
+
+            try {
+                await ProviderApi.deleteMultiple(listId);
+
+                this.setToast(resources.toast.deleteSuccess(this.currentProvider.provider_code, "nhà cung cấp"));
+                this.selected = [];
+                this.reloadProviders();
+            } catch (error) {
+                if (error.response.status === enums.statusCode.serverError) {
+                    this.setToast({
+                        content: error.response.data.MsgUser,
+                        type: "error"
+                    });
+                }
+                this.setToast({
+                    content: resources.serverErrorMessageDefault,
+                    type: "error"
+                });
+            }
         },
         /**
          * Lấy thông tin filter từ bảng
@@ -657,7 +703,7 @@ export default {
          */
         async handleClickDelete(provider) {
             this.currentProvider = provider;
-            const ok = await this.confirmPopup(resources.popup.deleteProvider(provider.provider_code));
+            const ok = await this.confirmPopup(resources.popup.deleteOne(provider.provider_code, "nhà cung cấp"));
             if (!ok) {
                 return;
             }
@@ -687,8 +733,14 @@ export default {
 
         async onDelete() {
             try {
-                await ProviderApi.deleteOne(this.currentProvider.provider_id);
-
+                const promise = await ProviderApi.deleteOne(this.currentProvider.provider_id);
+                if (!promise?.data?.State) {
+                    this.setToast({
+                        content: promise?.data?.MsgUser,
+                        type: "error"
+                    });
+                    return;
+                }
                 this.setToast(resources.toast.deleteSuccess(this.currentProvider.provider_code, "nhà cung cấp"));
                 this.reloadProviders();
             } catch (error) {
