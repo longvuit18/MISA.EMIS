@@ -24,7 +24,10 @@
                     </div>
                 </div>
             </div>
-            <div class="back">
+            <div
+                class="back"
+                @click="() => $router.push('/cash/process')"
+            >
                 Quay lai
             </div>
         </div>

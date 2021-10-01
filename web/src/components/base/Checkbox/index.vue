@@ -9,7 +9,7 @@
             :tabindex="tabindex"
         >
         <span></span>
-        <div v-if="item">{{item.label}}</div>
+        <div v-if="label">{{label}}</div>
     </label>
 </template>
 <script>
@@ -20,9 +20,9 @@ export default {
         event: "onChange"
     },
     props: {
-        item: {
-            type: Object,
-            default: () => null
+        label: {
+            type: String,
+            default: () => ""
         },
 
         value: {

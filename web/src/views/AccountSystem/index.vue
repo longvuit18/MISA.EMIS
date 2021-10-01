@@ -40,14 +40,14 @@
                 <div class="reload-button">
                     <div
                         class="reload-icon"
-                        @click="reloadEmployees"
+                        @click="reloadAccounts"
                     ></div>
                 </div>
             </div>
             <div class="grid">
-                <EmployeeTable
+                <AccountTable
                     :columnNames="columnNames"
-                    :dataProps="employees"
+                    :dataProps="accounts"
                     @handleClickEdit="handleClickEdit"
                     @handleClickDelete="handleClickDelete"
                     @handleClickRelication="handleClickRelication"
@@ -57,150 +57,16 @@
         <div class="pagination-bar">
             <div class="pagination-box">
                 <div class="paging-left">
-                    Tổng số: <b>{{totalRecord}}</b> bản ghi
-                </div>
-                <div class="paging-right">
-                    <div class="page-size">
-                        <BaseCombobox
-                            positionOption="top"
-                            :items="pageSizes"
-                            :defaultItem="pageSize"
-                            v-model.number="pageSize"
-                            readonly
-                        />
-                    </div>
-                    <div
-                        class="btn-prev-page"
-                        :class="{'disabled-text': pageNumber === 1}"
-                        @click="prevPage"
-                    >Trước</div>
-                    <!-- Khi page có ít hơn 5 trang thì hiển thị toàn bộ số trang -->
-                    <div
-                        class="pagination"
-                        v-if="totalPage < 6"
-                    >
-                        <div
-                            v-for="page in totalPages"
-                            :key="page"
-                            class="pagination-item"
-                            :class="{'active': page == pageNumber}"
-                            @click="() => onPagination(page)"
-                        >
-                            {{page}}
-                        </div>
-                    </div>
-                    <!-- Nếu không thì sẽ hiện thêm dấu 3 chấm ở giữa -->
-                    <div v-else>
-                        <!-- Nếu trang hiện tại là 3 trang đầu tiên vd: 1 2 3 ... 50 -->
-                        <div
-                            class="pagination"
-                            v-if="pageNumber < 3"
-                        >
-                            <div
-                                v-for="page in [1,2,3]"
-                                :key="page"
-                                class="pagination-item"
-                                :class="{'active': page == pageNumber}"
-                                @click="() => onPagination(page)"
-                            >
-                                {{page}}
-                            </div>
-
-                            <div class="pagination-item">
-                                ...
-                            </div>
-                            <div
-                                class="pagination-item"
-                                :class="{'active': totalPage == pageNumber}"
-                                @click="() => onPagination(totalPage)"
-                            >
-                                {{totalPage}}
-                            </div>
-                        </div>
-                        <!-- Nếu trang hiện tại lớn hơn 3 thì sẽ xuất hiện thêm 1 dấu 3 chấm nữa vd: 1 ... 4 5 6 ... 50 -->
-                        <div
-                            v-else-if="pageNumber < totalPage - 1"
-                            class="pagination"
-                        >
-                            <div
-                                class="pagination-item"
-                                :class="{'active': pageNumber === 1}"
-                                @click="() => onPagination(1)"
-                            >
-                                1
-                            </div>
-                            <div
-                                class="pagination-item"
-                                v-if="pageNumber !== 3"
-                            >
-                                ...
-                            </div>
-                            <div
-                                v-for="page in threePagesCloseTogether"
-                                :key="page"
-                                class="pagination-item"
-                                :class="{'active': page == pageNumber}"
-                                @click="() => onPagination(page)"
-                            >
-                                {{page}}
-                            </div>
-                            <div
-                                class="pagination-item"
-                                v-if="pageNumber !== totalPage - 2"
-                            >
-                                ...
-                            </div>
-                            <div
-                                class="pagination-item"
-                                :class="{'active': pageNumber === totalPage}"
-                                @click="() => onPagination(totalPage)"
-                            >
-                                {{totalPage}}
-                            </div>
-                        </div>
-                        <!-- Khi trang hiện tại là nhưng trang cuối cùng thì bỏ 1 dấu 3 chấm đi: 1 ... 48 49 50 -->
-                        <div
-                            class="pagination"
-                            v-else
-                        >
-                            <div
-                                class="pagination-item"
-                                :class="{'active': pageNumber === 1}"
-                                @click="() => onPagination(1)"
-                            >
-                                1
-                            </div>
-
-                            <div class="pagination-item">
-                                ...
-                            </div>
-                            <div
-                                v-for="page in [totalPage -2, totalPage -1, totalPage]"
-                                :key="page"
-                                class="pagination-item"
-                                :class="{'active': page == pageNumber}"
-                                @click="() => onPagination(page)"
-                            >
-                                {{page}}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div
-                        class="btn-next-page"
-                        :class="{'disabled-text': pageNumber === totalPage}"
-                        @click="nextPage"
-                    >Sau</div>
+                    Tổng số: <b>{{100}}</b> bản ghi
                 </div>
             </div>
         </div>
-        <EmployeeDetails
+        <AccountDetails
             v-if="openDialog"
             @onClose="onCloseDialog"
-            :employee="currentEmployee"
-            :departments="departments"
+            :employee="currentAccount"
             :state="stateDialog"
-            @reloadEmployees="reloadEmployees"
+            @reloadAccounts="reloadAccounts"
         />
     </div>
 
@@ -209,62 +75,40 @@
 <script>
 
 import EmployeeApi from "../../api/service/employee";
-import DepartmentApi from "../../api/service/department";
-import EmployeeDetails from "./Details";
+import AccountDetails from "./Details";
 import { mapActions, mapMutations } from "vuex";
 import enums from "../../enums";
 import resources from "../../resources";
-import EmployeeTable from "./Table";
+import AccountTable from "./Table";
 const columnNames = [
-    { key: "EmployeeCode", text: "Mã nhân viên", width: 145 },
-    { key: "EmployeeName", text: "Họ và tên", sort: true, width: 250 },
-    { key: "GenderName", text: "Giới tính", width: 120 },
-    { key: "DateOfBirth", text: "Ngày sinh", width: 150, align: "center", format: "date" },
-    { key: "IdentityNumber", text: "Số CMND", width: 200 },
-    { key: "IdentityDate", text: "Ngày cấp", width: 150, align: "center", format: "date" },
-    { key: "IdentityPlace", text: "Nơi cấp", width: 150 },
-    { key: "EmployeePosition", text: "Chức danh", width: 250 },
-    { key: "DepartmentName", text: "Tên đơn vị", width: 250 },
-    { key: "BankAccountNumber", text: "Số tài khoản", width: 150 },
-    { key: "BankName", text: "Tên ngân hàng", width: 250 },
-    { key: "BankBranchName", text: "Tên chi nhánh ngân hàng", width: 250 },
-    { key: "BankProvinceName", text: "Tỉnh/TP ngân hàng", width: 200 },
-    { key: "PhoneNumber", text: "Điện thoại", width: 200 },
-    { key: "Email", text: "Email", width: 200 },
-    { key: "Address", text: "Địa chỉ", width: 200 }
+    { key: "account_number", text: "Số tài khoản", width: 145 },
+    { key: "account_name", text: "Tên tài khoản", width: 250 },
+    { key: "property_name", text: "Tính chất", width: 120 },
+    { key: "account_eng_name", text: "Tên tiếng anh", width: 250 },
+    { key: "description", text: "Diễn giải", width: 250 },
+    { key: "state", text: "Trạng thái", width: 150 }
 ];
 
 // các giá trị mặc định của paging và filter
 const defaultFilterText = "";
-const defaultPageNumber = 1;
-const defaultTotalPage = 1;
-const defaultTotalRecord = 0;
-const defaultPageSizes = [
-    { value: 10, text: "10 bản ghi trên 1 trang" },
-    { value: 20, text: "20 bản ghi trên 1 trang" },
-    { value: 30, text: "30 bản ghi trên 1 trang" },
-    { value: 50, text: "50 bản ghi trên 1 trang" },
-    { value: 100, text: "100 bản ghi trên 1 trang" }
-];
-const defaultPageSize = 20;
 export default {
     name: "AccountSystem",
-    components: { EmployeeDetails, EmployeeTable },
+    components: { AccountDetails, AccountTable },
     data() {
         return {
             columnNames: columnNames,
-            employees: [],
-            openDialog: false,
-            currentEmployee: {},
-            stateDialog: enums.dialogState.post,
-            departments: [],
+            accounts: [
+                { account_id: "1", account_name: "test1", account_number: 111, parent_id: "", level: 0 },
+                { account_id: "2", account_name: "test2", account_number: 1112, parent_id: "1", level: 1 },
+                { account_id: "3", account_name: "test3", account_number: 1113, parent_id: "1", level: 1 },
+                { account_id: "4", account_name: "test4", account_number: 100, parent_id: "", level: 0 },
+                { account_id: "5", account_name: "test5", account_number: 11132, parent_id: "3", level: 2 }
 
-            // pagination
-            pageSizes: defaultPageSizes,
-            pageSize: defaultPageSize,
-            pageNumber: defaultPageNumber,
-            totalPage: defaultTotalPage,
-            totalRecord: defaultTotalRecord,
+            ],
+            openDialog: false,
+            currentAccount: {},
+            stateDialog: enums.dialogState.post,
+
             filterText: defaultFilterText,
 
             idTimeout: null // id của setTimeOut khi thực hiện filter
@@ -273,39 +117,6 @@ export default {
     },
 
     watch: {
-        /**
-         * Theo dõi sự thay đổi của route để update pageNumber
-         * Created by: Vũ Long Vũ (19/7/2021)
-         */
-        "$route.query": {
-            handler(query) {
-                if (query?.page) {
-                    this.pageNumber = Number(query.page);
-                }
-            },
-            deep: true,
-            immediate: true
-        },
-        /**
-         * Khi pageNumber thay thổi thì sẽ load lại employee
-         * Created by: VLVU (18/8/2021)
-         */
-        pageNumber() {
-            this.employees = null;
-            this.loadEmployees();
-        },
-
-        /**
-         * Khi pageSize thay thổi thì sẽ load lại employee
-         * Created by: VLVU (18/8/2021)
-         */
-        pageSize() {
-            this.employees = null;
-            this.pageNumber = defaultPageNumber;
-
-            this.$router.push({ path: "employee", query: { page: defaultPageNumber } }).catch(() => { });
-            this.loadEmployees();
-        },
 
         /**
          * Khi search sẽ thực hiện filter
@@ -315,30 +126,12 @@ export default {
             clearTimeout(this.idTimeout);
 
             this.idTimeout = setTimeout(() => {
-                this.pageNumber = defaultPageNumber;
-
-                this.$router.push({ path: "employee", query: { page: defaultPageNumber } }).catch(() => { });
-                this.loadEmployees();
+                this.loadAccounts();
             }, 700);
         }
     },
 
     computed: {
-        /**
-         * Tạo 1 array totalPages
-         * Created by: Vũ Long Vũ (19/7/2021)
-         */
-        totalPages() {
-            return Array.from({ length: this.totalPage }, (_v, k) => k + 1);
-        },
-
-        /**
-         * Tạo ra 1 array gồm 3 trang gần nhau và gần với trang hiện tại
-         * Created by: Vũ Long Vũ (19/7/2021)
-         */
-        threePagesCloseTogether() {
-            return [this.pageNumber - 1, this.pageNumber, this.pageNumber + 1];
-        }
     },
     /**
      * Lấy thông tin của toàn bộ nhân viên
@@ -346,7 +139,7 @@ export default {
      * CreatedBy: Vũ Long Vũ 16/7/2021
      */
     mounted() {
-        this.getData();
+        // this.getData();
         document.removeEventListener("click", this.handleClickOutside);
         document.addEventListener("click", this.handleClickOutside);
     },
@@ -365,18 +158,18 @@ export default {
          */
         async getData() {
             try {
-                const promise = await Promise.all([
-                    EmployeeApi.getEmployeeFilterPaging("", this.pageNumber, this.pageSize),
-                    DepartmentApi.getAll()
-                ]);
+                // const promise = await Promise.all([
+                //     EmployeeApi.getEmployeeFilterPaging("", this.pageNumber, this.pageSize),
+                //     DepartmentApi.getAll()
+                // ]);
 
-                this.employees = promise[0]?.data?.Data ?? [];
-                this.departments = promise[1]?.data?.map(item => ({ value: item.DepartmentId, text: item.DepartmentName })) ?? [];
+                // this.employees = promise[0]?.data?.Data ?? [];
+                // this.departments = promise[1]?.data?.map(item => ({ value: item.DepartmentId, text: item.DepartmentName })) ?? [];
 
-                this.totalPage = promise[0]?.data?.TotalPage === 0 ? 1 : promise[0]?.data?.TotalPage || 1; // số page luôn là 1
-                this.totalRecord = promise[0]?.data?.TotalRecord;
+                // this.totalPage = promise[0]?.data?.TotalPage === 0 ? 1 : promise[0]?.data?.TotalPage || 1; // số page luôn là 1
+                // this.totalRecord = promise[0]?.data?.TotalRecord;
             } catch (error) {
-                this.employees = [];
+                this.accounts = [];
                 if (error?.response?.status === enums.statusCode.serverError) {
                     this.setToast({
                         content: error.response.data.MsgUser,
@@ -395,15 +188,11 @@ export default {
          * Hàm tải lại dữ liệu nhân viên
          * Created by: VLVU (10/8/2021)
          */
-        async loadEmployees() {
+        async loadAccounts() {
             try {
-                const promise = await EmployeeApi.getEmployeeFilterPaging(this.filterText.trim(), this.pageNumber, this.pageSize);
 
-                this.employees = promise?.data.Data;
-                this.totalPage = promise?.data?.TotalPage === 0 ? 1 : promise?.data?.TotalPage || 1;
-                this.totalRecord = promise?.data.TotalRecord;
             } catch (error) {
-                this.employees = [];
+                this.accounts = [];
                 if (error?.response?.status === enums.statusCode.serverError) {
                     this.setToast({
                         content: error.response.data.MsgUser,
@@ -422,15 +211,11 @@ export default {
          * Hàm reload hoàn toàn lại bảng nhân viên
          * Created by: Vũ Long Vũ (19/7/2021)
          */
-        reloadEmployees() {
-            this.employees = null;
-            this.pageNumber = defaultPageNumber;
-            this.$router.push({ path: "employee", query: { page: defaultPageNumber } }).catch(() => { });
-            this.totalPage = defaultTotalPage;
-            this.totalRecord = defaultTotalRecord;
+        reloadAccounts() {
+            this.accounts = null;
             this.filterText = defaultFilterText;
 
-            this.loadEmployees();
+            this.loadAccounts();
         },
 
         /**
@@ -448,10 +233,10 @@ export default {
          */
         onCloseDialog(params) {
             this.openDialog = false;
-            this.currentEmployee = {};
-            if (params?.hasReloadEmployees) {
-                this.employees = null;
-                this.reloadEmployees();
+            this.currentAccount = {};
+            if (params?.hasReloadAccounts) {
+                this.accounts = null;
+                this.reloadAccounts();
             }
         },
         /**
@@ -459,7 +244,7 @@ export default {
          * Created by: Vũ Long Vũ (19/7/2021)
          */
         handleClickEdit(employee) {
-            this.currentEmployee = employee;
+            this.currentAccount = employee;
             this.stateDialog = enums.dialogState.put;
             this.openDialog = true;
         },
@@ -469,7 +254,7 @@ export default {
          * Created by: Vũ Long Vũ (19/7/2021)
          */
         async handleClickDelete(employee) {
-            this.currentEmployee = employee;
+            this.currentAccount = employee;
             const ok = await this.confirmPopup(resources.popup.deleteEmployee(employee.EmployeeCode));
             if (!ok) {
                 return;
@@ -482,7 +267,7 @@ export default {
          * Created by: Vũ Long Vũ (19/7/2021)
          */
         handleClickRelication(employee) {
-            this.currentEmployee = employee;
+            this.currentAccount = employee;
             this.stateDialog = enums.dialogState.post;
             this.openDialog = true;
         },
@@ -494,9 +279,9 @@ export default {
 
         async onDelete() {
             try {
-                await EmployeeApi.deleteOne(this.currentEmployee.EmployeeId);
-                this.setToast(resources.toast.deleteEmployeeSuccess(this.currentEmployee.EmployeeCode));
-                this.reloadEmployees();
+                await EmployeeApi.deleteOne(this.currentAccount.EmployeeId);
+                this.setToast(resources.toast.deleteEmployeeSuccess(this.currentAccount.EmployeeCode));
+                this.reloadAccounts();
             } catch (error) {
                 if (error.response.status === enums.statusCode.serverError) {
                     this.setToast({
@@ -509,32 +294,8 @@ export default {
                     type: "error"
                 });
             }
-            this.currentEmployee = {};
-        },
-
-        /**
-         * Các hàm thực hiện pagination
-         * Created by: Vũ Long Vũ (19/7/2021)
-         */
-        // #region paging
-
-        onPagination(page) {
-            this.$router.push({ path: "employee", query: { page: page } }).catch(() => { });
-        },
-
-        nextPage() {
-            if (this.pageNumber === this.totalPage) {
-                return;
-            }
-            this.$router.push({ path: "employee", query: { page: this.pageNumber + 1 } }).catch(() => { });
-        },
-        prevPage() {
-            if (this.pageNumber - 1 === 0) {
-                return;
-            }
-            this.$router.push({ path: "employee", query: { page: Math.max(0, this.pageNumber - 1) } }).catch(() => { });
+            this.currentAccount = {};
         }
-        // #endregion
     },
 
     // xóa sự kiện này khi thoát khỏi xóa component

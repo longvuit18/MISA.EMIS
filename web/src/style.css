@@ -203,6 +203,14 @@ h1, h2, h3, h4, h5, h6 {
 	background-position: -1687px -564px;
 }
 
+.mi-tree-collapse--small {
+	background-position: -559px -312px;
+}
+
+.mi-tree-expand--small {
+	background-position: -607px -311px;
+}
+
 .flex {
 	display: flex;
 }

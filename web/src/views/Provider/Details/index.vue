@@ -14,7 +14,7 @@
                         />
                         <div style="margin-left: 100px;">
                             <BaseCheckbox
-                                :item="{value: 1,label: 'Là khách hàng'}"
+                                label='Là khách hàng'
                                 v-model="currentProvider.is_customer"
                                 :disabled="viewMode"
                             />

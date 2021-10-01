@@ -5,12 +5,6 @@
                 <tr>
                     <th class="first-white-space z-index-header"></th>
                     <th
-                        class="first-column-fixed align-center"
-                        style="z-index: 14;"
-                    >
-                        <BaseCheckbox />
-                    </th>
-                    <th
                         v-for="(columnName,index) in columnNames"
                         :key="columnName.key"
                         :class="{'second-column-fixed z-index-header': index === 0}"
@@ -20,6 +14,51 @@
                             :class="{'align-center': columnName.align === 'center', 'align-right': columnName.align === 'right'}"
                         >
                             {{columnName.text}}
+                        </div>
+                        <div
+                            class="filter"
+                            style="display: none;"
+                        >
+                            <div
+                                class="icon icon-size-16 mi-header-option"
+                                @click="() => showedFilter = index"
+                            >
+                            </div>
+                            <BaseBoxPopup v-if="index === showedFilter">
+                                <div
+                                    class="base-table-filter"
+                                    v-click-outside="(e) => showedFilter = -1"
+                                >
+                                    <div
+                                        class="lock"
+                                        v-tooltip="'Tính năng đang phát triển'"
+                                    >
+                                        Cố định cột này
+                                    </div>
+                                    <div class="filter-text">
+                                        <div class="title">Lọc {{columnName.text}}</div>
+                                        <div class="mt-10 mb-10">
+                                            <BaseInput
+                                                fullWidth
+                                                placeholder="Nhập giá trị lọc"
+                                                focusInput
+                                                v-model="filter[columnName.key]"
+                                            />
+                                        </div>
+                                    </div>
+                                    <BaseRow class="justify-space-between">
+                                        <BaseButton
+                                            secondaryButton
+                                            buttonName="Bỏ lọc"
+                                            @click="() => discardFilter(columnName.key)"
+                                        />
+                                        <BaseButton
+                                            buttonName="Lọc"
+                                            @click="() =>handleFilter()"
+                                        />
+                                    </BaseRow>
+                                </div>
+                            </BaseBoxPopup>
                         </div>
                     </th>
                     <th
@@ -34,60 +73,63 @@
             </thead>
             <tbody v-if="data && data.length !== 0">
                 <tr
-                    v-for="(item, rowIndex) in data"
+                    v-for="(item, rowIndex) in mapedData"
                     :key="rowIndex"
-                    @dblclick="(e) => handleDblClickRow(e, item)"
-                    @contextmenu="(e) => handleRightClick(e, item)"
-                    :class="{'selected': rowSelected(rowIndex), 'z-index-row': showFeature(rowIndex)}"
+                    @dblclick="(e) => handleDblClickRow(e, item[0])"
+                    @contextmenu="(e) => handleRightClick(e, item[0])"
+                    :class="{'z-index-row': rowIndex === showedFeature}"
+                    v-show="!rowHide(rowIndex)"
                 >
                     <th class="first-white-space"></th>
-                    <td class="first-column-fixed align-center td-viewer">
-                        <div>
-                            <BaseCheckbox />
-                        </div>
-                    </td>
                     <td
-                        v-for="(value, key, cellIndex) in mapDataFlowHeader(item)"
+                        v-for="(value, key, cellIndex) in mapDataFlowHeader(item[0])"
                         :key="key"
-                        :class="{...setAlign(key), 'second-column-fixed': cellIndex === 0}"
+                        :class="{...setAlign(key), 'second-column-fixed': cellIndex === 0, ['level-' + item[0].level]: cellIndex === 0, 'uppercase': item[1] === 'is-parent'}"
                         class="td-viewer"
                     >
                         <div
                             :style="{width: width(key)}"
                             class="width-cell"
-                        ><span :title="width(key) ? value : ''">{{value}}</span></div>
+                        >
+                            <div
+                                class="collapse-icon"
+                                :class="{'icon icon-size-16': cellIndex === 0, 'mi-tree-collapse--small': item[1] === 'is-parent' && !isExtendIcon(rowIndex), 'mi-tree-expand--small': isExtendIcon(rowIndex)}"
+                                @click="() => handleCollapse(item, rowIndex)"
+                            />
+                            <span :title="width(key) ? value : ''">{{value}}</span>
+                        </div>
                     </td>
                     <td class="last-column-fixed align-center td-viewer">
                         <div class="feature-column">
                             <span
-                                @click="() =>handleClickEdit(item)"
+                                @click="() =>handleClickView(item[0])"
                                 style="cursor: pointer;"
-                            >Sửa</span>
+                            >Xem</span>
                             <div>
                                 <button
                                     @click="handleClickFeature(rowIndex)"
-                                    :class="{'hide-border': !showFeature(rowIndex)}"
+                                    :class="{'hide-border': rowIndex  !== showedFeature}"
                                     class="td-viewer"
                                 >
                                     <div class="icon-arrow-down"></div>
                                 </button>
                             </div>
                             <ul
-                                v-if="showFeature(rowIndex)"
+                                v-if="rowIndex === showedFeature"
                                 :class="rowIndex === data.length - 1 || rowIndex === data.length - 2 ? 'popup-top' : 'popup-bottom'"
                             >
                                 <li
-                                    @click="() =>handleClickReplication(item)"
+                                    @click="() =>handleClickEdit(item[0])"
+                                    style="cursor: pointer;"
+                                >Sửa</li>
+                                <li
+                                    @click="() =>handleClickReplication(item[0])"
                                     style="cursor: pointer;"
                                 >Nhân bản</li>
                                 <li
-                                    @click="() =>handleClickDelete(item)"
+                                    @click="() =>handleClickDelete(item[0])"
                                     style="cursor: pointer;"
                                 >Xóa</li>
-                                <li
-                                    v-tooltip.bottom="'Tính năng chưa phát triển'"
-                                    style="cursor: pointer;"
-                                >Ngừng sử dụng</li>
                             </ul>
                         </div>
 
@@ -126,7 +168,7 @@ import utils from "../../../utils";
  */
 
 export default {
-    name: "EmployeeTable",
+    name: "AccountSystemTable",
     props: {
         // columnNames là 1 Array chứa object {key: string, text: string, align: string, sort: boolean, format: string, width: number}
         columnNames: {
@@ -138,10 +180,9 @@ export default {
             default: () => null
         },
 
-        // cho phép người dùng có thể chọn nhiều hàng
-        allowsMultipleSelection: {
-            type: Boolean,
-            default: () => false
+        filterProp: {
+            type: Object,
+            default: () => { }
         }
     },
 
@@ -151,12 +192,63 @@ export default {
             alignColumns: this.columnNames.filter(item => item.align),
             // lọc ra những cột nào cần set width
             widthColumns: this.columnNames.filter(item => item.width),
-            // lọc ra những cột nào cần set fixed,
-            data: null,
+            data: this.dataProps,
             rowsSelected: [],
+            selectedAll: false,
 
-            showedFeature: -1
+            showedFeature: -1,
+            showedFilter: -1,
+
+            filter: {},
+
+            collapseClose: [],
+            rowsNeedExtend: []
         };
+    },
+
+    computed: {
+        mapedData() {
+            let result = [];
+
+            let levelCount = 0;
+            while (true) {
+                const dataLevelN = this.data.filter(item => item.level === levelCount);
+                if (dataLevelN.length === 0) {
+                    break;
+                }
+                // level 0 là lấy luôn
+                if (levelCount === 0) {
+                    result = [...dataLevelN];
+                    levelCount++;
+                    continue;
+                }
+
+                dataLevelN.forEach(item => {
+                    const indexParent = result.findIndex(r => r.account_id === item.parent_id);
+                    if (indexParent === -1) {
+                        result.push(item);
+                        return;
+                    }
+
+                    result = [...result.slice(0, indexParent + 1), item, ...result.slice(indexParent + 1)];
+                });
+                levelCount++;
+            }
+
+            result = result.map((item, index, array) => {
+                if (index === array.length - 1) {
+                    return [item, "is-children"];
+                }
+
+                if (array[index + 1].parent_id === item.account_id) {
+                    return [item, "is-parent"];
+                };
+
+                return [item, "is-children"];
+            });
+
+            return result;
+        }
     },
 
     watch: {
@@ -164,10 +256,85 @@ export default {
         dataProps() {
             this.data = this.dataProps;
             this.rowsSelected = [];
+            this.selectedAll = false;
+        },
+
+        filterProp: {
+            handler(value) {
+                this.filter = { ...value };
+            },
+            deep: true
         }
     },
 
+    mounted() {
+
+    },
     methods: {
+
+        handleCollapse(rowItem, rowIndex) {
+            if (rowItem[1] === "is-children") {
+                return;
+            }
+            // tìm xem row hiện tại đang đóng hay đang mở
+            const isNeedExtendIndex = this.rowsNeedExtend.findIndex(item => item === rowIndex);
+            const isNeedExtend = isNeedExtendIndex > -1;
+            // nếu nó đang đóng
+            if (isNeedExtend) {
+                // tìm trong biến rowsNeedExtend và xóa nó đi
+                this.rowsNeedExtend.splice(isNeedExtendIndex, 1);
+            } else {
+                this.rowsNeedExtend.push(rowIndex);
+            }
+            // dùng for để có thể dừng sớm tăng hiệu năng
+            for (let index = rowIndex + 1; index < this.mapedData.length; index++) {
+                const item = this.mapedData[index];
+                if (item[0].level <= rowItem[0].level) {
+                    break;
+                }
+
+                // check các hàng sau hàng nào có level lớn hơn
+                if (item[0].level > rowItem[0].level) {
+                    if (isNeedExtend) {
+                        // chỉ xóa 1 vị trí có trong collapseClose để đảm bảo ông mở nhưng các cha bên trong vẫn đóng
+                        this.collapseClose.splice(this.collapseClose.findIndex(coll => coll === index), 1);
+                        continue;
+                    }
+                    // lấy index hàng cần ẩn đi
+                    this.collapseClose.push(index);
+                }
+            }
+        },
+
+        rowHide(rowIndex) {
+            return this.collapseClose.findIndex(item => item === rowIndex) > -1;
+        },
+
+        isExtendIcon(rowIndex) {
+            return this.rowsNeedExtend.findIndex(item => item === rowIndex) > -1;
+        },
+        /**
+         * Hàm bỏ lọc
+         * Created by: VLVU (28/9/2021)
+         */
+        discardFilter(columnName) {
+            if (this.filter[columnName]) {
+                this.showedFilter = -1;
+                this.filter[columnName] = "";
+                this.$emit("filterValue", this.filter);
+                return;
+            }
+            this.showedFilter = -1;
+        },
+
+        /**
+         * Thưc hiện lọc
+         * Created by: VLVU (28/9/2021)
+         */
+        handleFilter() {
+            this.showedFilter = -1;
+            this.$emit("filterValue", this.filter);
+        },
         /**
         * Sự kiện khi double click vào 1 row
         * CreatedBy: Vũ Long Vũ 14/7/2021
@@ -187,23 +354,41 @@ export default {
         },
 
         /**
-        * Sự kiện khi  click vào 1 row
-        * CreatedBy: Vũ Long Vũ 19/7/2021
-        */
-        handleClick(e, index, item) {
-            e.preventDefault();
+         * sự kiện click vào checkbox
+         * Created by: VLVU(12/9/2021)
+         */
+        handleClickCheckbox(e, index) {
             // gắn lại những hàng đã chon trước đó
             // check xem người dùng click vào hàng mới hay cũ
             const rowIndex = this.rowsSelected.findIndex(row => row === index);
 
             if (rowIndex > -1) {
                 this.rowsSelected.splice(rowIndex, 1);
-                this.$emit("click", null);
             } else {
                 // nếu cho phép chọn nhiều thì cập nhập array không thì chỉ truyền vào 1
-                this.rowsSelected = this.allowsMultipleSelection ? [...this.rowsSelected, index] : [index];
-                this.$emit("click", item);
+                this.rowsSelected = [...this.rowsSelected, index];
             }
+            if (this.rowsSelected.length < this.data.length) {
+                this.selectedAll = false;
+            } else {
+                this.selectedAll = true;
+            }
+            this.$emit("clickCheckbox", this.rowsSelected);
+        },
+
+        /**
+         * sự kiện click vào checkbox
+         * Created by: VLVU(12/9/2021)
+         */
+        handleClickCheckboxAll() {
+            if (this.selectedAll) {
+                this.selectedAll = false;
+                this.rowsSelected = [];
+            } else {
+                this.selectedAll = true;
+                this.rowsSelected = Array.from({ length: this.data.length }, (_v, k) => k);
+            }
+            this.$emit("clickCheckbox", this.rowsSelected);
         },
 
         /**
@@ -260,7 +445,7 @@ export default {
          * check xem hàng đó có được chọn không
          * Created by: VLVU (11/8/2021)
          */
-        rowSelected(index) {
+        hasCheck(index) {
             return this.rowsSelected.findIndex(i => i === index) > -1;
         },
         /**
@@ -291,12 +476,25 @@ export default {
         },
 
         /**
-         * @param {number} rowIndex vị trí của hàng trong bảng
-         * check xem hàng đó có mở hay không
-         * Created by: VLVU (17/8/2021)
+         * @param {number} rowIndex vị trí của column trong bảng
+         * sự kiện ấn show filter
+         * Created by: VLVU (27/89/2021)
          */
-        showFeature(rowIndex) {
-            return rowIndex === this.showedFeature;
+        handleClickShowFilter(columnIndex) {
+            if (this.showedFilter === columnIndex) {
+                this.showedFilter = -1;
+            } else {
+                this.showedFilter = columnIndex;
+            }
+        },
+
+        /**
+         * sự kiện ấn để xem row
+         * Created by: VLVU (24/9/2021)
+         */
+        handleClickView(item) {
+            this.showedFeature = -1;
+            this.$emit("handleClickView", item);
         },
 
         /**
@@ -331,4 +529,39 @@ export default {
 </script>
 
 <style scoped src="./style.css">
+</style>
+<style>
+.base-table-filter {
+    font-weight: 400;
+    font-size: 13px;
+    border-radius: 2px;
+    box-shadow: 3px 3px 6px #ddd;
+    padding: 22px 17px;
+    border: 1px solid #babec5;
+}
+.base-table-filter .lock {
+    position: relative;
+    padding-left: 30px;
+    line-height: 24px;
+    cursor: pointer;
+    border-bottom: 1px solid #ebedf0;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    text-transform: none;
+}
+
+.base-table-filter .lock:before {
+    content: "";
+    position: absolute;
+    display: block;
+    height: 24px;
+    width: 24px;
+    top: 0;
+    left: 2px;
+    background: transparent url("../../../assets/icon/icon.svg") no-repeat -1726px -560px;
+}
+
+.base-table-filter.filter-text {
+    text-transform: none;
+}
 </style>
