@@ -27,15 +27,15 @@
             </thead>
             <tbody v-if="data && data.length !== 0">
                 <tr
-                    v-for="(item, rowIndex) in data"
+                    v-for="(item, rowIndex) in mapData"
                     :key="rowIndex"
-                    @click="() =>handleClickRow(item, rowIndex)"
-                    :class="{'is-surfing': multiple && isSurfing(item), 'is-active': !multiple && isSurfing(item)}"
+                    @click="() =>handleClickRow(item[0], rowIndex)"
+                    :class="{'is-surfing': multiple && isSurfing(item[0]), 'is-active': !multiple && isSurfing(item[0])}"
                 >
                     <td
-                        v-for="(value, key) in mapDataFlowHeader(item)"
+                        v-for="(value, key, cellIndex) in mapDataFlowHeader(item[0])"
                         :key="key"
-                        :class="{...setAlign(key)}"
+                        :class="{...setAlign(key), ['level-' + item[0].level]: cellIndex === 0, 'uppercase': item[1] === 'is-parent'}"
                         class="td-viewer"
                     >
                         <div
@@ -51,7 +51,7 @@
                         <div>
                             <div
                                 class="icon icon-size-16 check"
-                                v-if="hasCheck(item.optionId)"
+                                v-if="hasCheck(item[0].optionId)"
                             />
                         </div>
                     </td>
@@ -103,6 +103,19 @@ export default {
         currentCheck: {
             type: Object,
             default: () => null
+        },
+
+        treeTable: {
+            type: Boolean,
+            default: () => false
+        },
+
+        /**
+         * khi là table dạng cây thì bắt buộc phỉa có trường này đẻ có thể thực hiện map
+         */
+        treeColumnId: {
+            type: String,
+            default: "id"
         }
     },
 
@@ -113,6 +126,61 @@ export default {
             // lọc ra những cột nào cần set width
             widthColumns: this.columnNames.filter(item => item.width)
         };
+    },
+
+    computed: {
+        /**
+         * map dữ liệu đầu vào thành dữ liệu có thể biểu diễn dưới dạng cây (nếu cần)
+         * prop PHẢI CÓ treeColumn để có thể thực hiện map
+         * Created by: VLVU (2/10/2021)
+         */
+        mapData() {
+            if (!this.treeTable) {
+                return this.data.map(item => {
+                    return [item, "is-parent"];
+                });
+            }
+            let result = [];
+
+            let levelCount = 0;
+            while (true) {
+                const dataLevelN = this.data.filter(item => item.level === levelCount);
+                if (dataLevelN.length === 0) {
+                    break;
+                }
+                // level 0 là lấy luôn
+                if (levelCount === 0) {
+                    result = [...dataLevelN];
+                    levelCount++;
+                    continue;
+                }
+
+                dataLevelN.forEach(item => {
+                    const indexParent = result.findIndex(r => r[this.treeColumnId] === item.parent_id);
+                    if (indexParent === -1) {
+                        result.push(item);
+                        return;
+                    }
+
+                    result = [...result.slice(0, indexParent + 1), item, ...result.slice(indexParent + 1)];
+                });
+                levelCount++;
+            }
+
+            result = result.map((item, index, array) => {
+                if (index === array.length - 1) {
+                    return [item, "is-children"];
+                }
+
+                if (array[index + 1].parent_id === item[this.treeColumnId]) {
+                    return [item, "is-parent"];
+                };
+
+                return [item, "is-children"];
+            });
+
+            return result;
+        }
     },
 
     methods: {
@@ -428,5 +496,29 @@ button {
 .is-active {
     background-color: #2ca01c;
     color: white;
+}
+
+.level-1 {
+    padding-left: 15px !important;
+}
+
+.level-2 {
+    padding-left: 30px !important;
+}
+
+.level-3 {
+    padding-left: 45px !important;
+}
+
+.level-4 {
+    padding-left: 60px !important;
+}
+
+.level-5 {
+    padding-left: 75px !important;
+}
+
+.uppercase {
+    font-weight: bold;
 }
 </style>

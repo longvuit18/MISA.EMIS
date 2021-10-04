@@ -73,6 +73,18 @@ table tbody tr {
 	padding-left: 90px !important;
 }
 
+.level-4 {
+	padding-left: 120px !important;
+}
+
+.level-5 {
+	padding-left: 150px !important;
+}
+
+.uppercase {
+	font-weight: bold;
+}
+
 .align-center {
 	text-align: center !important;
 	width: 100px;
@@ -104,10 +116,6 @@ table tbody tr {
 .collapse-icon {
 	margin-right: 6.5px;
 	cursor: pointer;
-}
-
-.uppercase {
-	font-weight: bold;
 }
 
 .selected {

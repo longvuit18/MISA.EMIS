@@ -73,7 +73,7 @@
             </thead>
             <tbody v-if="data && data.length !== 0">
                 <tr
-                    v-for="(item, rowIndex) in mapedData"
+                    v-for="(item, rowIndex) in treeData"
                     :key="rowIndex"
                     @dblclick="(e) => handleDblClickRow(e, item[0])"
                     @contextmenu="(e) => handleRightClick(e, item[0])"
@@ -116,7 +116,7 @@
                             </div>
                             <ul
                                 v-if="rowIndex === showedFeature"
-                                :class="rowIndex === data.length - 1 || rowIndex === data.length - 2 ? 'popup-top' : 'popup-bottom'"
+                                :class="(rowIndex < data.length - 2 && data.length > 10) ? 'popup-top' : 'popup-bottom'"
                             >
                                 <li
                                     @click="() =>handleClickEdit(item[0])"
@@ -183,6 +183,11 @@ export default {
         filterProp: {
             type: Object,
             default: () => { }
+        },
+
+        extendTable: {
+            type: Boolean,
+            default: () => false
         }
     },
 
@@ -207,7 +212,11 @@ export default {
     },
 
     computed: {
-        mapedData() {
+        /**
+         * map dữ liệu đầu vào thành dữ liệu có thể biểu diễn dưới dạng cây
+         * Created by: VLVU (2/10/2021)
+         */
+        treeData() {
             let result = [];
 
             let levelCount = 0;
@@ -264,6 +273,21 @@ export default {
                 this.filter = { ...value };
             },
             deep: true
+        },
+
+        extendTable(value) {
+            if (value === true) {
+                this.treeData.forEach((item, index) => {
+                    if (item[0].level === 0) {
+                        this.rowsNeedExtend.push(index);
+                        return;
+                    };
+                    this.collapseClose.push(index);
+                });
+            } else {
+                this.rowsNeedExtend = [];
+                this.collapseClose = [];
+            }
         }
     },
 
@@ -287,8 +311,8 @@ export default {
                 this.rowsNeedExtend.push(rowIndex);
             }
             // dùng for để có thể dừng sớm tăng hiệu năng
-            for (let index = rowIndex + 1; index < this.mapedData.length; index++) {
-                const item = this.mapedData[index];
+            for (let index = rowIndex + 1; index < this.treeData.length; index++) {
+                const item = this.treeData[index];
                 if (item[0].level <= rowItem[0].level) {
                     break;
                 }

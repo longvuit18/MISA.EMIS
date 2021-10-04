@@ -81,6 +81,7 @@
                             label="Địa chỉ giống địa chỉ nhập"
                             tabindex="13"
                             v-model="data.is_same_address"
+                            :disabled="disabled"
                         />
                     </div>
                 </div>

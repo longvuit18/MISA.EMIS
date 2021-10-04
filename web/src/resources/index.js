@@ -47,6 +47,43 @@ const toast = {
 			content: `Bạn đã xóa ${name} <${code}> thành công!`,
 			type: "success"
 		};
+	},
+
+	/// /// Account /// ///
+
+	/**
+	 * thông báo số tài khoản không hợp lệ
+	 * @returns object toast message
+	 */
+	accountNumberInvalid() {
+		return {
+			content: "Số tài khoản không hợp lệ. Số tài khoản chi tiết phải bắt đầu bằng số của Tài khoản tổng hợp",
+			type: "error"
+		};
+	},
+
+	/**
+	 * Thông báo tài khoản không hợp lệ
+	 * @param {*} startChildAccount string bắt đầu của con
+	 * @returns object toast message
+	 */
+	accountNumberDuplicate() {
+		return {
+			content: "Số tài khoản đã tồn tại. Vui lòng kiểm tra lại.",
+			type: "error"
+		};
+	},
+
+	/**
+	 * Thông báo tài khoản không hợp lệ
+	 * @param {*} startChildAccount string bắt đầu của con
+	 * @returns object toast message
+	 */
+	accountNumberDuplicateChild(startChildAccount) {
+		return {
+			content: `Số tài khoản không hợp lệ. Số tài khoản có phần đầu <${startChildAccount}> trùng với tiết khoản con <${startChildAccount}> cùng cấp.`,
+			type: "error"
+		};
 	}
 };
 const popup = {

@@ -12,6 +12,7 @@
                 <div
                     class="chip-group"
                     v-if="multiple"
+                    :class="{'combobox-disabled': disabled}"
                     ref="chip"
                 >
                     <BaseChip
@@ -59,6 +60,7 @@
                 <div
                     v-if="hasAddIcon"
                     class="icon-plus"
+                    :class="{'combobox-disabled': disabled}"
                     style="border-right: 1px solid #babec5;"
                     v-tooltip="'Tính năng đang phát triển'"
                 >
@@ -66,6 +68,7 @@
                     </div>
                 </div>
                 <div
+                    :class="{'combobox-disabled': disabled}"
                     class="combobox-icon"
                     @click="showOptions"
                 >
@@ -119,6 +122,8 @@
                     :selected="rowSelected"
                     @handleClickRow="setResult"
                     :currentCheck="currentCheck"
+                    :treeTable="treeTable"
+                    :treeColumnId="treeColumnId"
                 />
             </OptionWrapper>
         </portal>
@@ -181,7 +186,7 @@ export default {
         },
         placeholder: {
             type: String,
-            default: () => "Nhập/Chọn"
+            default: () => ""
         },
         value: {
             type: [String, Number, Array]
@@ -217,6 +222,19 @@ export default {
         disabled: {
             type: Boolean,
             default: () => false
+        },
+
+        treeTable: {
+            type: Boolean,
+            default: () => false
+        },
+
+        /**
+         * khi là table dạng cây thì bắt buộc phỉa có trường này đẻ có thể thực hiện map
+         */
+        treeColumnId: {
+            type: String,
+            default: "id"
         }
     },
     data() {
@@ -315,8 +333,10 @@ export default {
          */
         value: {
             handler(value) {
-                if (!value) {
+                if (value === null || value === undefined) {
                     this.search = "";
+                } else {
+                    this.search = this.defaultItem()?.[this.keyLabel];
                 }
                 this.positonCombobox = this.$refs.combobox.getBoundingClientRect();
             },
@@ -572,6 +592,7 @@ export default {
             if (!this.required && !this.search) {
                 this.error = false;
                 this.errorMessage = "";
+                this.$emit("result", undefined);
                 return;
             }
             if (this.multiple) {

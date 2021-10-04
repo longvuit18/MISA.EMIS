@@ -33,7 +33,9 @@
                                 required
                                 name="Số tài khoản"
                                 tabindex="1"
+                                ref="1"
                                 fullWidth
+                                v-model="currentAccount.account_number"
                             />
                         </BaseCol>
                     </BaseRow>
@@ -47,7 +49,9 @@
                                 required
                                 name="Tên tài khoản"
                                 tabindex="2"
+                                ref="2"
                                 fullWidth
+                                v-model="currentAccount.account_name"
                             />
                         </BaseCol>
                         <BaseCol :cols="6">
@@ -56,6 +60,7 @@
                                 name="Tên tiếng anh"
                                 tabindex="3"
                                 fullWidth
+                                v-model="currentAccount.account_name_english"
                             />
                         </BaseCol>
                     </BaseRow>
@@ -69,6 +74,14 @@
                                 name="Tài khoản tổng hợp"
                                 tabindex="4"
                                 fullWidth
+                                optionsTable
+                                treeTable
+                                treeColumnId="account_id"
+                                optionId="account_id"
+                                keyLabel="account_number"
+                                :columnNames="columnNames"
+                                :items="accounts"
+                                v-model="currentAccount.parent_id"
                             />
                         </BaseCol>
                         <BaseCol
@@ -80,7 +93,12 @@
                                 required
                                 name="Tính chất"
                                 tabindex="5"
+                                ref="5"
                                 fullWidth
+                                v-model="currentAccount.account_category_kind"
+                                :items="properties"
+                                optionId="id"
+                                keyLabel="name"
                             />
                         </BaseCol>
                     </BaseRow>
@@ -93,6 +111,7 @@
                                 name="Số tài khoản"
                                 tabindex="6"
                                 fullWidth
+                                v-model="currentAccount.desciption"
                             />
                         </BaseCol>
                     </BaseRow>
@@ -101,6 +120,7 @@
                             <BaseCheckbox
                                 label="Có hoạch toán ngoại lệ"
                                 tabindex="7"
+                                v-model="currentAccount.is_postable_in_foreign_currency"
                             />
                         </BaseCol>
                     </BaseRow>
@@ -118,191 +138,257 @@
                             </div>
                         </BaseCol>
                     </BaseRow>
-                    <div
-                        class="monitor-details-area"
-                        v-if="showMonitorDetails"
-                    >
-                        <BaseRow>
-                            <BaseCol :cols="6">
-                                <BaseRow>
-                                    <BaseCol :cols="10">
-                                        <BaseRow class="pb-12 items-center">
-                                            <BaseCol :cols="6">
-                                                <BaseCheckbox
-                                                    label="Đối tượng"
-                                                    tabindex="8"
-                                                />
-                                            </BaseCol>
-                                            <BaseCol :cols="6">
-                                                <BaseCombobox
-                                                    tabindex="9"
-                                                    fullWidth
-                                                />
-                                            </BaseCol>
-                                        </BaseRow>
-                                    </BaseCol>
-                                </BaseRow>
-                                <BaseRow>
-                                    <BaseCol :cols="10">
-                                        <BaseRow class="pb-12 items-center">
-                                            <BaseCol :cols="6">
-                                                <BaseCheckbox
-                                                    label="Đối tượng THCP"
-                                                    tabindex="8"
-                                                />
-                                            </BaseCol>
-                                            <BaseCol :cols="6">
-                                                <BaseCombobox
-                                                    tabindex="9"
-                                                    fullWidth
-                                                />
-                                            </BaseCol>
-                                        </BaseRow>
-                                    </BaseCol>
-                                </BaseRow>
-                                <BaseRow>
-                                    <BaseCol :cols="10">
-                                        <BaseRow class="pb-12 items-center">
-                                            <BaseCol :cols="6">
-                                                <BaseCheckbox
-                                                    label="Đơn đặt hàng"
-                                                    tabindex="8"
-                                                />
-                                            </BaseCol>
-                                            <BaseCol :cols="6">
-                                                <BaseCombobox
-                                                    tabindex="9"
-                                                    fullWidth
-                                                />
-                                            </BaseCol>
-                                        </BaseRow>
-                                    </BaseCol>
-                                </BaseRow>
-                                <BaseRow>
-                                    <BaseCol :cols="10">
-                                        <BaseRow class="pb-12 items-center">
-                                            <BaseCol :cols="6">
-                                                <BaseCheckbox
-                                                    label="Hợp đồng mua"
-                                                    tabindex="8"
-                                                />
-                                            </BaseCol>
-                                            <BaseCol :cols="6">
-                                                <BaseCombobox
-                                                    tabindex="9"
-                                                    fullWidth
-                                                />
-                                            </BaseCol>
-                                        </BaseRow>
-                                    </BaseCol>
-                                </BaseRow>
-                                <BaseRow>
-                                    <BaseCol :cols="10">
-                                        <BaseRow class="items-center">
-                                            <BaseCol :cols="6">
-                                                <BaseCheckbox
-                                                    label="Đơn vị"
-                                                    tabindex="8"
-                                                />
-                                            </BaseCol>
-                                            <BaseCol :cols="6">
-                                                <BaseCombobox
-                                                    tabindex="9"
-                                                    fullWidth
-                                                />
-                                            </BaseCol>
-                                        </BaseRow>
-                                    </BaseCol>
-                                </BaseRow>
-                            </BaseCol>
-                            <BaseCol :cols="6">
-                                <BaseRow>
-                                    <BaseCol :cols="10">
-                                        <BaseRow class="pb-12 items-center">
-                                            <BaseCol :cols="6">
-                                                <BaseCheckbox
-                                                    label="Tài khoảng ngân hàng"
-                                                    tabindex="8"
-                                                />
-                                            </BaseCol>
-                                        </BaseRow>
-                                    </BaseCol>
-                                </BaseRow>
-                                <BaseRow>
-                                    <BaseCol :cols="10">
-                                        <BaseRow class="pb-12 items-center">
-                                            <BaseCol :cols="6">
-                                                <BaseCheckbox
-                                                    label="Công trình"
-                                                    tabindex="8"
-                                                />
-                                            </BaseCol>
-                                            <BaseCol :cols="6">
-                                                <BaseCombobox
-                                                    tabindex="9"
-                                                    fullWidth
-                                                />
-                                            </BaseCol>
-                                        </BaseRow>
-                                    </BaseCol>
-                                </BaseRow>
-                                <BaseRow>
-                                    <BaseCol :cols="10">
-                                        <BaseRow class="pb-12 items-center">
-                                            <BaseCol :cols="6">
-                                                <BaseCheckbox
-                                                    label="Hợp đồng bán"
-                                                    tabindex="8"
-                                                />
-                                            </BaseCol>
-                                            <BaseCol :cols="6">
-                                                <BaseCombobox
-                                                    tabindex="9"
-                                                    fullWidth
-                                                />
-                                            </BaseCol>
-                                        </BaseRow>
-                                    </BaseCol>
-                                </BaseRow>
-                                <BaseRow>
-                                    <BaseCol :cols="10">
-                                        <BaseRow class="pb-12 items-center">
-                                            <BaseCol :cols="6">
-                                                <BaseCheckbox
-                                                    label="Khoản mục CP"
-                                                    tabindex="8"
-                                                />
-                                            </BaseCol>
-                                            <BaseCol :cols="6">
-                                                <BaseCombobox
-                                                    tabindex="9"
-                                                    fullWidth
-                                                />
-                                            </BaseCol>
-                                        </BaseRow>
-                                    </BaseCol>
-                                </BaseRow>
-                                <BaseRow>
-                                    <BaseCol :cols="10">
-                                        <BaseRow class="items-center">
-                                            <BaseCol :cols="6">
-                                                <BaseCheckbox
-                                                    label="Mã thống kê"
-                                                    tabindex="8"
-                                                />
-                                            </BaseCol>
-                                            <BaseCol :cols="6">
-                                                <BaseCombobox
-                                                    tabindex="9"
-                                                    fullWidth
-                                                />
-                                            </BaseCol>
-                                        </BaseRow>
-                                    </BaseCol>
-                                </BaseRow>
-                            </BaseCol>
-                        </BaseRow>
-                    </div>
+                    <transition name="slide">
+                        <div
+                            class="monitor-details-area"
+                            v-if="showMonitorDetails"
+                        >
+                            <BaseRow>
+                                <BaseCol :cols="6">
+                                    <BaseRow>
+                                        <BaseCol :cols="10">
+                                            <BaseRow class="pb-12 items-center">
+                                                <BaseCol :cols="6">
+                                                    <BaseCheckbox
+                                                        label="Đối tượng"
+                                                        tabindex="8"
+                                                        v-model="currentAccount.detail_by_account_object"
+                                                    />
+                                                </BaseCol>
+                                                <BaseCol :cols="6">
+                                                    <BaseCombobox
+                                                        tabindex="9"
+                                                        fullWidth
+                                                        :disabled="!currentAccount.detail_by_account_object"
+                                                        v-model="currentAccount.account_object_type"
+                                                        :items="objects"
+                                                        optionId="id"
+                                                        keyLabel="name"
+                                                        readonly
+                                                    />
+                                                </BaseCol>
+                                            </BaseRow>
+                                        </BaseCol>
+                                    </BaseRow>
+                                    <BaseRow>
+                                        <BaseCol :cols="10">
+                                            <BaseRow class="pb-12 items-center">
+                                                <BaseCol :cols="6">
+                                                    <BaseCheckbox
+                                                        label="Đối tượng THCP"
+                                                        tabindex="8"
+                                                        v-model="currentAccount.detail_by_job"
+                                                    />
+                                                </BaseCol>
+                                                <BaseCol :cols="6">
+                                                    <BaseCombobox
+                                                        tabindex="9"
+                                                        fullWidth
+                                                        :items="warnOrRequire"
+                                                        optionId="id"
+                                                        keyLabel="name"
+                                                        readonly
+                                                        :disabled="!currentAccount.detail_by_job"
+                                                        v-model="currentAccount.detail_by_job_kind"
+                                                    />
+                                                </BaseCol>
+                                            </BaseRow>
+                                        </BaseCol>
+                                    </BaseRow>
+                                    <BaseRow>
+                                        <BaseCol :cols="10">
+                                            <BaseRow class="pb-12 items-center">
+                                                <BaseCol :cols="6">
+                                                    <BaseCheckbox
+                                                        label="Đơn đặt hàng"
+                                                        tabindex="8"
+                                                        v-model="currentAccount.detail_by_order"
+                                                    />
+                                                </BaseCol>
+                                                <BaseCol :cols="6">
+                                                    <BaseCombobox
+                                                        tabindex="9"
+                                                        fullWidth
+                                                        :items="warnOrRequire"
+                                                        optionId="id"
+                                                        keyLabel="name"
+                                                        readonly
+                                                        :disabled="!currentAccount.detail_by_order"
+                                                        v-model="currentAccount.detail_by_order_kind"
+                                                    />
+                                                </BaseCol>
+                                            </BaseRow>
+                                        </BaseCol>
+                                    </BaseRow>
+                                    <BaseRow>
+                                        <BaseCol :cols="10">
+                                            <BaseRow class="pb-12 items-center">
+                                                <BaseCol :cols="6">
+                                                    <BaseCheckbox
+                                                        label="Hợp đồng mua"
+                                                        tabindex="8"
+                                                        v-model="currentAccount.detail_by_pu_contract"
+                                                    />
+                                                </BaseCol>
+                                                <BaseCol :cols="6">
+                                                    <BaseCombobox
+                                                        tabindex="9"
+                                                        fullWidth
+                                                        :items="warnOrRequire"
+                                                        optionId="id"
+                                                        keyLabel="name"
+                                                        readonly
+                                                        :disabled="!currentAccount.detail_by_pu_contract"
+                                                        v-model="currentAccount.detail_by_pu_contract_kind"
+                                                    />
+                                                </BaseCol>
+                                            </BaseRow>
+                                        </BaseCol>
+                                    </BaseRow>
+                                    <BaseRow>
+                                        <BaseCol :cols="10">
+                                            <BaseRow class="items-center">
+                                                <BaseCol :cols="6">
+                                                    <BaseCheckbox
+                                                        label="Đơn vị"
+                                                        tabindex="8"
+                                                        v-model="currentAccount.detail_by_department"
+                                                    />
+                                                </BaseCol>
+                                                <BaseCol :cols="6">
+                                                    <BaseCombobox
+                                                        tabindex="9"
+                                                        fullWidth
+                                                        :items="warnOrRequire"
+                                                        optionId="id"
+                                                        keyLabel="name"
+                                                        readonly
+                                                        :disabled="!currentAccount.detail_by_department"
+                                                        v-model="currentAccount.detail_by_department_kind"
+                                                    />
+                                                </BaseCol>
+                                            </BaseRow>
+                                        </BaseCol>
+                                    </BaseRow>
+                                </BaseCol>
+                                <BaseCol :cols="6">
+                                    <BaseRow>
+                                        <BaseCol :cols="10">
+                                            <BaseRow class="pb-12 items-center">
+                                                <BaseCol :cols="6">
+                                                    <BaseCheckbox
+                                                        label="Tài khoảng ngân hàng"
+                                                        tabindex="8"
+                                                        v-model="currentAccount.detail_by_bank_account"
+                                                    />
+                                                </BaseCol>
+                                            </BaseRow>
+                                        </BaseCol>
+                                    </BaseRow>
+                                    <BaseRow>
+                                        <BaseCol :cols="10">
+                                            <BaseRow class="pb-12 items-center">
+                                                <BaseCol :cols="6">
+                                                    <BaseCheckbox
+                                                        label="Công trình"
+                                                        tabindex="8"
+                                                        v-model="currentAccount.detail_by_project_work"
+                                                    />
+                                                </BaseCol>
+                                                <BaseCol :cols="6">
+                                                    <BaseCombobox
+                                                        tabindex="9"
+                                                        fullWidth
+                                                        :items="warnOrRequire"
+                                                        optionId="id"
+                                                        keyLabel="name"
+                                                        readonly
+                                                        :disabled="!currentAccount.detail_by_project_work"
+                                                        v-model="currentAccount.detail_by_project_work_kind"
+                                                    />
+                                                </BaseCol>
+                                            </BaseRow>
+                                        </BaseCol>
+                                    </BaseRow>
+                                    <BaseRow>
+                                        <BaseCol :cols="10">
+                                            <BaseRow class="pb-12 items-center">
+                                                <BaseCol :cols="6">
+                                                    <BaseCheckbox
+                                                        label="Hợp đồng bán"
+                                                        tabindex="8"
+                                                        v-model="currentAccount.detail_by_contract"
+                                                    />
+                                                </BaseCol>
+                                                <BaseCol :cols="6">
+                                                    <BaseCombobox
+                                                        tabindex="9"
+                                                        fullWidth
+                                                        :items="warnOrRequire"
+                                                        optionId="id"
+                                                        keyLabel="name"
+                                                        readonly
+                                                        :disabled="!currentAccount.detail_by_contract"
+                                                        v-model="currentAccount.detail_by_contract_kind"
+                                                    />
+                                                </BaseCol>
+                                            </BaseRow>
+                                        </BaseCol>
+                                    </BaseRow>
+                                    <BaseRow>
+                                        <BaseCol :cols="10">
+                                            <BaseRow class="pb-12 items-center">
+                                                <BaseCol :cols="6">
+                                                    <BaseCheckbox
+                                                        label="Khoản mục CP"
+                                                        tabindex="8"
+                                                        v-model="currentAccount.detail_by_expense_item"
+                                                    />
+                                                </BaseCol>
+                                                <BaseCol :cols="6">
+                                                    <BaseCombobox
+                                                        tabindex="9"
+                                                        fullWidth
+                                                        :items="warnOrRequire"
+                                                        optionId="id"
+                                                        keyLabel="name"
+                                                        readonly
+                                                        :disabled="!currentAccount.detail_by_expense_item"
+                                                        v-model="currentAccount.detail_by_expense_item_kind"
+                                                    />
+                                                </BaseCol>
+                                            </BaseRow>
+                                        </BaseCol>
+                                    </BaseRow>
+                                    <BaseRow>
+                                        <BaseCol :cols="10">
+                                            <BaseRow class="items-center">
+                                                <BaseCol :cols="6">
+                                                    <BaseCheckbox
+                                                        label="Mã thống kê"
+                                                        tabindex="8"
+                                                        v-model="currentAccount.detail_by_list_item"
+                                                    />
+                                                </BaseCol>
+                                                <BaseCol :cols="6">
+                                                    <BaseCombobox
+                                                        tabindex="9"
+                                                        fullWidth
+                                                        :items="warnOrRequire"
+                                                        optionId="id"
+                                                        keyLabel="name"
+                                                        readonly
+                                                        :disabled="!currentAccount.detail_by_list_item"
+                                                        v-model="currentAccount.detail_by_list_item_kind"
+                                                    />
+                                                </BaseCol>
+                                            </BaseRow>
+                                        </BaseCol>
+                                    </BaseRow>
+                                </BaseCol>
+                            </BaseRow>
+                        </div>
+                    </transition>
                 </div>
                 <div class="footer">
                     <div>
@@ -353,29 +439,51 @@
 </template>
 
 <script>
-import EmployeeApi from "../../../api/service/employee";
+import AccountiApi from "../../../api/service/account";
 import { mapActions, mapMutations } from "vuex";
 import resources from "../../../resources";
 import enums from "../../../enums";
-import utils from "../../../utils";
 
+const columnNames = [
+    { key: "account_number", text: "Số tài khoản" },
+    { key: "account_name", text: "Tên tài khoản" }
+];
+
+const objects = [
+    { id: 0, name: "Nhà cung cấp" },
+    { id: 1, name: "Khách hàng" },
+    { id: 2, name: "Nhân viên" }
+];
+
+const warnOrRequire = [
+    { id: 0, name: "Chỉ cảnh báo" },
+    { id: 1, name: "Bắt buộc nhập" }
+];
+
+const properties = [
+    { id: 0, name: "Dư nợ" },
+    { id: 1, name: "Dư có" },
+    { id: 2, name: "Lưỡng tính" },
+    { id: 3, name: "Không có số dư" }
+
+];
 export default {
-    name: "TheEmployeeDetails",
+    name: "AccountDetails",
     props: {
-        employee: Object,
-        departments: Array,
-        state: Number
+        account: Object,
+        state: Number,
+        accounts: {
+            type: Array,
+            default: () => []
+        }
     },
 
     data: function () {
         return {
             format: enums.format,
-            currentDepartments: this.departments,
-            currentEmployee: {
-                ...this.employee,
-                DateOfBirth: utils.formatDateValueInput(this.employee?.DateOfBirth),
-                Gender: this.employee?.Gender || 0,
-                IdentityDate: utils.formatDateValueInput(this.employee?.IdentityDate)
+            currentAccount: {
+                ...this.account,
+                account_category_kind: this.account?.account_category_kind || 0
             },
             disabledButton: true,
             // kiểm tra xem người dùng đã sửa hay thao tác gì với form chưa
@@ -386,42 +494,122 @@ export default {
             currentState: this.state,
 
             showMonitorDetails: true,
-            fullWidth: false
+            fullWidth: false,
+
+            columnNames,
+            objects,
+            warnOrRequire,
+            properties
 
         };
     },
 
     async mounted() {
         if (this.currentState === enums.dialogState.post) {
-            await this.setNewEmployeeCode();
-            // this.$refs["1"].$refs.BaseInput.focus();
+            this.$refs["1"].$refs.BaseInput.focus();
             this.edited = false;
         } else {
-            // this.$refs["1"].$refs.BaseInput.focus();
+            this.$refs["1"].$refs.BaseInput.focus();
         }
     },
 
     watch: {
-        currentEmployee: {
-            handler(value) {
+        currentAccount: {
+            handler(value, oldValue) {
                 this.edited = true;
             },
             deep: true
+        },
+
+        "currentAccount.detail_by_account_object": {
+            handler(value) {
+                if (value === true) {
+                    this.currentAccount.account_object_type = 0;
+                } else {
+                    this.currentAccount.account_object_type = null;
+                }
+            }
+        },
+        "currentAccount.detail_by_contract": {
+            handler(value) {
+                if (value === true) {
+                    this.currentAccount.detail_by_contract_kind = 0;
+                } else {
+                    this.currentAccount.detail_by_contract_kind = null;
+                }
+            }
+        },
+        "currentAccount.detail_by_department": {
+            handler(value) {
+                if (value === true) {
+                    this.currentAccount.detail_by_department_kind = 0;
+                } else {
+                    this.currentAccount.detail_by_department_kind = null;
+                }
+            }
+        },
+
+        "currentAccount.detail_by_expense_item": {
+            handler(value) {
+                if (value === true) {
+                    this.currentAccount.detail_by_expense_item_kind = 0;
+                } else {
+                    this.currentAccount.detail_by_expense_item_kind = null;
+                }
+            }
+        },
+        "currentAccount.detail_by_job": {
+            handler(value) {
+                if (value === true) {
+                    this.currentAccount.detail_by_job_kind = 0;
+                } else {
+                    this.currentAccount.detail_by_job_kind = null;
+                }
+            }
+        },
+
+        "currentAccount.detail_by_list_item": {
+            handler(value) {
+                if (value === true) {
+                    this.currentAccount.detail_by_list_item_kind = 0;
+                } else {
+                    this.currentAccount.detail_by_list_item_kind = null;
+                }
+            }
+        },
+
+        "currentAccount.detail_by_order": {
+            handler(value) {
+                if (value === true) {
+                    this.currentAccount.detail_by_order_kind = 0;
+                } else {
+                    this.currentAccount.detail_by_order_kind = null;
+                }
+            }
+        },
+
+        "currentAccount.detail_by_project_work": {
+            handler(value) {
+                if (value === true) {
+                    this.currentAccount.detail_by_project_work_kind = 0;
+                } else {
+                    this.currentAccount.detail_by_project_work_kind = null;
+                }
+            }
+        },
+
+        "currentAccount.detail_by_pu_contract": {
+            handler(value) {
+                if (value === true) {
+                    this.currentAccount.detail_by_pu_contract_kind = 0;
+                } else {
+                    this.currentAccount.detail_by_pu_contract_kind = null;
+                }
+            }
         }
     },
 
     computed: {
-        /**
-         * Set giá trị mặc định cho đơn vị
-         * Created by: VLVU (18/8/2021)
-         */
-        defaultDepartment() {
-            if (!this.currentEmployee?.DepartmentId) {
-                return null;
-            }
-            return this.currentDepartments.find(item => item.value === this.currentEmployee.DepartmentId);
-        },
-
         dialogWidth() {
             return this.fullWidth ? {} : { width: "50%" };
         }
@@ -434,25 +622,37 @@ export default {
         ...mapActions("popup", {
             confirmPopup: "confirmPopup"
         }),
+
         /**
-         * Set 1 mã nhân viên mới lấy từ server về
-         * Created by: VLVU (18/8/2021)
+         * validete account number
+         * Created by: VLVU (4/10/2021)
          */
-        async setNewEmployeeCode() {
-            try {
-                const promise = await EmployeeApi.getEmployeeCode();
-                this.currentEmployee = { ...this.currentEmployee, EmployeeCode: promise.data };
-            } catch (error) {
-                console.log(error);
+        validateAccountNumber() {
+            const parentId = this.currentAccount.parent_id;
+            if (parentId) {
+                const children = this.accounts.filter(item => item.parent_id === parentId);
+                const parent = this.accounts.find(item => item.account_id === parentId);
+                if (!this.currentAccount.account_number.startsWith(parent.account_number)) {
+                    this.setToast(resources.toast.accountNumberInvalid());
+                    return false;
+                };
+                if (this.currentState !== enums.dialogState.put && this.accounts.findIndex(item => item.account_number === this.currentAccount.account_number) > -1) {
+                    this.setToast(resources.toast.accountNumberDuplicate());
+                    return false;
+                }
+
+                const indexDuplicate = children.findIndex(item => this.currentAccount.account_number.startsWith(item.account_number));
+                if (indexDuplicate > -1) {
+                    if (children[indexDuplicate]?.account_id === this.currentAccount.account_id) {
+                        return true;
+                    }
+                    this.setToast(resources.toast.accountNumberDuplicateChild(children[indexDuplicate].account_number));
+                    return false;
+                }
             }
+            return true;
         },
-        /**
-         * Lấy dữ liệu về giới tính
-         * Created by: VLVU (15/8/2021)
-         */
-        getGender(e) {
-            this.currentEmployee = { ...this.currentEmployee, Gender: Number(e.target.value) };
-        },
+
         /**
          * handle ấn vào đóng dialog
          * @param {boolean} confirm có hiện xác nhận popup hay không
@@ -460,7 +660,7 @@ export default {
          */
         async onClose(confirm = true) {
             if (this.edited && confirm) {
-                const ok = await this.confirmPopup(resources.popup.confirmCloseEmployeeDetailForm);
+                const ok = await this.confirmPopup(resources.popup.confirmCloseDetailForm);
                 // không làm gì cả
                 if (ok === null) {
                     return;
@@ -475,13 +675,6 @@ export default {
             this.$emit("onClose");
         },
 
-        /**
-         * Lấy dữ liệu phòng ban
-         * Created by: VLVU (2021)
-         */
-        getDepartment(result) {
-            this.currentEmployee = { ...this.currentEmployee, DepartmentId: result.value };
-        },
         /**
          * Hàm kiểm tra validate dữ liệu trước khi gửi lên
          * Created by: VLVU (10/8/2021)
@@ -528,13 +721,23 @@ export default {
             if (!validate) {
                 return;
             }
+            const validateAccountNumber = this.validateAccountNumber();
+            if (!validateAccountNumber) {
+                return;
+            }
             let promise = null;
             try {
                 this.loading = true;
+                // set level
+                let level = 0;
+                const parentId = this.currentAccount.parent_id;
+                if (parentId) {
+                    level = this.accounts.find(item => item.account_id === parentId).level + 1;
+                }
                 if (this.currentState === enums.dialogState.post) {
-                    promise = await EmployeeApi.insertOne(this.currentEmployee);
+                    promise = await AccountiApi.insertOne({ ...this.currentAccount, level });
                 } else {
-                    promise = await EmployeeApi.updateOne(this.currentEmployee.EmployeeId, this.currentEmployee);
+                    promise = await AccountiApi.updateOne(this.currentAccount.account_id, { ...this.currentAccount, level });
                 }
 
                 // lỗi validate
@@ -548,23 +751,22 @@ export default {
                     return;
                 }
                 if (this.currentState === enums.dialogState.post) {
-                    this.setToast(resources.toast.addEmployeeSuccess(this.currentEmployee.EmployeeCode));
+                    this.setToast(resources.toast.addSuccess(this.currentAccount.account_name, "tài khoản"));
                 } else {
-                    this.setToast(resources.toast.updateEmployeeSuccess(this.currentEmployee.EmployeeCode));
+                    this.setToast(resources.toast.updateSuccess(this.currentAccount.account_name, "tài khoản"));
                 }
                 this.currentEmployee = {};
                 if (keepCreating) {
-                    await this.setNewEmployeeCode();
                     this.$refs["1"].$refs.BaseInput.focus();
                     this.loading = false;
                     this.edited = false;
                     // this.defaultDepartment = null;
                     // set lại currentState là post để nó có thể thêm mới
                     this.currentState = enums.dialogState.post;
-                    this.$emit("reloadEmployees");
+                    this.$emit("reloadAccounts");
                     return;
                 }
-                this.$emit("onClose", { hasReloadEmployees: true });
+                this.$emit("onClose", { hasReloadAccounts: true });
             } catch (error) {
                 this.loading = false;
                 if (error?.response?.status === enums.statusCode.serverError) {

@@ -37,36 +37,44 @@
                     />
 
                 </div>
-                <div class="reload-button">
+                <div class="flex">
+                    <div
+                        class="control-table mr-12"
+                        @click="extendTable = !extendTable"
+                    >{{!extendTable ? 'Thu gọn' : 'Mở rộng'}}</div>
                     <div
                         class="reload-icon"
                         @click="reloadAccounts"
                     ></div>
+                    <div class="icon icon-size-24 mi-excel__nav ml-12 mr-12"></div>
                 </div>
             </div>
             <div class="grid">
                 <AccountTable
                     :columnNames="columnNames"
                     :dataProps="accounts"
+                    :extendTable="extendTable"
                     @handleClickEdit="handleClickEdit"
                     @handleClickDelete="handleClickDelete"
                     @handleClickRelication="handleClickRelication"
+                    @handleClickView="handleClickView"
                 />
             </div>
         </div>
         <div class="pagination-bar">
             <div class="pagination-box">
                 <div class="paging-left">
-                    Tổng số: <b>{{100}}</b> bản ghi
+                    Tổng số: <b>{{totalRecord}}</b> bản ghi
                 </div>
             </div>
         </div>
-        <AccountDetails
+        <Details
             v-if="openDialog"
             @onClose="onCloseDialog"
-            :employee="currentAccount"
+            :account="currentAccount"
             :state="stateDialog"
             @reloadAccounts="reloadAccounts"
+            :accounts="accounts"
         />
     </div>
 
@@ -74,8 +82,8 @@
 
 <script>
 
-import EmployeeApi from "../../api/service/employee";
-import AccountDetails from "./Details";
+import AccountApi from "../../api/service/account";
+import Details from "./Details";
 import { mapActions, mapMutations } from "vuex";
 import enums from "../../enums";
 import resources from "../../resources";
@@ -84,34 +92,39 @@ const columnNames = [
     { key: "account_number", text: "Số tài khoản", width: 145 },
     { key: "account_name", text: "Tên tài khoản", width: 250 },
     { key: "property_name", text: "Tính chất", width: 120 },
-    { key: "account_eng_name", text: "Tên tiếng anh", width: 250 },
+    { key: "account_name_english", text: "Tên tiếng anh", width: 250 },
     { key: "description", text: "Diễn giải", width: 250 },
     { key: "state", text: "Trạng thái", width: 150 }
 ];
 
+const properties = [
+    { id: 0, name: "Dư nợ" },
+    { id: 1, name: "Dư có" },
+    { id: 2, name: "Lưỡng tính" },
+    { id: 3, name: "Không có số dư" }
+
+];
+
 // các giá trị mặc định của paging và filter
 const defaultFilterText = "";
+const defaultTotalRecord = 0;
 export default {
     name: "AccountSystem",
-    components: { AccountDetails, AccountTable },
+    components: { Details, AccountTable },
     data() {
         return {
             columnNames: columnNames,
-            accounts: [
-                { account_id: "1", account_name: "test1", account_number: 111, parent_id: "", level: 0 },
-                { account_id: "2", account_name: "test2", account_number: 1112, parent_id: "1", level: 1 },
-                { account_id: "3", account_name: "test3", account_number: 1113, parent_id: "1", level: 1 },
-                { account_id: "4", account_name: "test4", account_number: 100, parent_id: "", level: 0 },
-                { account_id: "5", account_name: "test5", account_number: 11132, parent_id: "3", level: 2 }
-
-            ],
+            accounts: null,
             openDialog: false,
             currentAccount: {},
             stateDialog: enums.dialogState.post,
 
             filterText: defaultFilterText,
+            totalRecord: defaultTotalRecord,
 
-            idTimeout: null // id của setTimeOut khi thực hiện filter
+            idTimeout: null, // id của setTimeOut khi thực hiện filter,
+
+            extendTable: false
 
         };
     },
@@ -139,7 +152,7 @@ export default {
      * CreatedBy: Vũ Long Vũ 16/7/2021
      */
     mounted() {
-        // this.getData();
+        this.getData();
         document.removeEventListener("click", this.handleClickOutside);
         document.addEventListener("click", this.handleClickOutside);
     },
@@ -158,39 +171,16 @@ export default {
          */
         async getData() {
             try {
-                // const promise = await Promise.all([
-                //     EmployeeApi.getEmployeeFilterPaging("", this.pageNumber, this.pageSize),
-                //     DepartmentApi.getAll()
-                // ]);
+                const promise = await AccountApi.getAll();
 
-                // this.employees = promise[0]?.data?.Data ?? [];
-                // this.departments = promise[1]?.data?.map(item => ({ value: item.DepartmentId, text: item.DepartmentName })) ?? [];
-
-                // this.totalPage = promise[0]?.data?.TotalPage === 0 ? 1 : promise[0]?.data?.TotalPage || 1; // số page luôn là 1
-                // this.totalRecord = promise[0]?.data?.TotalRecord;
-            } catch (error) {
-                this.accounts = [];
-                if (error?.response?.status === enums.statusCode.serverError) {
-                    this.setToast({
-                        content: error.response.data.MsgUser,
-                        type: "error"
-                    });
-                    return;
-                }
-                this.setToast({
-                    content: resources.serverErrorMessageDefault,
-                    type: "error"
-                });
-            }
-        },
-
-        /**
-         * Hàm tải lại dữ liệu nhân viên
-         * Created by: VLVU (10/8/2021)
-         */
-        async loadAccounts() {
-            try {
-
+                this.accounts = promise?.data?.Data.map(item => {
+                    const property = properties.find(x => x.id === item.account_category_kind);
+                    return {
+                        ...item,
+                        property_name: property.name
+                    };
+                }) ?? [];
+                this.totalRecord = this.accounts.length;
             } catch (error) {
                 this.accounts = [];
                 if (error?.response?.status === enums.statusCode.serverError) {
@@ -215,7 +205,7 @@ export default {
             this.accounts = null;
             this.filterText = defaultFilterText;
 
-            this.loadAccounts();
+            this.getData();
         },
 
         /**
@@ -243,8 +233,8 @@ export default {
          * Hàm khi người dùng dblclick vào 1 hàng hoặc ấn vào chữ sửa trên hàng đó
          * Created by: Vũ Long Vũ (19/7/2021)
          */
-        handleClickEdit(employee) {
-            this.currentAccount = employee;
+        handleClickEdit(account) {
+            this.currentAccount = account;
             this.stateDialog = enums.dialogState.put;
             this.openDialog = true;
         },
@@ -253,9 +243,9 @@ export default {
          * Hàm khi người dùng dblclick vào 1 hàng hoặc ấn vào chữ sửa trên hàng đó
          * Created by: Vũ Long Vũ (19/7/2021)
          */
-        async handleClickDelete(employee) {
-            this.currentAccount = employee;
-            const ok = await this.confirmPopup(resources.popup.deleteEmployee(employee.EmployeeCode));
+        async handleClickDelete(account) {
+            this.currentAccount = account;
+            const ok = await this.confirmPopup(resources.popup.deleteOne(account.account_name, "tài khoản"));
             if (!ok) {
                 return;
             }
@@ -266,9 +256,19 @@ export default {
          * Hàm khi người dùng dblclick vào 1 hàng hoặc ấn vào chữ sửa trên hàng đó
          * Created by: Vũ Long Vũ (19/7/2021)
          */
-        handleClickRelication(employee) {
-            this.currentAccount = employee;
+        handleClickRelication(account) {
+            this.currentAccount = account;
             this.stateDialog = enums.dialogState.post;
+            this.openDialog = true;
+        },
+
+        /**
+         * Hàm khi người dùng click view
+         * Created by: Vũ Long Vũ (19/7/2021)
+         */
+        handleClickView(account) {
+            this.currentAccount = account;
+            this.stateDialog = enums.dialogState.view;
             this.openDialog = true;
         },
 
@@ -279,9 +279,9 @@ export default {
 
         async onDelete() {
             try {
-                await EmployeeApi.deleteOne(this.currentAccount.EmployeeId);
-                this.setToast(resources.toast.deleteEmployeeSuccess(this.currentAccount.EmployeeCode));
-                this.reloadAccounts();
+                // await accountApi.deleteOne(this.currentAccount.accountId);
+                // this.setToast(resources.toast.deleteaccountSuccess(this.currentAccount.accountCode));
+                // this.reloadAccounts();
             } catch (error) {
                 if (error.response.status === enums.statusCode.serverError) {
                     this.setToast({
