@@ -16,6 +16,7 @@
                             {{columnName.text}}
                         </div>
                         <div
+                            v-if="!disabledFilter"
                             class="filter"
                             style="display: none;"
                         >
@@ -184,6 +185,10 @@ export default {
             type: Object,
             default: () => { }
         },
+        disabledFilter: {
+            type: Boolean,
+            default: () => true
+        },
 
         extendTable: {
             type: Boolean,
@@ -222,7 +227,7 @@ export default {
             let levelCount = 0;
             while (true) {
                 const dataLevelN = this.data.filter(item => item.level === levelCount);
-                if (dataLevelN.length === 0) {
+                if (dataLevelN.length === 0 && result.length === this.data.length) {
                     break;
                 }
                 // level 0 là lấy luôn

@@ -54,6 +54,7 @@
                     :columnNames="columnNames"
                     :dataProps="accounts"
                     :extendTable="extendTable"
+                    disabledFilter
                     @handleClickEdit="handleClickEdit"
                     @handleClickDelete="handleClickDelete"
                     @handleClickRelication="handleClickRelication"
@@ -88,6 +89,7 @@ import { mapActions, mapMutations } from "vuex";
 import enums from "../../enums";
 import resources from "../../resources";
 import AccountTable from "./Table";
+import { removeVietnameseTones } from "../../utils";
 const columnNames = [
     { key: "account_number", text: "Số tài khoản", width: 145 },
     { key: "account_name", text: "Tên tài khoản", width: 250 },
@@ -113,6 +115,7 @@ export default {
     components: { Details, AccountTable },
     data() {
         return {
+            fixedData: [], // dữ liệu cố định
             columnNames: columnNames,
             accounts: null,
             openDialog: false,
@@ -139,7 +142,7 @@ export default {
             clearTimeout(this.idTimeout);
 
             this.idTimeout = setTimeout(() => {
-                this.loadAccounts();
+                this.search();
             }, 700);
         }
     },
@@ -166,6 +169,18 @@ export default {
         }),
 
         /**
+         * tính năng search cho bảng
+         * Created by: VLVU (5/10/2021)
+         */
+        search() {
+            const textSearch = removeVietnameseTones(this.filterText);
+            this.accounts = this.fixedData.filter((item) => {
+                return removeVietnameseTones(item.account_number)?.toLowerCase()?.indexOf(textSearch.toLowerCase()) > -1 ||
+                    removeVietnameseTones(item.account_name)?.toLowerCase()?.indexOf(textSearch.toLowerCase()) > -1;
+            });
+        },
+
+        /**
          * Hàm lấy dữ liệu và thông tin đơn vị
          * Created by: Vũ Long Vũ (19/7/2021)
          */
@@ -180,6 +195,7 @@ export default {
                         property_name: property.name
                     };
                 }) ?? [];
+                this.fixedData = [...this.accounts];
                 this.totalRecord = this.accounts.length;
             } catch (error) {
                 this.accounts = [];
