@@ -5,7 +5,7 @@ import Cash from "../views/Cash";
 import Process from "../views/Cash/Process";
 import Dashboard from "../views/Dashboard.vue";
 import Employee from "../views/Employee";
-import ReceiptDetails from "../views/popup/ReceiptDetails";
+import PaymentDetails from "../views/popup/PaymentDetails";
 import Provider from "../views/Provider";
 import ReceiptPaymentList from "../views/ReceiptPaymentList";
 
@@ -18,13 +18,34 @@ const routes = [
 		name: "Cash",
 		component: Cash,
 		meta: {
-			title: "Quy trình | Tiền mặt | Công ty Misa"
+			title: "Quy trình | Tiền mặt | Công ty Misa",
+			showPopupView: true
 		},
 		children: [
-			{ path: "process", component: Process },
+			{
+				path: "process",
+				component: Process
+			},
 			{
 				path: "receipt-payment-list",
 				component: ReceiptPaymentList,
+				meta: {
+					title: "Công ty Misa"
+				}
+			},
+			{
+				path: "/popup/payment-details",
+				name: "PaymentDetailsFromProcessView",
+				components: { default: Process, "popup-view": PaymentDetails },
+				meta: {
+					title: "Công ty Misa"
+				}
+			},
+
+			{
+				path: "/popup/payment-details",
+				name: "PaymentDetailsFromPaymentView",
+				components: { default: ReceiptPaymentList, "popup-view": PaymentDetails },
 				meta: {
 					title: "Công ty Misa"
 				}
@@ -59,14 +80,6 @@ const routes = [
 		}
 	},
 
-	{
-		path: "/popup/receipt-details",
-		name: "ReceiptDetails",
-		component: ReceiptDetails,
-		meta: {
-			title: "Công ty Misa"
-		}
-	},
 	{
 		path: "*",
 		name: "Dashboard",

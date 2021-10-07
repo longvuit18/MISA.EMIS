@@ -19,7 +19,7 @@
                     <div class="add-button">
                         <BaseDropdownButton
                             buttonName="Thêm chi tiền"
-                            @click="handleOpenDialog"
+                            @click="toPopupPaymentDetails"
                         />
                     </div>
                 </div>
@@ -36,7 +36,7 @@
                     >
                         <div class="debit">
                             <div class="data">
-                                <div class="total-money">100</div>
+                                <div class="total-money">100.360.100,0</div>
                             </div>
                             <div class="label">Tổng thu đầu năm hiện tại</div>
                         </div>
@@ -47,7 +47,7 @@
                     >
                         <div class="total-debit">
                             <div class="data">
-                                <div class="total-money">100</div>
+                                <div class="total-money">10.000.115,0</div>
                             </div>
                             <div class="label">Tổng chi đầu năm hiện tại</div>
                         </div>
@@ -59,7 +59,10 @@
                     >
                         <div class="payment">
                             <div class="data">
-                                <div class="total-money">100</div>
+                                <div
+                                    class="total-money"
+                                    style="color: red;"
+                                >(894.440.015,0)</div>
                             </div>
                             <div class="label">Tồn quỹ hiện tại</div>
                         </div>
@@ -104,14 +107,14 @@
                     </div>
                     <div
                         class="reload-icon"
-                        @click="reloadEmployees"
+                        @click="reloadPayment"
                     ></div>
                 </div>
             </div>
             <div class="grid">
-                <EmployeeTable
+                <PaymentTable
                     :columnNames="columnNames"
-                    :dataProps="employees"
+                    :dataProps="payments"
                     @handleClickEdit="handleClickEdit"
                     @handleClickDelete="handleClickDelete"
                     @handleClickRelication="handleClickRelication"
@@ -128,8 +131,9 @@
                         <BaseCombobox
                             positionOption="top"
                             :items="pageSizes"
-                            :defaultItem="pageSize"
-                            @result="(result) => pageSize = result"
+                            v-model="pageSize"
+                            optionId="value"
+                            keyLabel="label"
                             readonly
                         />
                     </div>
@@ -258,44 +262,27 @@
                 </div>
             </div>
         </div>
-        <EmployeeDetails
-            v-if="openDialog"
-            @onClose="onCloseDialog"
-            :employee="currentEmployee"
-            :departments="departments"
-            :state="stateDialog"
-            @reloadEmployees="reloadEmployees"
-        />
     </div>
 
 </template>
 
 <script>
 
-import EmployeeApi from "../../api/service/employee";
-import DepartmentApi from "../../api/service/department";
-import EmployeeDetails from "./Details";
+import PaymentApi from "../../api/service/payment";
 import { mapActions, mapMutations } from "vuex";
 import enums from "../../enums";
 import resources from "../../resources";
-import EmployeeTable from "./Table";
+import PaymentTable from "./Table";
 const columnNames = [
-    { key: "EmployeeCode", text: "Mã nhân viên", width: 145 },
-    { key: "EmployeeName", text: "Họ và tên", sort: true, width: 250 },
-    { key: "GenderName", text: "Giới tính", width: 120 },
-    { key: "DateOfBirth", text: "Ngày sinh", width: 150, align: "center", format: "date" },
-    { key: "IdentityNumber", text: "Số CMND", width: 200 },
-    { key: "IdentityDate", text: "Ngày cấp", width: 150, align: "center", format: "date" },
-    { key: "IdentityPlace", text: "Nơi cấp", width: 150 },
-    { key: "EmployeePosition", text: "Chức danh", width: 250 },
-    { key: "DepartmentName", text: "Tên đơn vị", width: 250 },
-    { key: "BankAccountNumber", text: "Số tài khoản", width: 150 },
-    { key: "BankName", text: "Tên ngân hàng", width: 250 },
-    { key: "BankBranchName", text: "Tên chi nhánh ngân hàng", width: 250 },
-    { key: "BankProvinceName", text: "Tỉnh/TP ngân hàng", width: 200 },
-    { key: "PhoneNumber", text: "Điện thoại", width: 200 },
-    { key: "Email", text: "Email", width: 200 },
-    { key: "Address", text: "Địa chỉ", width: 200 }
+    { key: "posted_date", text: "Ngày hạch toán", width: 145, align: "center", format: "date" },
+    { key: "refdate", text: "Ngày chứng từ", width: 150, align: "center", format: "date" },
+    { key: "refno_finance", text: "Số chứng từ", width: 125 },
+    { key: "journal_memo", text: "Diễn giải", width: 320 },
+    { key: "total_amount", text: "Số tiền", width: 150 },
+    { key: "account_object_code", text: "Mã đối tượng", width: 150 },
+    { key: "account_object_name", text: "Đối tượng", width: 150 },
+    { key: "account_object_contact_name", text: "Chức danh", width: 250 },
+    { key: "account_object_address", text: "Tên đơn vị", width: 250 }
 ];
 
 // các giá trị mặc định của paging và filter
@@ -304,23 +291,23 @@ const defaultPageNumber = 1;
 const defaultTotalPage = 1;
 const defaultTotalRecord = 0;
 const defaultPageSizes = [
-    { value: 10, text: "10 bản ghi trên 1 trang" },
-    { value: 20, text: "20 bản ghi trên 1 trang" },
-    { value: 50, text: "50 bản ghi trên 1 trang" },
-    { value: 100, text: "100 bản ghi trên 1 trang" }
+    { value: 10, label: "10 bản ghi trên 1 trang" },
+    { value: 20, label: "20 bản ghi trên 1 trang" },
+    { value: 30, label: "30 bản ghi trên 1 trang" },
+    { value: 50, label: "50 bản ghi trên 1 trang" },
+    { value: 100, label: "100 bản ghi trên 1 trang" }
 ];
-const defaultPageSize = defaultPageSizes[2];
+const defaultPageSize = 20;
 export default {
     name: "ReceiptPaymentList",
-    components: { EmployeeDetails, EmployeeTable },
+    components: { PaymentTable },
     data() {
         return {
             columnNames: columnNames,
-            employees: [],
+            payments: [],
             openDialog: false,
             currentEmployee: {},
             stateDialog: enums.dialogState.post,
-            departments: [],
 
             // pagination
             pageSizes: defaultPageSizes,
@@ -354,8 +341,8 @@ export default {
          * Created by: VLVU (18/8/2021)
          */
         pageNumber() {
-            this.employees = null;
-            this.loadEmployees();
+            this.payments = null;
+            this.loadPayment();
         },
 
         /**
@@ -363,11 +350,11 @@ export default {
          * Created by: VLVU (18/8/2021)
          */
         pageSize() {
-            this.employees = null;
+            this.payments = null;
             this.pageNumber = defaultPageNumber;
 
-            this.$router.push({ path: "employee", query: { page: defaultPageNumber } }).catch(() => { });
-            this.loadEmployees();
+            this.$router.push({ path: "receipt-payment-list", query: { page: 1 } }).catch(() => { });
+            this.loadPayment();
         },
 
         /**
@@ -380,8 +367,8 @@ export default {
             this.idTimeout = setTimeout(() => {
                 this.pageNumber = defaultPageNumber;
 
-                this.$router.push({ path: "employee", query: { page: defaultPageNumber } }).catch(() => { });
-                this.loadEmployees();
+                this.$router.push({ path: "receipt-payment-list", query: { page: 1 } }).catch(() => { });
+                this.loadPayment();
             }, 700);
         }
     },
@@ -429,17 +416,15 @@ export default {
         async getData() {
             try {
                 const promise = await Promise.all([
-                    EmployeeApi.getEmployeeFilterPaging("", this.pageNumber, this.pageSize.value),
-                    DepartmentApi.getAll()
+                    PaymentApi.getPaymentFilterPaging("")
                 ]);
 
-                this.employees = promise[0]?.data?.Data ?? [];
-                this.departments = promise[1]?.data?.map(item => ({ value: item.DepartmentId, text: item.DepartmentName })) ?? [];
+                this.payments = promise[0]?.data?.Data ?? [];
 
                 this.totalPage = promise[0]?.data?.TotalPage === 0 ? 1 : promise[0]?.data?.TotalPage || 1; // số page luôn là 1
                 this.totalRecord = promise[0]?.data?.TotalRecord;
             } catch (error) {
-                this.employees = [];
+                this.payments = [];
                 if (error?.response?.status === enums.statusCode.serverError) {
                     this.setToast({
                         content: error.response.data.MsgUser,
@@ -458,15 +443,15 @@ export default {
          * Hàm tải lại dữ liệu nhân viên
          * Created by: VLVU (10/8/2021)
          */
-        async loadEmployees() {
+        async loadPayment() {
             try {
-                const promise = await EmployeeApi.getEmployeeFilterPaging(this.filterText.trim(), this.pageNumber, this.pageSize.value);
+                const promise = await PaymentApi.getPaymentFilterPaging(this.filterText.trim(), this.pageNumber, this.pageSize.value);
 
-                this.employees = promise?.data.Data;
+                this.payments = promise?.data.Data;
                 this.totalPage = promise?.data?.TotalPage === 0 ? 1 : promise?.data?.TotalPage || 1;
                 this.totalRecord = promise?.data.TotalRecord;
             } catch (error) {
-                this.employees = [];
+                this.payments = [];
                 if (error?.response?.status === enums.statusCode.serverError) {
                     this.setToast({
                         content: error.response.data.MsgUser,
@@ -485,24 +470,23 @@ export default {
          * Hàm reload hoàn toàn lại bảng nhân viên
          * Created by: Vũ Long Vũ (19/7/2021)
          */
-        reloadEmployees() {
-            this.employees = null;
+        reloadPayment() {
+            this.payments = null;
             this.pageNumber = defaultPageNumber;
             this.$router.push({ path: "employee", query: { page: defaultPageNumber } }).catch(() => { });
             this.totalPage = defaultTotalPage;
             this.totalRecord = defaultTotalRecord;
             this.filterText = defaultFilterText;
 
-            this.loadEmployees();
+            this.loadPayment();
         },
 
         /**
-         * Hàm mở dialog
-         * Created by: Vũ Long Vũ (19/7/2021)
+         * Hàm mở popup payment details
+         * Created by: Vũ Long Vũ (6/10/2021)
          */
-        handleOpenDialog() {
-            this.stateDialog = enums.dialogState.post;
-            this.openDialog = true;
+        toPopupPaymentDetails() {
+            this.$router.push({ name: "PaymentDetailsFromPaymentView" });
         },
 
         /**
@@ -511,10 +495,10 @@ export default {
          */
         onCloseDialog(params) {
             this.openDialog = false;
-            this.currentEmployee = {};
-            if (params?.hasReloadEmployees) {
-                this.employees = null;
-                this.reloadEmployees();
+            this.currentPayment = {};
+            if (params?.hasReloadPayment) {
+                this.payments = null;
+                this.reloadPayment();
             }
         },
         /**
@@ -522,7 +506,7 @@ export default {
          * Created by: Vũ Long Vũ (19/7/2021)
          */
         handleClickEdit(employee) {
-            this.currentEmployee = employee;
+            this.currentPayment = employee;
             this.stateDialog = enums.dialogState.put;
             this.openDialog = true;
         },
@@ -532,7 +516,7 @@ export default {
          * Created by: Vũ Long Vũ (19/7/2021)
          */
         async handleClickDelete(employee) {
-            this.currentEmployee = employee;
+            this.currentPayment = employee;
             const ok = await this.confirmPopup(resources.popup.deleteEmployee(employee.EmployeeCode));
             if (!ok) {
                 return;
@@ -545,7 +529,7 @@ export default {
          * Created by: Vũ Long Vũ (19/7/2021)
          */
         handleClickRelication(employee) {
-            this.currentEmployee = employee;
+            this.currentPayment = employee;
             this.stateDialog = enums.dialogState.post;
             this.openDialog = true;
         },
@@ -557,9 +541,9 @@ export default {
 
         async onDelete() {
             try {
-                await EmployeeApi.deleteOne(this.currentEmployee.EmployeeId);
-                this.setToast(resources.toast.deleteEmployeeSuccess(this.currentEmployee.EmployeeCode));
-                this.reloadEmployees();
+                await PaymentApi.deleteOne(this.currentPayment.ref_id);
+                this.setToast(resources.toast.deleteEmployeeSuccess(this.currentPayment.EmployeeCode));
+                this.reloadPayment();
             } catch (error) {
                 if (error.response.status === enums.statusCode.serverError) {
                     this.setToast({
@@ -572,7 +556,7 @@ export default {
                     type: "error"
                 });
             }
-            this.currentEmployee = {};
+            this.currentPayment = {};
         },
 
         /**
@@ -582,20 +566,20 @@ export default {
         // #region paging
 
         onPagination(page) {
-            this.$router.push({ path: "employee", query: { page: page } }).catch(() => { });
+            this.$router.push({ path: "receipt-payment-list", query: { page: page } }).catch(() => { });
         },
 
         nextPage() {
             if (this.pageNumber === this.totalPage) {
                 return;
             }
-            this.$router.push({ path: "employee", query: { page: this.pageNumber + 1 } }).catch(() => { });
+            this.$router.push({ path: "receipt-payment-list", query: { page: this.pageNumber + 1 } }).catch(() => { });
         },
         prevPage() {
             if (this.pageNumber - 1 === 0) {
                 return;
             }
-            this.$router.push({ path: "employee", query: { page: Math.max(0, this.pageNumber - 1) } }).catch(() => { });
+            this.$router.push({ path: "receipt-payment-list", query: { page: Math.max(0, this.pageNumber - 1) } }).catch(() => { });
         }
         // #endregion
     },

@@ -35,7 +35,7 @@
                     <td
                         v-for="(value, key, cellIndex) in mapDataFlowHeader(item[0])"
                         :key="key"
-                        :class="{...setAlign(key), ['level-' + item[0].level]: cellIndex === 0, 'uppercase': item[1] === 'is-parent'}"
+                        :class="{...setAlign(key), ['level-' + item[0].level]: cellIndex === 0, 'uppercase': item[1] === 'is-parent' && treeTable}"
                         class="td-viewer"
                     >
                         <div

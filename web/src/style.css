@@ -211,6 +211,10 @@ h1, h2, h3, h4, h5, h6 {
 	background-position: -607px -311px;
 }
 
+.mi-recent-log {
+	background-position: -648px -144px;
+}
+
 .flex {
 	display: flex;
 }

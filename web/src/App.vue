@@ -33,6 +33,10 @@
             name="box-popup"
             multiple
         />
+        <portal-target
+            name="popup-view"
+            multiple
+        />
     </div>
 
 </template>

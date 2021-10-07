@@ -21,7 +21,6 @@
                         </div>
                     </div>
                     <div class="header-right">
-
                         <div
                             class="helper-button"
                             v-tooltip="'Tính năng đang phát triển'"

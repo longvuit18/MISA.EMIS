@@ -76,7 +76,6 @@
                                 v-if="typeCol(key) === 'input' && rowSelected(rowIndex)"
                                 fullWidth
                                 v-model="item[key]"
-                                isTextarea
                                 :enterRightToLeft="formatCol(key) === 'number' || formatCol(key) === 'curreny'"
                                 :format="formatCol(key)"
                                 rows="1"
@@ -288,7 +287,7 @@ export default {
         typeCol(key) {
             const column = this.columnNames.find((item) => item.key === key);
 
-            if (!column || !column?.type) {
+            if (!column || !column?.type || this.disabled) {
                 return "string";
             }
 

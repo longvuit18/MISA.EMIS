@@ -157,7 +157,7 @@ export default {
             default: () => []
         },
         label: String,
-        tabindex: String,
+        tabindex: [String, Number],
 
         // vị trí của hộp option có 2 vị trí là top hoặc bottom, default: bottom
         positionOption: {
@@ -271,6 +271,13 @@ export default {
             return `calc(100% - ${this.positonCombobox?.top}px + 4px)`;
         },
         /**
+         * Lấy vị trí right hiện tại của dropdownButton
+         * Created by: VLVU(10/9/2021)
+         */
+        right() {
+            return `calc(100% - ${this.positonCombobox?.right}px)`;
+        },
+        /**
          * Lấy vị trí left hiện tại của combobox
          * Created by: VLVU(10/9/2021)
          */
@@ -289,9 +296,14 @@ export default {
          * Created by: VLVU(10/9/2021)
          */
         styleOption() {
-            return this.positionOption === "bottom"
-                ? { top: this.top, left: this.left, "min-width": this.width }
-                : { bottom: this.bottom, left: this.left, "min-width": this.width };
+            switch (this.positionOption) {
+                case "bottom":
+                    return { top: this.top, left: this.left, "min-width": this.width };
+                case "bottom-left":
+                    return { top: this.top, right: this.right, "min-width": this.width };
+                default:
+                    return { bottom: this.bottom, left: this.left, "min-width": this.width };
+            }
         },
 
         /**

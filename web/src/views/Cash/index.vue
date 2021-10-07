@@ -13,12 +13,41 @@
             >Thu, chi tiền</router-link>
         </div>
         <router-view />
+        <div v-if="showPopupView">
+            <router-view name="popup-view" />
+        </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: "Cash"
+    name: "Cash",
+    data() {
+        return {
+            showPopupView: false
+        };
+    },
+
+    mounted() {
+        if (this.$route.fullPath.startsWith("/popup/payment-details")) {
+            this.showPopupView = true;
+        } else {
+            this.showPopupView = false;
+        }
+    },
+
+    watch: {
+        $route: {
+            handler(newValue, oldValue) {
+                console.log(newValue);
+                if (newValue.fullPath.startsWith("/popup/payment-details")) {
+                    this.showPopupView = true;
+                } else {
+                    this.showPopupView = false;
+                }
+            }
+        }
+    }
 };
 </script>
 

@@ -14,7 +14,6 @@
                 v-on:input="updateValue($event)"
                 @blur="onBlur"
                 ref="BaseInput"
-                @keypress="keyPress"
                 :title="errorMessage"
             >
             <div
@@ -36,7 +35,6 @@
                 v-on:input="updateValue($event)"
                 @blur="onBlur"
                 ref="BaseInput"
-                @keypress="keyPress"
                 :title="errorMessage"
             />
             <div
@@ -52,8 +50,7 @@
  * Base input
  * Created by: VLVU (18/7/2021)
  */
-
-import numeral from "numeral";
+import AutoNumeric from "autonumeric";
 // message error
 const ErrorRequire = (name) => `${name} là trường bắt buộc phải nhập!`;
 const ErrorValidateEmail = () => "Bạn cần nhập đúng định dạng email ví dụ: misa@gmail.com";
@@ -149,7 +146,20 @@ export default {
         }
     },
 
+    created() {
+
+    },
     mounted() {
+        if (this.format === "number" || this.format === "currency") {
+            const settings = {
+                digitGroupSeparator: " ",
+                decimalCharacter: ",",
+                minimumValue: "0",
+                decimalCharacterAlternative: "."
+            };
+            // eslint-disable-next-line no-new
+            new AutoNumeric(this.$refs.BaseInput, settings);
+        }
         if (this.focusInput === true) {
             this.$refs.BaseInput.focus();
         }
@@ -204,27 +214,6 @@ export default {
         },
 
         /**
-         * handle key press. Cho phép và không cho phép ấn phím nào tùy thuộc vào kiểu format truyền vào
-         * Created by: VLVU (1/8/2021)
-         */
-        keyPress(event) {
-            event = (event) || window.event;
-            // format curreny khong cho phép nhập hơn nghìn tỷ
-            if (this.format === "currency" && event.target.value.length > 17) {
-                event.preventDefault();
-                return;
-            }
-            if (this.format === "currency" || this.format === "number") {
-                var charCode = (event.which) ? event.which : event.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                    event.preventDefault();
-                } else {
-                    return true;
-                }
-            }
-        },
-
-        /**
          * Validate email
          * Created by: VLVU (20/7/2021)
          */
@@ -238,7 +227,7 @@ export default {
          * Created by: VLVU (20/7/2021)
          */
         formatCurrency(str) {
-            return numeral(str?.replaceAll(".", ",")).format("0,0").replaceAll(",", ".");
+            // return Number(str).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
             // return new Intl.NumberFormat().format(Number(str?.replace(".", ""))).toString();
         }
     }

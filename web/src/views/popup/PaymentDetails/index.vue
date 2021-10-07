@@ -3,17 +3,33 @@
         <div class="receipt-details">
             <div class="header">
                 <div class="header-left">
-                    <div class="title">Phiếu chi PC00028</div>
-                    <div class="receipt-list">
-                        <BaseCombobox />
+                    <div class="icon icon-size-24 mi-recent-log mr-10"></div>
+                    <div class="title">Phiếu chi {{data.refno_finance}}</div>
+                    <div>
+                        <BaseCombobox
+                            class="payment-list"
+                            :items="paymentTypes"
+                            optionId="key"
+                            keyLabel="label"
+                            v-model="paymentType"
+                        />
                     </div>
                 </div>
                 <div class="header-right">
+                    <div class="tour-icon"></div>
+                    <div class="tutorial">
+                        Hướng dẫn
+                    </div>
+                    <div
+                        class="icon icon-size-24 mi-setting__nav ml-10 mr-10"
+                        v-tooltip="'Tính năng chưa phát triển'"
+                    ></div>
                     <div
                         class="helper-button"
                         v-tooltip="'Tính năng đang phát triển'"
                     ></div>
                     <div
+                        @click="$router.back()"
                         class="close-button"
                         v-tooltip="'Đóng'"
                     ></div>
@@ -59,6 +75,7 @@
                                                 label="Lý do nộp"
                                                 tabindex="4"
                                                 fullWidth
+                                                v-model="data.journal_memo"
                                             />
                                         </BaseCol>
                                     </BaseRow>
@@ -101,6 +118,9 @@
                                                     label="Ngày hạch toán"
                                                     fullWidth
                                                     tabindex="7"
+                                                    format="DD/MM/YYYY"
+                                                    value-type="YYYY-MM-DD"
+                                                    v-model="data.posted_date"
                                                 />
                                             </BaseCol>
                                         </BaseRow>
@@ -110,15 +130,19 @@
                                                     label="Ngày phiếu thu"
                                                     fullWidth
                                                     tabindex="8"
+                                                    format="DD/MM/YYYY"
+                                                    value-type="YYYY-MM-DD"
+                                                    v-model="data.posted_date"
                                                 />
                                             </BaseCol>
                                         </BaseRow>
                                         <BaseRow>
                                             <BaseCol>
                                                 <BaseInput
-                                                    label="Số phiêu thu"
+                                                    label="Số phiêu chi"
                                                     fullWidth
                                                     tabindex="9"
+                                                    v-model="data.refno_finance"
                                                 />
                                             </BaseCol>
                                         </BaseRow>
@@ -138,10 +162,36 @@
                 <div class="acc-header">
                     <div class="title">Hạch toán</div>
                     <div class="curreny-option">
-                        <div class="label">Loại tiền</div>
-                        <div>
-                            <BaseCombobox placeholder="VND" />
+                        <div class="currency-type">
+                            <div class="label mr-10">Loại tiền</div>
+                            <div>
+                                <BaseCombobox
+                                    style="width: 100px"
+                                    optionsTable
+                                    positionOption="bottom-left"
+                                    :columnNames="columnNamesCurrency"
+                                    :items="currencies"
+                                    optionId="currency_id"
+                                    keyLabel="currency_name"
+                                    v-model="data.currency_id"
+                                />
+                            </div>
                         </div>
+                        <div
+                            class="exchange"
+                            v-if="data.currency_id !== 'VND'"
+                        >
+                            <div class="label mr-10">Tỉ giá</div>
+                            <div style="width: 100px">
+                                <BaseInput
+                                    fullWidth
+                                    format="currency"
+                                    placeholder="1,00"
+                                    v-model="data.exchange_rate"
+                                />
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 <div class="grid">
@@ -211,6 +261,7 @@
 import { mapActions, mapMutations } from "vuex";
 import TableCommon from "../../../components/common/Table";
 import resources from "../../../resources";
+import utils from "../../../utils";
 
 const columnNames = [
     { key: "a", text: "Diễn giải", width: 320, type: "input" },
@@ -220,17 +271,43 @@ const columnNames = [
     { key: "e", text: "Đối tượng", width: 185, type: "input" },
     { key: "f", text: "Tên đối tượng", width: 305 }
 ];
+
+const columnNamesCurrency = [
+    { key: "currency_id", text: "Mã loại tiền" },
+    { key: "currency_name", text: "Tên loại tiền" }
+];
+
+const currencies = [
+    { currency_id: "VND", currency_name: "VND" },
+    { currency_id: "USD", currency_name: "USD" }
+];
+
+const paymentTypes = [
+    { key: "Chi tiền cho", label: "5.Chi khác" }
+];
 export default {
-    name: "ReceiptDetails",
+    name: "PaymentDetails",
     components: { TableCommon },
 
     data() {
         return {
             columnNames: columnNames,
+            columnNamesCurrency,
+            currencies,
             dataTable: [
                 { a: "abc", b: "test", c: "test", d: "abc", e: "abc", f: "abc" },
                 { a: "abc", b: "abc", c: "abc", d: "abc", e: "abc", f: "abc" }
-            ]
+            ],
+            paymentTypes,
+            paymentType: "Chi tiền cho",
+            data: {
+                journal_memo: "Chi tiền cho",
+                posted_date: utils.formatDateValueInput(new Date()),
+                refdate: utils.formatDateValueInput(new Date()),
+                refno_finance: "",
+                currency_id: "VND",
+                exchange_rate: "1"
+            }
         };
     },
 
@@ -292,6 +369,7 @@ export default {
 
 .header-left {
     display: flex;
+    align-items: center;
 }
 
 .header-left .title {
@@ -300,6 +378,11 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: bold;
+    margin-right: 50px;
+}
+
+.header-left .payment-list {
+    width: 350px;
 }
 
 .close-button {
@@ -387,6 +470,11 @@ export default {
 
 .acc-header .curreny-option {
     display: flex;
+}
+
+.acc-header .curreny-option .currency-type,
+.exchange {
+    display: flex;
     align-items: center;
 }
 
@@ -412,5 +500,19 @@ export default {
     border: 1px solid #babec5;
     color: #9e9e9e;
     font-style: italic;
+}
+
+.tour-icon {
+    background: url("../../../assets/icon/icon.svg") no-repeat -984px -144px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.tutorial {
+    white-space: nowrap;
+    padding-left: 5px;
+    font-size: 13px;
+    color: #0075c0;
 }
 </style>

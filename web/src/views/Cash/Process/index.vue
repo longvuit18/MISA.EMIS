@@ -10,7 +10,10 @@
                         <div class="button receive">
                             Thu tiền
                         </div>
-                        <div class="button payment">
+                        <div
+                            class="button payment"
+                            @click="toPaymentDetails"
+                        >
                             Chi tiền
                         </div>
                         <div class="button audit">
@@ -100,6 +103,9 @@ export default {
         },
         toAccountSystemPage() {
             this.$router.push("/categories/account");
+        },
+        toPaymentDetails() {
+            this.$router.push({ name: "PaymentDetailsFromProcessView" });
         }
     }
 };
