@@ -8,7 +8,7 @@
                         <BaseRadioGroup
                             style="padding: 0 13px;"
                             :values="[{value: 0, text: 'Tổ chức'}, {value: 1, text: 'Cá nhân'}]"
-                            v-model.number="currentProvider.provider_type"
+                            v-model.number="currentProvider.account_object_type"
                             horizontal
                             :disabled="viewMode"
                         />
@@ -45,7 +45,7 @@
                                     :padding="0"
                                     :cols="5"
                                     style="padding-right: 12px"
-                                    v-if="currentProvider.provider_type === 0"
+                                    v-if="currentProvider.account_object_type === 0"
                                 >
                                     <BaseInput
                                         fullWidth
@@ -60,7 +60,7 @@
                                 <BaseCol
                                     :padding="0"
                                     :cols="7"
-                                    v-if="currentProvider.provider_type === 0"
+                                    v-if="currentProvider.account_object_type === 0"
                                 >
                                     <BaseInput
                                         fullWidth
@@ -69,7 +69,7 @@
                                         tabindex="2"
                                         ref="2"
                                         name="Mã nhà cung cấp"
-                                        v-model="currentProvider.provider_code"
+                                        v-model="currentProvider.account_object_code"
                                         :disabled="viewMode"
                                     />
                                 </BaseCol>
@@ -79,7 +79,7 @@
                                     :padding="0"
                                     :cols="7"
                                     style="padding-right: 12px"
-                                    v-if="currentProvider.provider_type === 1"
+                                    v-if="currentProvider.account_object_type === 1"
                                 >
                                     <BaseInput
                                         fullWidth
@@ -88,7 +88,7 @@
                                         tabindex="1"
                                         ref="1"
                                         name="Mã nhà cung cấp"
-                                        v-model="currentProvider.provider_code"
+                                        v-model="currentProvider.account_object_code"
                                         focusInput
                                         :disabled="viewMode"
                                     />
@@ -96,7 +96,7 @@
                                 <BaseCol
                                     :padding="0"
                                     :cols="5"
-                                    v-if="currentProvider.provider_type === 1"
+                                    v-if="currentProvider.account_object_type === 1"
                                 >
                                     <BaseInput
                                         fullWidth
@@ -113,7 +113,7 @@
                                 <BaseCol
                                     :padding="0"
                                     :cols="12"
-                                    v-if="currentProvider.provider_type === 0"
+                                    v-if="currentProvider.account_object_type === 0"
                                 >
                                     <BaseInput
                                         fullWidth
@@ -122,7 +122,7 @@
                                         tabindex="3"
                                         ref="3"
                                         name="Tên nhà cung cấp"
-                                        v-model="currentProvider.provider_name"
+                                        v-model="currentProvider.account_object_name"
                                         :disabled="viewMode"
                                     />
                                 </BaseCol>
@@ -131,7 +131,7 @@
                                 <BaseCol
                                     :padding="0"
                                     :cols="4"
-                                    v-if="currentProvider.provider_type === 1"
+                                    v-if="currentProvider.account_object_type === 1"
                                     style="margin-right:12px"
                                 >
                                     <BaseCombobox
@@ -147,7 +147,7 @@
                                 <BaseCol
                                     :padding="0"
                                     :cols="8"
-                                    v-if="currentProvider.provider_type === 1"
+                                    v-if="currentProvider.account_object_type === 1"
                                 >
                                     <BaseInput
                                         fullWidth
@@ -156,7 +156,7 @@
                                         tabindex="4"
                                         ref="3"
                                         name="Tên nhà cung cấp"
-                                        v-model="currentProvider.provider_name"
+                                        v-model="currentProvider.account_object_name"
                                         :disabled="viewMode"
                                     />
                                 </BaseCol>
@@ -185,7 +185,7 @@
                             :cols="6"
                             style="padding-left: 13px"
                         >
-                            <BaseRow v-if="currentProvider.provider_type === 0">
+                            <BaseRow v-if="currentProvider.account_object_type === 0">
                                 <BaseCol
                                     :padding="0"
                                     :cols="5"
@@ -229,8 +229,8 @@
                                         :items="groupProviderData"
                                         v-model="groupProvider"
                                         :columnNames="columnNamesProriverGroup"
-                                        optionId="provider_group_code"
-                                        keyLabel="provider_group_name"
+                                        optionId="account_object_group_code"
+                                        keyLabel="account_object_group_name"
                                         hasAddIcon
                                         optionsTable
                                         multiple
@@ -295,8 +295,8 @@
                             <transition name="slide">
                                 <Contact
                                     class="wrap"
-                                    v-show="tab === 'contact'"
-                                    :providerType="currentProvider.provider_type"
+                                    v-if="tab === 'contact'"
+                                    :providerType="currentProvider.account_object_type"
                                     :data="currentProvider"
                                     :isClicked="hasClickTab"
                                     :disabled="viewMode"
@@ -305,7 +305,7 @@
                             <transition name="slide">
                                 <Terms
                                     class="wrap"
-                                    v-show="tab === 'terms'"
+                                    v-if="tab === 'terms'"
                                     :isCustomer="currentProvider.is_customer"
                                     :data="currentProvider"
                                     :disabled="viewMode"
@@ -314,7 +314,7 @@
                             <transition name="slide">
                                 <BankAccount
                                     class="wrap"
-                                    v-show="tab === 'bankAccount'"
+                                    v-if="tab === 'bankAccount'"
                                     v-model="currentProvider.bank_account_group"
                                     :disabled="viewMode"
                                 />
@@ -331,7 +331,7 @@
                             <transition name="slide">
                                 <div
                                     class="note wrap"
-                                    v-show="tab === 'note'"
+                                    v-if="tab === 'note'"
                                 >
                                     <BaseInput
                                         isTextarea
@@ -403,8 +403,8 @@ import BankAccount from "./BankAccount.vue";
 import Address from "./Address.vue";
 
 const columnNamesProriverGroup = [
-    { key: "provider_group_code", text: "Mã nhóm KH, NCC", width: 170 },
-    { key: "provider_group_name", text: "Tên nhóm KH, NCC", width: 190 }
+    { key: "account_object_group_code", text: "Mã nhóm KH, NCC", width: 170 },
+    { key: "account_object_group_name", text: "Tên nhóm KH, NCC", width: 190 }
 ];
 
 const prefixItems = [
@@ -441,7 +441,7 @@ export default {
             currentProvider: {
                 ...this.provider,
                 country: this.provider?.country ?? nameCountryDefault, // id của việt nam trong db
-                provider_type: this.provider?.provider_type ?? 0,
+                account_object_type: this.provider?.account_object_type ?? 0,
                 personal_contact_identity_date: utils.formatDateValueInput(this.provider?.personal_contact_identity_date)
             },
             disabledButton: true,
@@ -458,15 +458,15 @@ export default {
 
             columnNamesProriverGroup,
             groupProviderData: [
-                { provider_group_code: "NCC-1", provider_group_name: "Vũ Long Vũ 1" },
-                { provider_group_code: "NCC-2", provider_group_name: "Vũ Long Vũ 2" },
-                { provider_group_code: "NCC-3", provider_group_name: "Vũ Long Vũ 3" },
-                { provider_group_code: "NCC-4", provider_group_name: "Vũ Long Vũ 4" },
-                { provider_group_code: "NCC-5", provider_group_name: "Vũ Long Vũ 5" },
-                { provider_group_code: "NCC-6", provider_group_name: "Vũ Long Vũ 6" },
-                { provider_group_code: "NCC-7", provider_group_name: "Vũ Long Vũ 7" }
+                { account_object_group_code: "NCC-1", account_object_group_name: "Vũ Long Vũ 1" },
+                { account_object_group_code: "NCC-2", account_object_group_name: "Vũ Long Vũ 2" },
+                { account_object_group_code: "NCC-3", account_object_group_name: "Vũ Long Vũ 3" },
+                { account_object_group_code: "NCC-4", account_object_group_name: "Vũ Long Vũ 4" },
+                { account_object_group_code: "NCC-5", account_object_group_name: "Vũ Long Vũ 5" },
+                { account_object_group_code: "NCC-6", account_object_group_name: "Vũ Long Vũ 6" },
+                { account_object_group_code: "NCC-7", account_object_group_name: "Vũ Long Vũ 7" }
             ],
-            groupProvider: this.provider?.provider_group?.split(";") || [],
+            groupProvider: this.provider?.account_object_group?.split(";") || [],
 
             prefixItems,
             columnNamesEmployee,
@@ -501,7 +501,7 @@ export default {
             deep: true
         },
 
-        "currentProvider.provider_type": {
+        "currentProvider.account_object_type": {
             handler() {
                 this.hasClickTab = false;
             }
@@ -530,7 +530,7 @@ export default {
         async setNewProviderCode() {
             try {
                 const promise = await ProviderApi.getProviderCode();
-                this.currentProvider = { ...this.currentProvider, provider_code: promise.data ?? "" };
+                this.currentProvider = { ...this.currentProvider, account_object_code: promise.data ?? "" };
             } catch (error) {
                 console.log(error);
             }
@@ -625,9 +625,9 @@ export default {
             try {
                 this.loading = true;
                 if (this.currentState === enums.dialogState.post) {
-                    promise = await ProviderApi.insertOne({ ...this.currentProvider, provider_group: this.groupProvider.join(";") });
+                    promise = await ProviderApi.insertOne({ ...this.currentProvider, account_object_group: this.groupProvider.join(";") });
                 } else {
-                    promise = await ProviderApi.updateOne(this.currentProvider.provider_id, { ...this.currentProvider, provider_group: this.groupProvider.join(";") });
+                    promise = await ProviderApi.updateOne(this.currentProvider.account_object_id, { ...this.currentProvider, account_object_group: this.groupProvider.join(";") });
                 }
 
                 // lỗi validate
@@ -641,9 +641,9 @@ export default {
                     return;
                 }
                 if (this.currentState === enums.dialogState.post) {
-                    this.setToast(resources.toast.addSuccess(this.currentProvider.provider_code, "nhà cung cấp"));
+                    this.setToast(resources.toast.addSuccess(this.currentProvider.account_object_code, "nhà cung cấp"));
                 } else {
-                    this.setToast(resources.toast.updateSuccess(this.currentProvider.provider_code, "nhà cung cấp"));
+                    this.setToast(resources.toast.updateSuccess(this.currentProvider.account_object_code, "nhà cung cấp"));
                 }
                 this.currentEmployee = {};
                 if (keepCreating) {

@@ -73,29 +73,35 @@
                             class="width-cell"
                         >
                             <BaseInput
-                                v-if="typeCol(key) === 'input' && rowSelected(rowIndex)"
+                                v-if="mapAttribute(key, 'type', 'string') === 'input' && rowSelected(rowIndex)"
                                 fullWidth
                                 v-model="item[key]"
-                                :enterRightToLeft="formatCol(key) === 'number' || formatCol(key) === 'curreny'"
-                                :format="formatCol(key)"
+                                :enterRightToLeft="mapAttribute(key, 'format', 'string') === 'number' || mapAttribute(key, 'format', 'string') === 'curreny'"
+                                :format="mapAttribute(key, 'format', 'string')"
                                 rows="1"
                                 :focusInput="cellIndex === cellFocus"
                                 :tabindex="tabindexNumber + columnNames.length * (rowIndex) + cellIndex"
                                 :disabled="disabled"
                             />
                             <BaseCombobox
-                                v-else-if="typeCol(key) === 'combobox' && rowSelected(rowIndex)"
+                                v-else-if="mapAttribute(key, 'type', 'string') === 'combobox' && rowSelected(rowIndex)"
                                 fullWidth
-                                :items="comboboxOptions(key)"
+                                :items="mapAttribute(key, 'items', [])"
                                 v-model="item[key]"
                                 :focusInput="cellIndex === cellFocus"
                                 :tabindex="tabindexNumber + columnNames.length * (rowIndex) + cellIndex"
                                 :disabled="disabled"
+                                :optionsTable="mapAttribute(key, 'isOptionsTable', false)"
+                                :columnNames="mapAttribute(key, 'columnNames', [])"
+                                :optionId="mapAttribute(key, 'optionId', 'id')"
+                                :keyLabel="mapAttribute(key, 'keyLabel', 'text')"
+                                :positionOption="mapAttribute(key, 'positionOption', 'bottom')"
+                                @getOption="(option) =>watchDataCombobox(option, rowIndex, cellIndex)"
                             />
                             <span
                                 v-else
                                 :title="width(key) ? value : ''"
-                            >{{value}}</span>
+                            >{{mapAttribute(key, 'format', 'string') === 'number' || mapAttribute(key, 'format', 'string') === 'currency' ? formatValue(value) : value}}</span>
                         </div>
                     </td>
                     <td
@@ -128,6 +134,7 @@
  * Table Common
  * CreatedBy: Vũ Long Vũ 8/9/2021
  */
+import AutoNumeric from "autonumeric";
 
 export default {
     name: "TableCommon",
@@ -201,6 +208,7 @@ export default {
         data: {
             handler(value, oldValue) {
                 this.$emit("getData", value);
+
                 if (value.length !== oldValue.length) {
                     this.rowsSelected = value.length - 1;
                     this.cellFocus = 0;
@@ -229,6 +237,9 @@ export default {
     },
 
     methods: {
+        watchDataCombobox(comboboxItem, rowIndex, cellIndex) {
+            this.$emit("watchDataCombobox", comboboxItem, rowIndex, cellIndex);
+        },
         /**
         * Sự kiện khi double click vào 1 row
         * CreatedBy: Vũ Long Vũ 14/7/2021
@@ -277,50 +288,6 @@ export default {
                 Object.assign(newItem, { [c.key]: item[c.key] });
             });
             return newItem;
-        },
-
-        /**
-         * @param {string} key key của column
-         * @returns Kiểu của cell thuộc cột đó là kiểu gì. (vd: input, combobox)
-         * Created by: VLVU (9/9/2021)
-         */
-        typeCol(key) {
-            const column = this.columnNames.find((item) => item.key === key);
-
-            if (!column || !column?.type || this.disabled) {
-                return "string";
-            }
-
-            return column.type;
-        },
-
-        /**
-         * @param {string} key key của column
-         * @returns format của từng cell trong cột (vd: number, string)
-         * Created by: VLVU (9/9/2021)
-         */
-        formatCol(key) {
-            const column = this.columnNames.find((item) => item.key === key);
-
-            if (!column || !column?.format) {
-                return "string";
-            }
-
-            return column.format;
-        },
-
-        /**
-         * @param {string} key key của column
-         * @returns option của combobox (vd: input, combobox)
-         * Created by: VLVU (9/9/2021)
-         */
-        comboboxOptions(key) {
-            const column = this.columnNames.find((item) => item.key === key);
-
-            if (!column || !column?.items) {
-                return [];
-            }
-            return column.items;
         },
 
         /**
@@ -377,12 +344,43 @@ export default {
         },
 
         /**
-         * @param {number} index vị trí của ô cần fucus
          * kiểm tra focus
+         * @param {number} index vị trí của ô cần fucus
          * Created by: VLVU (23/9/2021)
          */
         isFocus(index) {
             return this.cellFocus === index;
+        },
+
+        /**
+         * Map các attribute khai báo trong column Name cho các cột
+         * @param {string} key key của cột đó
+         * @param {string} attributeName tên attribute
+         * @param {any} defaultValue giá trị mặc định của attibute khi không tìm thấy trong column name
+         * Created by: VLVU (11/10/2021)
+         */
+        mapAttribute(key, attributeName, defaultValue) {
+            const column = this.columnNames.find((item) => item.key === key);
+
+            if (!column || !column?.[attributeName]) {
+                return defaultValue;
+            }
+            return column?.[attributeName];
+        },
+
+        /**
+         * format lại giá trị muốn hiển thị nếu nó là dạng format hoặc currency
+         * Created by: VLVU (11/10/2021)
+         */
+        formatValue(value) {
+            const settings = {
+                digitGroupSeparator: ".",
+                decimalCharacter: ",",
+                minimumValue: "0",
+                decimalCharacterAlternative: ".",
+                allowDecimalPadding: "floats"
+            };
+            return AutoNumeric.format(value, settings);
         }
 
     }

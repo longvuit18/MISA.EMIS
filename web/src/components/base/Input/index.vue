@@ -10,7 +10,7 @@
                 :class="{'full-width': fullWidth, 'border-red': error, 'enter-text-right-to-left': hasCurrencyFormat || enterRightToLeft}"
                 v-bind="$attrs"
                 :tabindex="tabindex"
-                :value="valueFormat"
+                :value="formatValue"
                 v-on:input="updateValue($event)"
                 @blur="onBlur"
                 ref="BaseInput"
@@ -31,7 +31,7 @@
                 :class="{'full-width': fullWidth, 'border-red': error, 'enter-text-right-to-left': hasCurrencyFormat || enterRightToLeft}"
                 v-bind="$attrs"
                 :tabindex="tabindex"
-                :value="valueFormat"
+                :value="formatValue"
                 v-on:input="updateValue($event)"
                 @blur="onBlur"
                 ref="BaseInput"
@@ -124,42 +124,36 @@ export default {
     },
 
     watch: {
-        /**
-         * Khi thay đổi focusInput từ false sang true hoặc ngược lại thì đều fucus input đó
-         */
-        focusInput() {
-            this.$refs.BaseInput.focus();
+        value(v) {
+
         }
     },
 
     computed: {
-        valueFormat() {
-            switch (this.format) {
-                case "currency":
-                    return this.formatCurrency(this.value);
-                default:
-                    return this.value;
-            }
-        },
         hasCurrencyFormat() {
             return this.format === "currency";
+        },
+
+        formatValue() {
+            if ((this.format === "number" || this.format === "currency") && this.value) {
+                const settings = {
+                    digitGroupSeparator: ".",
+                    decimalCharacter: ",",
+                    minimumValue: "0",
+                    decimalCharacterAlternative: ".",
+                    allowDecimalPadding: "floats"
+                };
+                const numberic = AutoNumeric.format(this.value, settings);
+                if (numberic.endsWith("0") && numberic.indexOf(",") > -1) {
+                    return numberic.slice(0, numberic.length - 1);
+                }
+                return numberic;
+            }
+            return this.value;
         }
     },
 
-    created() {
-
-    },
     mounted() {
-        if (this.format === "number" || this.format === "currency") {
-            const settings = {
-                digitGroupSeparator: " ",
-                decimalCharacter: ",",
-                minimumValue: "0",
-                decimalCharacterAlternative: "."
-            };
-            // eslint-disable-next-line no-new
-            new AutoNumeric(this.$refs.BaseInput, settings);
-        }
         if (this.focusInput === true) {
             this.$refs.BaseInput.focus();
         }
@@ -170,10 +164,10 @@ export default {
          * Created by: VLVU (2021)
          */
         updateValue(event) {
-            let value = event.target.value;
-            if (this.format === "currency") {
-                value = this.formatCurrency(value);
-                this.$emit("input", value);
+            const value = event.target.value;
+            if (this.format === "number" || this.format === "currency") {
+                const newValue = value?.replaceAll(".", "")?.replaceAll(",", ".");
+                this.$emit("input", Number(newValue));
                 return;
             }
             this.$emit("input", value);
@@ -220,15 +214,6 @@ export default {
         validateEmail(email) {
             const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return regex.test(email);
-        },
-
-        /**
-         * Format tiền
-         * Created by: VLVU (20/7/2021)
-         */
-        formatCurrency(str) {
-            // return Number(str).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
-            // return new Intl.NumberFormat().format(Number(str?.replace(".", ""))).toString();
         }
     }
 };

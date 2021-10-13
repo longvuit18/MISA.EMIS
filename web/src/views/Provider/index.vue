@@ -354,12 +354,12 @@ import ProviderTable from "./Table";
 import FilterDropdown from "./dropdown/FilterDropdown.vue";
 import BatchExecution from "./dropdown/BatchExecution.vue";
 const columnNames = [
-    { key: "provider_code", text: "Mã nhà cung cấp", width: 180 },
-    { key: "provider_name", text: "Tên nhà cung cấp", width: 430 },
+    { key: "account_object_code", text: "Mã nhà cung cấp", width: 180 },
+    { key: "account_object_name", text: "Tên nhà cung cấp", width: 430 },
     { key: "address", text: "Địa chỉ", width: 250 },
     { key: "description", text: "Diễn giải", width: 500 },
     { key: "todo", text: "Công nợ", width: 180, align: "right" },
-    { key: "provider_group", text: "Nhóm KH, nhà cung cấp", width: 180 },
+    { key: "account_object_group", text: "Nhóm KH, nhà cung cấp", width: 180 },
     { key: "tax_code", text: "Mã số thuế", width: 180 },
     { key: "phone_number", text: "Số điện thoại", width: 180 },
     { key: "personal_contact_identity_number", text: "Số CMND", width: 180 }

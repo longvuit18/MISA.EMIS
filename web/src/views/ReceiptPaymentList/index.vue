@@ -281,8 +281,7 @@ const columnNames = [
     { key: "total_amount", text: "Số tiền", width: 150 },
     { key: "account_object_code", text: "Mã đối tượng", width: 150 },
     { key: "account_object_name", text: "Đối tượng", width: 150 },
-    { key: "account_object_contact_name", text: "Chức danh", width: 250 },
-    { key: "account_object_address", text: "Tên đơn vị", width: 250 }
+    { key: "account_object_address", text: "Địa chỉ", width: 250 }
 ];
 
 // các giá trị mặc định của paging và filter

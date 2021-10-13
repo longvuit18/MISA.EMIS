@@ -355,13 +355,6 @@ export default {
             deep: true
         },
 
-        /**
-         * Khi thay đổi focusInput từ false sang true hoặc ngược lại thì đều fucus input đó
-         */
-        focusInput() {
-            this.$refs.BaseInput.focus();
-        },
-
         items: {
             handler() {
                 this.fixedOptions = this.toOptions();
@@ -463,6 +456,7 @@ export default {
             this.error = false;
             this.errorMessage = "";
             this.$emit("result", option.optionId);
+            this.$emit("getOption", option);
         },
 
         /**
@@ -575,6 +569,9 @@ export default {
                 this.error = false;
 
                 this.$emit("result", !this.multiple ? this.options[this.arrowCounter].optionId : [...this.value, this.options[this.arrowCounter].optionId]);
+                if (!this.multiple) {
+                    this.$emit("getOption", this.options[this.arrowCounter]);
+                }
             }
         },
 
@@ -588,7 +585,9 @@ export default {
 
                 this.isOpen = false;
                 this.$emit("result", !this.multiple ? this.options[this.arrowCounter].optionId : [...this.value, this.options[this.arrowCounter].optionId]);
-
+                if (!this.multiple) {
+                    this.$emit("getOption", this.options[this.arrowCounter]);
+                }
                 // chắc chắn người dùng đã chọn
                 this.error = false;
             } else {
@@ -601,14 +600,15 @@ export default {
          * Created by: VLVU (19/9/2021)
          */
         onBlur() {
-            if (!this.required && !this.search) {
+            if (!this.required && !this.search && !this.multiple) {
                 this.error = false;
                 this.errorMessage = "";
                 this.$emit("result", undefined);
+                this.$emit("getOption", {});
                 return;
             }
             if (this.multiple) {
-                if (this.search === "") {
+                if (!this.search) {
                     this.error = false;
                 } else {
                     this.error = true;
@@ -636,7 +636,7 @@ export default {
             if (this.disabled) {
                 return;
             }
-            this.value = this.value.filter(item => item !== chip.key);
+            this.$emit("result", this.value.filter(item => item !== chip.key));
         },
 
         /**

@@ -2,7 +2,7 @@ import axios from "axios";
 import { BaseApi } from "../base";
 class PaymentApi extends BaseApi {
 	constructor() {
-		const route = "api/v1/employees";
+		const route = "api/v1/receiptPayment";
 		super(route);
 	}
 
