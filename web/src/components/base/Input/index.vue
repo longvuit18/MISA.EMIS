@@ -13,6 +13,8 @@
                 :value="formatValue"
                 v-on:input="updateValue($event)"
                 @blur="onBlur"
+                @keypress="keyPress"
+                @focus="onFocus"
                 ref="BaseInput"
                 :title="errorMessage"
             >
@@ -33,6 +35,7 @@
                 :tabindex="tabindex"
                 :value="formatValue"
                 v-on:input="updateValue($event)"
+                @keypress="keyPress"
                 @blur="onBlur"
                 ref="BaseInput"
                 :title="errorMessage"
@@ -206,6 +209,21 @@ export default {
                 this.errorMessage = "";
             }
         },
+        /**
+         * Sự kiện nhấn phím
+         * Created by: VLVU (19/7/2021)
+         */
+        keyPress(event) {
+            event = (event) || window.event;
+            if (this.format === "currency" || this.format === "number" || this.format === "phoneNumber") {
+                var charCode = (event.which) ? event.which : event.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46 && charCode !== 44) {
+                    event.preventDefault();
+                } else {
+                    return true;
+                }
+            }
+        },
 
         /**
          * Validate email
@@ -214,6 +232,14 @@ export default {
         validateEmail(email) {
             const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return regex.test(email);
+        },
+
+        /**
+         * sự kiện focus
+         * Created by: VLVU (13/10/2021)
+         */
+        onFocus(event) {
+            event.target.select();
         }
     }
 };

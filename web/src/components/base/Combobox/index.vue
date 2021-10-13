@@ -37,6 +37,7 @@
                         :title="errorMessage"
                         :placeholder="placeholder"
                         :disabled="disabled"
+                        @focus="onFocus"
                     />
                 </div>
                 <input
@@ -51,6 +52,7 @@
                     @click="showOptions"
                     @keydown.enter="onEnter"
                     @blur="onBlur"
+                    @focus="onFocus"
                     ref="BaseInput"
                     v-bind="$attrs"
                     :title="errorMessage"
@@ -645,6 +647,13 @@ export default {
          */
         displayText(value) {
             return this.options.find(item => item.optionId === value)[this.keyLabel];
+        },
+        /**
+         * sự kiện focus
+         * Created by: VLVU (13/10/2021)
+         */
+        onFocus(event) {
+            event.target.select();
         }
 
     }

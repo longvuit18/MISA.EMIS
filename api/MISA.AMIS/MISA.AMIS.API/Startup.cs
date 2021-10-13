@@ -52,11 +52,15 @@ namespace MISA.AMIS.API
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             // employee
             services.AddScoped<IEmployeeService, EmployeeService>();
-            services.AddScoped<IProviderService, ProviderService>();
-            // provider
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            // provider
+            services.AddScoped<IProviderService, ProviderService>();
             services.AddScoped<IProviderRepository, ProviderRepository>();
+            //location
             services.AddScoped<ILocationRepository, LocationRepository>();
+            // receipt payment
+            services.AddScoped<IReceiptPaymentService, ReceiptPaymentService>();
+            services.AddScoped<IReceiptPaymentRepository, ReceiptPaymentRepocitory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -40,7 +40,7 @@
                     <BaseRow>
                         <BaseCol :cols="9">
                             <BaseRow>
-                                <BaseCol :cols="9">
+                                <BaseCol :cols="10">
                                     <BaseRow>
                                         <BaseCol :cols="5">
                                             <BaseCombobox
@@ -128,7 +128,7 @@
                                         </BaseCol>
                                     </BaseRow>
                                 </BaseCol>
-                                <BaseCol :cols="3">
+                                <BaseCol :cols="2">
                                     <div class="main-center">
                                         <BaseRow>
                                             <BaseCol>
@@ -171,7 +171,7 @@
                         <BaseCol :cols="3">
                             <div class="total-money">
                                 <div class="money-title">Tổng tiền</div>
-                                <div class="total">0,0</div>
+                                <div class="total">{{totalAmountFormat}}</div>
                             </div>
                         </BaseCol>
                     </BaseRow>
@@ -192,6 +192,7 @@
                                     optionId="currency_id"
                                     keyLabel="currency_name"
                                     v-model="data.currency_id"
+                                    tabindex="10"
                                 />
                             </div>
                         </div>
@@ -219,6 +220,9 @@
                         v-model="dataDetails"
                         @watchDataCombobox="customDataDetails"
                         @deleteRow="deleteRow"
+                        hasRowTotal
+                        @getTotal="getTotal"
+                        tabindex="11"
                     />
                 </div>
                 <div class="grid-control">
@@ -309,15 +313,22 @@ const creditAccount = [
 
 ];
 
+const bankAccount = [
+    { bank_number: "134673623", bank_name: "Ngân hàng quân đội MB", bank_branch_name: "Bà Triệu" },
+    { bank_number: "111123512", bank_name: "Ngân hàng TMCB Á Châu", bank_branch_name: "Hà Thành" },
+    { bank_number: "5262452", bank_name: "Vietcombank Phố Vọng", bank_branch_name: "Phố Vọng" }
+
+];
+
 const columnNameAccount = [
     { key: "account_number", text: "Số tài khoản" },
     { key: "account_name", text: "Tên tài khoản" }
 ];
 
 const columnNameBankAccount = [
-    { key: "bank_number", text: "Số tài khoản" },
-    { key: "bank_name", text: "Tên tài khoản" },
-    { key: "bank_branch_name", text: "Chi nhánh" }
+    { key: "bank_number", text: "Số tài khoản", width: 150 },
+    { key: "bank_name", text: "Tên tài khoản", width: 250 },
+    { key: "bank_branch_name", text: "Chi nhánh", width: 120 }
 ];
 
 const columnNamesObject = [
@@ -328,6 +339,17 @@ const columnNamesObject = [
     { key: "phone_number", text: "Điện thoại", width: 100 }
 ];
 const columnNames = [
+    {
+        key: "credit_account",
+        text: "Tài khoản có",
+        width: 175,
+        type: "combobox",
+        items: creditAccount,
+        optionId: "account_number",
+        keyLabel: "account_number",
+        columnNames: columnNameAccount,
+        isOptionsTable: true
+    },
     { key: "description", text: "Diễn giải", width: 320, type: "input" },
     {
         key: "debit_account",
@@ -340,22 +362,11 @@ const columnNames = [
         columnNames: columnNameAccount,
         isOptionsTable: true
     },
-    {
-        key: "credit_account",
-        text: "Tài khoản có",
-        width: 175,
-        type: "combobox",
-        items: creditAccount,
-        optionId: "account_number",
-        keyLabel: "account_number",
-        columnNames: columnNameAccount,
-        isOptionsTable: true
-    },
-    { key: "amount", text: "Số tiền", width: 150, align: "right", type: "input", format: "currency" },
+    { key: "amount", text: "Số tiền", width: 150, align: "right", type: "input", format: "currency", total: true },
     {
         key: "account_object_code",
         text: "Đối tượng",
-        width: 120,
+        width: 160,
         type: "combobox",
         items: [],
         optionId: "account_object_code",
@@ -364,13 +375,13 @@ const columnNames = [
         isOptionsTable: true,
         positionOption: "bottom-left"
     },
-    { key: "account_object_name", text: "Tên đối tượng", width: 250 },
+    { key: "account_object_name", text: "Tên đối tượng", width: 230 },
     {
         key: "bank_account",
         text: "TK ngân hàng",
-        width: 200,
+        width: 180,
         type: "combobox",
-        items: [],
+        items: bankAccount,
         optionId: "bank_number",
         keyLabel: "bank_number",
         columnNames: columnNameBankAccount,
@@ -409,9 +420,9 @@ export default {
 
             dataDetails: [
                 {
-                    description: "",
+                    description: "Chi tiền cho",
                     debit_account: "",
-                    credit_account: "",
+                    credit_account: "11111",
                     amount: 0,
                     account_object_code: "",
                     account_object_name: "",
@@ -430,7 +441,8 @@ export default {
                 account_object_id: "",
                 account_object_name: "",
                 account_object_address: "",
-                employee_id: ""
+                employee_id: "",
+                total_amount: 0
             },
             columnNamesCurrency,
             currencies,
@@ -453,7 +465,31 @@ export default {
                     this.data.account_object_name = accountObject.account_object_name;
                     this.data.account_object_address = accountObject.address;
                     this.data.journal_memo = this.paymentType + " " + accountObject.account_object_name;
+
+                    this.dataDetails = this.dataDetails.map(item => {
+                        return {
+                            ...item,
+                            account_object_code: accountObject.account_object_code,
+                            account_object_name: accountObject.account_object_name
+                        };
+                    });
                 }
+            },
+            deep: true
+        },
+
+        "data.journal_memo": {
+            handler(value, oldvalue) {
+                this.dataDetails = this.dataDetails.map(item => {
+                    if (item.description === oldvalue) {
+                        return {
+                            ...item,
+                            description: value
+                        };
+                    };
+
+                    return item;
+                });
             },
             deep: true
         },
@@ -496,6 +532,12 @@ export default {
         }
     },
 
+    computed: {
+        totalAmountFormat() {
+            return utils.formatNumber(this.data.total_amount);
+        }
+    },
+
     async mounted() {
         try {
             this.loading = true;
@@ -520,27 +562,41 @@ export default {
             confirmPopup: "confirmPopup"
         }),
 
+        getTotal(total) {
+            this.data.total_amount = total.amount;
+        },
+
         /**
          * sửa tên của object theo đối tượng đã chọn trong data detail
-         * Created by: VLVU(12/10/2021)
+         * Created by: VLVU(12/10/2021	)
          */
         customDataDetails(comboboxItem, rowIndex) {
-            this.dataDetails[rowIndex].account_object_name = comboboxItem.account_object_name;
+            if (comboboxItem?.account_object_name) {
+                this.dataDetails[rowIndex].account_object_name = comboboxItem.account_object_name;
+            }
         },
         /**
          * Thêm 1 hàng mới vào bảng
          * Created by: VLVU(9/9/2018)
          */
         addRow() {
-            const newRow = {
-                description: "",
-                debit_account: "",
-                credit_account: "",
-                amount: 0,
-                account_object_code: "",
-                account_object_name: "",
-                bank_account: ""
+            let newRow = {
+
             };
+            if (this.dataDetails.length === 0) {
+                newRow = {
+                    description: this.data.journal_memo,
+                    debit_account: "",
+                    credit_account: "11111",
+                    amount: 0,
+                    account_object_code: this.data.account_object_code,
+                    account_object_name: this.data.account_object_name,
+                    bank_account: ""
+                };
+            } else {
+                newRow = { ...this.dataDetails[this.dataDetails.length - 1] };
+            }
+
             this.dataDetails = [...this.dataDetails, newRow];
         },
         /**
@@ -577,8 +633,7 @@ export default {
 .header {
     display: flex;
     justify-content: space-between;
-    padding: 9px 16px;
-    margin-bottom: 7px;
+    padding: 16px 16px 20px;
     position: relative;
     top: 0;
 }
@@ -644,11 +699,11 @@ export default {
 
 .content {
     overflow: auto;
-    height: calc(100% - 108px);
+    height: calc(100% - 118px);
 }
 
 .content .main-information {
-    padding: 16px 30px 24px 30px;
+    padding: 8px 24px 20px;
     position: sticky;
     position: -webkit-sticky;
     left: 0;
@@ -673,7 +728,7 @@ export default {
 }
 
 .acc-header {
-    padding: 30px;
+    padding: 16px 24px 16px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -702,7 +757,7 @@ export default {
 }
 
 .btn-grid-control {
-    padding: 10px 0px 32px;
+    padding: 10px 0px 16px;
 }
 
 .upload .title {

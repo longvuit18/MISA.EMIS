@@ -11,27 +11,27 @@ namespace MISA.AMIS.ApplicationCore.Interfaces
     /// employee repository interface
     /// </summary>
     /// Created by: VLVU (18/8/2021)
-    public interface IProviderRepository: IBaseRepository<AccountObject>
+    public interface IReceiptPaymentRepository : IBaseRepository<ReceiptPayment>
     {
         /// <summary>
         /// filter cho provider
         /// </summary>
-        /// <param name="filter">object filter của provider</param>
+        /// <param name="filter">object filter của phiếu thu chi</param>
         /// <returns></returns>
-        /// Created by: VLVU (20/9/2021)
-        Task<object> GetProviderFilterPaging(ProviderFilter filter);
+        /// Created by: VLVU (8/10/2021)
+        Task<object> GetReceiptPaymentFilterPaging(ReceiptPaymentFilter filter);
         /// <summary>
         /// service lấy một mã nhà cung cấp mới
         /// </summary>
         /// <returns></returns>
         /// Created by: VLVU (20/9/2021)
-        Task<string> GetNewProviderCode();
+        Task<string> GetNewReceiptPaymentCode();
         /// <summary>
         /// service xóa hàng loạt
         /// </summary>
         /// <param name="listId"></param>
         /// <returns></returns>
-        /// Created by: VLVU (29/9/2021)
+        /// Created by: VLVU (8/10/2021)
         Task<int> DeleteBatch(Guid[] listId);
     }
 }

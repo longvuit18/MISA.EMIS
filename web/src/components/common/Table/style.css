@@ -101,7 +101,7 @@ table tbody tr {
 	z-index: 12;
 	border: 0;
 	background-color: #fff !important;
-	padding: 0 15px;
+	padding: 0 12px;
 }
 
 .last-white-space-1 {
@@ -113,14 +113,14 @@ table tbody tr {
 	border: 0;
 	background-color: #fff !important;
 	cursor: auto;
-	padding: 0 15px;
+	padding: 0 12px;
 }
 
 .first-column-fixed {
 	position: sticky;
 	position: -webkit-sticky;
 	top: -2px;
-	left: 30px;
+	left: 24px;
 	z-index: 9;
 	background-color: #fff;
 }
@@ -137,7 +137,7 @@ table tbody tr {
 .last-column-fixed {
 	position: sticky;
 	position: -webkit-sticky;
-	right: 30px;
+	right: 24px;
 	z-index: 9;
 	border-left: 1px dotted #c7c7c7;
 	border-right: 0;
@@ -241,4 +241,19 @@ button {
 	background: url("../../../assets/icon/icon.svg") no-repeat;
 	background-position: -464px -312px;
 	cursor: pointer;
+}
+
+.total-row {
+	font-weight: 700;
+	background-color: #F8F9FE !important;
+	height: 45px;
+}
+
+.total-row td, .last-white-space, .first-white-space {
+	border: 0;
+	background-color: #F8F9FE !important;
+}
+
+.total-row:hover .td-viewer {
+	background-color: #F8F9FE !important;
 }

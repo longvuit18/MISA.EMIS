@@ -178,6 +178,28 @@
 	cursor: pointer;
 }
 
+.overview .icon-area {
+	position: absolute;
+	top: 4px;
+	right: 8px;
+}
+
+.collapse-overview {
+	border: 2px solid #e2e9f2;
+	background: #f2f5f8;
+	position: absolute;
+	width: 30px;
+	height: 28px;
+	top: -14px;
+	right: 0;
+	cursor: pointer;
+}
+
+.collapse-overview .rotate-down {
+	transform: rotate(180deg);
+	transition: all 0.3s ease;
+}
+
 #payment .payment-body .grid {
 	margin-bottom: 46px;
 }

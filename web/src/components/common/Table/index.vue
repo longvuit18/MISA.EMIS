@@ -48,10 +48,10 @@
                     @dblclick="(e) => handleDblClickRow(e, item)"
                     @contextmenu="(e) => handleRightClick(e, item)"
                 >
-                    <th
+                    <td
                         class="first-white-space"
                         v-if="!disabledFirstWhiteSpace"
-                    ></th>
+                    ></td>
                     <td
                         class="align-center td-viewer"
                         :class="{'first-column-fixed': !disabledFirstWhiteSpace}"
@@ -124,6 +124,44 @@
                     ></td>
 
                 </tr>
+                <tr
+                    class="total-row"
+                    v-if="hasRowTotal"
+                >
+                    <td
+                        class="first-white-space"
+                        v-if="!disabledFirstWhiteSpace"
+                    ></td>
+                    <td
+                        class="align-center td-viewer"
+                        :class="{'first-column-fixed': !disabledFirstWhiteSpace}"
+                        v-if="!disabledIndexColumn"
+                    >
+                    </td>
+                    <td
+                        v-for="(value) in columnNames"
+                        :key="value.key"
+                        :class="{...setAlign(value.key)}"
+                        class="td-viewer"
+                    >
+                        <div
+                            v-if="value.total === true"
+                            :style="{width: width(value.key)}"
+                            class="width-cell"
+                        >
+                            {{caculateTotal(value.key)}}
+                        </div>
+                    </td>
+                    <td
+                        class="align-center td-viewer"
+                        :class="{'last-column-fixed': !disabledLastWhiteSpace}"
+                    >
+                    </td>
+                    <td
+                        class="last-white-space-1"
+                        v-if="!disabledLastWhiteSpace"
+                    ></td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -183,6 +221,11 @@ export default {
         disabled: {
             type: Boolean,
             default: false
+        },
+
+        hasRowTotal: {
+            type: Boolean,
+            default: () => false
         }
     },
 
@@ -195,7 +238,9 @@ export default {
 
             rowsSelected: 0,
             // ô cần được focus input
-            cellFocus: -1
+            cellFocus: -1,
+
+            totals: {}
         };
     },
 
@@ -237,6 +282,28 @@ export default {
     },
 
     methods: {
+        /**
+         * Tính toán tổng giá trị trên cột
+         * Created by: VLVU (13/10/2021)
+         */
+        caculateTotal(key) {
+            if (this.data.length === 1) {
+                this.totals[key] = this.data[0][key];
+                this.$emit("getTotal", this.totals);
+                return this.formatValue(this.data[0][key]);
+            }
+            let totalValueColumn = 0;
+            this.data.forEach(item => {
+                totalValueColumn += item[key];
+            });
+            this.totals[key] = totalValueColumn;
+            this.$emit("getTotal", this.totals);
+            return this.formatValue(totalValueColumn);
+        },
+        /**
+         * watch combobox mỗi khi thay đổi
+         * Created by: VLVU(13/10/2021)
+         */
         watchDataCombobox(comboboxItem, rowIndex, cellIndex) {
             this.$emit("watchDataCombobox", comboboxItem, rowIndex, cellIndex);
         },

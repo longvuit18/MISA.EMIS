@@ -13,28 +13,28 @@ namespace MISA.AMIS.API.Controllers
     /// Controller employee
     /// </summary>
     /// Created by: VLVU (29/7/2021)
-    [Route("api/v1/providers")]
+    [Route("api/v1/receiptPayment")]
     [ApiController]
-    public class ProviderController : BaseController<AccountObject>
+    public class ReceiptPaymentController : BaseController<ReceiptPayment>
     {
         #region Declared
 
-        readonly IProviderService _providerService;
+        readonly IReceiptPaymentService _receiptPaymentService;
         #endregion
 
         #region Initialization
-        public ProviderController(IProviderService providerService) : base(providerService)
+        public ReceiptPaymentController(IReceiptPaymentService receiptPaymentService) : base(receiptPaymentService)
         {
-            _providerService = providerService;
+            _receiptPaymentService = receiptPaymentService;
         }
         #endregion
 
         #region Methods
 
         [HttpPost("filterPaging")]
-        public async Task<IActionResult> GetFilterPaging(ProviderFilter filter)
+        public async Task<IActionResult> GetFilterPaging(ReceiptPaymentFilter filter)
         {
-            var result = await _providerService.GetProviderFilterPaging(filter);
+            var result = await _receiptPaymentService.GetReceiptPaymentFilterPaging(filter);
             return Ok(result);
         }
         /// <summary>
@@ -42,17 +42,17 @@ namespace MISA.AMIS.API.Controllers
         /// </summary>
         /// <returns></returns>
         /// Created by: VLVU (20/8/2021)
-        [HttpGet("newProviderCode")]
-        public async Task<IActionResult> GetNewEmployeeCode()
+        [HttpGet("newPaymentCode")]
+        public async Task<IActionResult> GetNewPaymentCode()
         {
-            var result = await _providerService.GetNewProviderCode();
+            var result = await _receiptPaymentService.GetNewReceiptPaymentCode();
             return Ok(result);
         }
 
         [HttpDelete("batch")]
         public async Task<IActionResult> DeleteBatch([FromBody]Guid[] listId)
         {
-            var result = await _providerService.DeleteBatch(listId);
+            var result = await _receiptPaymentService.DeleteBatch(listId);
             return Ok(result);
         }
         #endregion

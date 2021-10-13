@@ -8,6 +8,18 @@ using System.Threading.Tasks;
 namespace MISA.AMIS.ApplicationCore.Models
 {
     /// <summary>
+    /// Attribute tên của bảng
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class TableName : Attribute {
+        public string Name { get; }
+
+        public TableName(string name)
+        {
+            Name = name;
+        }
+    }
+    /// <summary>
     /// Attribute khóa chính
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]

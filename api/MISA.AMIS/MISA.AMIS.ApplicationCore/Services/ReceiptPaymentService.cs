@@ -9,23 +9,24 @@ using System.Threading.Tasks;
 
 namespace MISA.AMIS.ApplicationCore.Services
 {
-    public class ProviderService : BaseService<AccountObject>, IProviderService
+    public class ReceiptPaymentService : BaseService<ReceiptPayment>, IReceiptPaymentService
     {
         #region Declared
 
-        IProviderRepository _providerRepository;
+        IReceiptPaymentRepository _receiptPaymentRepository;
 
         #endregion
 
         #region Initialization
-        public ProviderService(IProviderRepository providerRepository) : base(providerRepository)
+        public ReceiptPaymentService(IReceiptPaymentRepository receiptPaymentRepository) : base(receiptPaymentRepository)
         {
-            _providerRepository = providerRepository;
+            _receiptPaymentRepository = receiptPaymentRepository;
         }
+        #endregion
 
         public async Task<ServiceResult> DeleteBatch(Guid[] listId)
         {
-            var rowAffect =  await _providerRepository.DeleteBatch(listId);
+            var rowAffect =  await _receiptPaymentRepository.DeleteBatch(listId);
             if(rowAffect < 1)
             {
                 return new ServiceResult
@@ -45,14 +46,14 @@ namespace MISA.AMIS.ApplicationCore.Services
             };
         }
 
-        public async Task<string> GetNewProviderCode()
+        public async Task<string> GetNewReceiptPaymentCode()
         {
-            return await _providerRepository.GetNewProviderCode();
+            return await _receiptPaymentRepository.GetNewReceiptPaymentCode();
         }
 
-        public async Task<ServiceResult> GetProviderFilterPaging(ProviderFilter filter)
+        public async Task<ServiceResult> GetReceiptPaymentFilterPaging(ReceiptPaymentFilter filter)
         {
-            var data = await _providerRepository.GetProviderFilterPaging(filter);
+            var data = await _receiptPaymentRepository.GetReceiptPaymentFilterPaging(filter);
             return new ServiceResult
             {
                 Code = MisaCode.Success,
@@ -61,6 +62,6 @@ namespace MISA.AMIS.ApplicationCore.Services
                 State = true
             };
         }
-        #endregion
+
     }
 }

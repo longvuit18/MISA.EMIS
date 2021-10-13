@@ -99,7 +99,8 @@ namespace MISA.AMIS.API.Controllers
         public async Task<IActionResult> UpdateOne(TEntity entity, string id)
         {
             // name entity
-            var entityName = entity.GetType().Name.ToLower();
+            var entityName = (typeof(TEntity).GetCustomAttributes(typeof(TableName), true).FirstOrDefault() as TableName)?.Name 
+                ?? typeof(TEntity).Name.ToLower();
 
             // convert string to guid
             var isToGuid = Guid.TryParse(id, out Guid guid);

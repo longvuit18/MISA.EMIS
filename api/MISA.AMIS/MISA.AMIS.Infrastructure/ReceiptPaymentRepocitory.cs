@@ -15,7 +15,7 @@ namespace MISA.AMIS.Infrastructure
     /// employee repository 
     /// </summary>
     /// Created by: VLVU (30/8/2021)
-    public class ProviderRepository : BaseRepository<AccountObject>, IProviderRepository
+    public class ReceiptPaymentRepocitory : BaseRepository<ReceiptPayment>, IReceiptPaymentRepository
     {
 
         #region Declared
@@ -23,28 +23,17 @@ namespace MISA.AMIS.Infrastructure
         #endregion
 
         #region Initialization
-        public ProviderRepository(IConfiguration configuration) : base(configuration)
+        public ReceiptPaymentRepocitory(IConfiguration configuration) : base(configuration)
         {
         }
         #endregion
 
         #region Methods
-        public async Task<object> GetProviderFilterPaging(ProviderFilter filter)
+        public async Task<object> GetReceiptPaymentFilterPaging(ReceiptPaymentFilter filter)
         {
             // Tạo và set dynamic parameter
             var parameters = new DynamicParameters();
             parameters.Add("@custom_filter", filter.CustomFilter, DbType.String);
-            parameters.Add("@p_account_object_code", filter.provider_code, DbType.String);
-            parameters.Add("@p_account_object_name", filter.provider_name, DbType.String);
-            parameters.Add("@p_address", filter.address, DbType.String);
-            parameters.Add("@p_description", filter.description, DbType.String);
-            parameters.Add("@p_tax_code", filter.tax_code, DbType.String);
-            parameters.Add("@p_phone_number", filter.phone_number, DbType.String);
-            parameters.Add("@p_personal_contact_identity_number", filter.personal_contact_identity_number, DbType.String);
-            parameters.Add("@p_province_or_city", filter.province_or_city, DbType.String);
-            parameters.Add("@p_district", filter.district, DbType.String);
-            parameters.Add("@p_ward_or_commune", filter.ward_or_commune, DbType.String);
-            parameters.Add("@p_account_object_group", filter.provider_group, DbType.String);
 
             // query từ database
             var employeeFiltered = await _dbConnection.QueryAsync<AccountObject>($"func_get_{_tableName}_filter_paging", parameters, commandType: CommandType.StoredProcedure);
@@ -63,7 +52,7 @@ namespace MISA.AMIS.Infrastructure
             // trả về dưới dạng 1 object
             return new { total_page = totalPage, total_record = totalRecord, result };
         }
-        public async Task<string> GetNewProviderCode()
+        public async Task<string> GetNewReceiptPaymentCode()
         {
             // query từ database
             var maxCode = await _dbConnection.QueryFirstOrDefaultAsync<string>($"func_get_max_{_tableName}_code", commandType: CommandType.StoredProcedure);

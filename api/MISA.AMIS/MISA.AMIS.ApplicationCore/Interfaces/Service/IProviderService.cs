@@ -11,7 +11,7 @@ namespace MISA.AMIS.ApplicationCore.Interfaces
     /// employee service interface
     /// Created by: VLVU (18/8/2021)
     /// </summary>
-    public interface IProviderService: IBaseService<Provider>
+    public interface IProviderService: IBaseService<AccountObject>
     {
         
         /// <summary>
@@ -27,5 +27,12 @@ namespace MISA.AMIS.ApplicationCore.Interfaces
         /// <returns></returns>
         /// Created by: VLVU (20/9/2021)
         Task<string> GetNewProviderCode();
+        /// <summary>
+        /// service xóa hàng loạt
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <returns></returns>
+        /// Created by: VLVU (29/9/2021)
+        Task<ServiceResult> DeleteBatch(Guid[] listId);
     }
 }

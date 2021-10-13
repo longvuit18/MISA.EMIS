@@ -27,7 +27,10 @@
         </div>
 
         <div class="payment-body">
-            <div class="overview">
+            <div
+                class="overview"
+                v-if="showOverview"
+            >
                 <BaseRow>
                     <BaseCol
                         :cols="4"
@@ -71,12 +74,21 @@
             </div>
             <div class="tabs">
                 <ul>
-                    <li class="tab-active">Tất cả</li>
-                    <li>Thu tiền</li>
-                    <li>Chi tiền</li>
+                    <li v-tooltip="'Tính năng chưa phát triển!'">Tất cả</li>
+                    <li v-tooltip="'Tính năng chưa phát triển!'">Thu tiền</li>
+                    <li class="tab-active">Chi tiền</li>
                 </ul>
             </div>
             <div class="filter-bar">
+                <div
+                    class="collapse-overview flex justify-center items-center"
+                    @click="showOverview = !showOverview"
+                >
+                    <div
+                        class="icon icon-size-16 mi-chevron-up--primary"
+                        :class="{'rotate-down': !showOverview}"
+                    ></div>
+                </div>
                 <div class="filter-area">
                     <div class="check-all-arrow">
                         <div class="check-all-arrow-icon"></div>
@@ -305,7 +317,7 @@ export default {
             columnNames: columnNames,
             payments: [],
             openDialog: false,
-            currentEmployee: {},
+            currentPayment: {},
             stateDialog: enums.dialogState.post,
 
             // pagination
@@ -316,8 +328,9 @@ export default {
             totalRecord: defaultTotalRecord,
             filterText: defaultFilterText,
 
-            idTimeout: null // id của setTimeOut khi thực hiện filter
+            idTimeout: null, // id của setTimeOut khi thực hiện filter
 
+            showOverview: true
         };
     },
 
@@ -418,7 +431,7 @@ export default {
                     PaymentApi.getPaymentFilterPaging("")
                 ]);
 
-                this.payments = promise[0]?.data?.Data ?? [];
+                this.payments = promise[0]?.data?.Data?.result ?? [];
 
                 this.totalPage = promise[0]?.data?.TotalPage === 0 ? 1 : promise[0]?.data?.TotalPage || 1; // số page luôn là 1
                 this.totalRecord = promise[0]?.data?.TotalRecord;
@@ -444,11 +457,12 @@ export default {
          */
         async loadPayment() {
             try {
-                const promise = await PaymentApi.getPaymentFilterPaging(this.filterText.trim(), this.pageNumber, this.pageSize.value);
+                const promise = await PaymentApi.getPaymentFilterPaging("");
 
-                this.payments = promise?.data.Data;
-                this.totalPage = promise?.data?.TotalPage === 0 ? 1 : promise?.data?.TotalPage || 1;
-                this.totalRecord = promise?.data.TotalRecord;
+                this.payments = promise[0]?.data?.Data?.result ?? [];
+
+                this.totalPage = promise[0]?.data?.TotalPage === 0 ? 1 : promise[0]?.data?.TotalPage || 1; // số page luôn là 1
+                this.totalRecord = promise[0]?.data?.TotalRecord;
             } catch (error) {
                 this.payments = [];
                 if (error?.response?.status === enums.statusCode.serverError) {
@@ -472,7 +486,7 @@ export default {
         reloadPayment() {
             this.payments = null;
             this.pageNumber = defaultPageNumber;
-            this.$router.push({ path: "employee", query: { page: defaultPageNumber } }).catch(() => { });
+            this.$router.push({ path: "receipt-payment-list", query: { page: defaultPageNumber } }).catch(() => { });
             this.totalPage = defaultTotalPage;
             this.totalRecord = defaultTotalRecord;
             this.filterText = defaultFilterText;
@@ -514,9 +528,9 @@ export default {
          * Hàm khi người dùng dblclick vào 1 hàng hoặc ấn vào chữ sửa trên hàng đó
          * Created by: Vũ Long Vũ (19/7/2021)
          */
-        async handleClickDelete(employee) {
-            this.currentPayment = employee;
-            const ok = await this.confirmPopup(resources.popup.deleteEmployee(employee.EmployeeCode));
+        async handleClickDelete(payment) {
+            this.currentPayment = payment;
+            const ok = await this.confirmPopup(resources.popup.deleteEmployee(payment.EmployeeCode));
             if (!ok) {
                 return;
             }
@@ -527,8 +541,8 @@ export default {
          * Hàm khi người dùng dblclick vào 1 hàng hoặc ấn vào chữ sửa trên hàng đó
          * Created by: Vũ Long Vũ (19/7/2021)
          */
-        handleClickRelication(employee) {
-            this.currentPayment = employee;
+        handleClickRelication(payment) {
+            this.currentPayment = payment;
             this.stateDialog = enums.dialogState.post;
             this.openDialog = true;
         },
@@ -539,23 +553,23 @@ export default {
          */
 
         async onDelete() {
-            try {
-                await PaymentApi.deleteOne(this.currentPayment.ref_id);
-                this.setToast(resources.toast.deleteEmployeeSuccess(this.currentPayment.EmployeeCode));
-                this.reloadPayment();
-            } catch (error) {
-                if (error.response.status === enums.statusCode.serverError) {
-                    this.setToast({
-                        content: error.response.data.MsgUser,
-                        type: "error"
-                    });
-                }
-                this.setToast({
-                    content: resources.serverErrorMessageDefault,
-                    type: "error"
-                });
-            }
-            this.currentPayment = {};
+            // try {
+            //     await PaymentApi.deleteOne(this.currentPayment.ref_id);
+            //     this.setToast(resources.toast.deleteEmployeeSuccess(this.currentPayment.EmployeeCode));
+            //     this.reloadPayment();
+            // } catch (error) {
+            //     if (error.response.status === enums.statusCode.serverError) {
+            //         this.setToast({
+            //             content: error.response.data.MsgUser,
+            //             type: "error"
+            //         });
+            //     }
+            //     this.setToast({
+            //         content: resources.serverErrorMessageDefault,
+            //         type: "error"
+            //     });
+            // }
+            // this.currentPayment = {};
         },
 
         /**

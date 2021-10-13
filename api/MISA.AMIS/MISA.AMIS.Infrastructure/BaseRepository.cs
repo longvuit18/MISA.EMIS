@@ -29,10 +29,11 @@ namespace MISA.AMIS.Infrastructure
         #region Initializaiton
         public BaseRepository(IConfiguration configuration)
         {
-            _tableName = typeof(TEntity).Name.ToLower();
+            // Lấy tên table từ attribute nếu không set thì lấy tên của model
+            _tableName = (typeof(TEntity).GetCustomAttributes(typeof(TableName), true).FirstOrDefault() as TableName)?.Name 
+                ?? typeof(TEntity).Name.ToLower();
             var connectionString = configuration.GetConnectionString("MISAAMISLocalConnectionString");
             _dbConnection = new NpgsqlConnection(connectionString);
-            // (_dbConnection as NpgsqlConnection).TypeMapper.MapComposite<Employee>();
         }
         #endregion
 

@@ -3,6 +3,7 @@
  * Created by: VLVU (20/8/2021)
  */
 
+import AutoNumeric from "autonumeric";
 /**
  * format date local (VN)
  * @param {Date} date ngày tháng năm truyền vào
@@ -53,11 +54,21 @@ const formatCurrency = (currency) => {
 	return new Intl.NumberFormat("vn-VN").format(Number(currency));
 };
 
-export default {
-	formatDateLocal,
-	formatDateValueInput,
-	formatCurrency
-
+/**
+ * Hàm format số theo cách hiểu của người Việt
+ * @param {number | string} number số cần format
+ * @returns giá trị đã format theo cách hiểu của người việt
+ * Created by: VLVU (13/10/2021)
+ */
+const formatNumber = (number) => {
+	const settings = {
+		digitGroupSeparator: ".",
+		decimalCharacter: ",",
+		minimumValue: "0",
+		decimalCharacterAlternative: ".",
+		allowDecimalPadding: "floats"
+	};
+	return AutoNumeric.format(number, settings);
 };
 
 /**
@@ -94,3 +105,12 @@ export function removeVietnameseTones(str) {
 	// str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
 	return str;
 }
+
+export default {
+	formatDateLocal,
+	formatDateValueInput,
+	formatCurrency,
+	formatNumber,
+	removeVietnameseTones
+
+};

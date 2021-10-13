@@ -38,6 +38,6 @@ namespace MISA.AMIS.ApplicationCore.Interfaces.Repository
         /// <param name="provinceId"> id của tỉnh</param>
         /// <param name="districtId"> id của huyện</param>
         /// <returns></returns>
-        Task<IEnumerable<Ward>> GetWards(Guid countryId, int provinceId, int districtId);
+        Task<IEnumerable<Ward>> GetWards(Guid    countryId, int provinceId, int districtId);
     }
 }
