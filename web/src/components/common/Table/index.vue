@@ -73,7 +73,7 @@
                             class="width-cell"
                         >
                             <BaseInput
-                                v-if="mapAttribute(key, 'type', 'string') === 'input' && rowSelected(rowIndex)"
+                                v-if="!disabled &&mapAttribute(key, 'type', 'string') === 'input' && rowSelected(rowIndex)"
                                 fullWidth
                                 v-model="item[key]"
                                 :enterRightToLeft="mapAttribute(key, 'format', 'string') === 'number' || mapAttribute(key, 'format', 'string') === 'curreny'"
@@ -84,7 +84,7 @@
                                 :disabled="disabled"
                             />
                             <BaseCombobox
-                                v-else-if="mapAttribute(key, 'type', 'string') === 'combobox' && rowSelected(rowIndex)"
+                                v-else-if="!disabled && mapAttribute(key, 'type', 'string') === 'combobox' && rowSelected(rowIndex)"
                                 fullWidth
                                 :items="mapAttribute(key, 'items', [])"
                                 v-model="item[key]"

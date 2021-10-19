@@ -6,8 +6,10 @@
                 <div class="content-icon">
                     <div :class="getIcon" />
                 </div>
-                <div class="content-text">
-                    {{dataContent}}
+                <div
+                    class="content-text"
+                    v-html="dataContent"
+                >
                 </div>
             </div>
             <div class="popup-space">

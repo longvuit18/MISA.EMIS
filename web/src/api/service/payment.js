@@ -37,6 +37,28 @@ class PaymentApi extends BaseApi {
 		});
 	}
 
+	/**
+	 * api insert payment
+	 * @returns axios promise
+	 * Created by: VLVU (14/10/2021)
+	 */
+	async insertPayment(payment, paymentDetails) {
+		return await axios.post(`${this.route}/payment`, {
+			payment,
+			paymentDetails
+		});
+	}
+
+	/**
+	 * api lấy 1 payment
+	 * @param {string} paymentId id payment
+	 * @returns axios promise
+	 * Created by: VLVU (14/10/2021)
+	 */
+	async getPaymentById(paymentId) {
+		return await axios.get(`${this.route}/payment/${paymentId}`);
+	}
+
 	// override here
 }
 

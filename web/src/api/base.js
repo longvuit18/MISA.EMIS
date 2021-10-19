@@ -27,7 +27,7 @@ export class BaseApi {
 	 * hàm lấy 1 item từ api bằng id
 	 * @returns {Promise} Trả về 1 axios promise
 	 */
-	async getItemById(id) {
+	async getOne(id) {
 		return await axios.get(`${this.route}/${id}`);
 	}
 

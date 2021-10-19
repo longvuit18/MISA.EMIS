@@ -12,6 +12,7 @@
                             optionId="key"
                             keyLabel="label"
                             v-model="paymentType"
+                            :disabled="viewMode"
                         />
                     </div>
                 </div>
@@ -29,7 +30,7 @@
                         v-tooltip="'Tính năng đang phát triển'"
                     ></div>
                     <div
-                        @click="$router.back()"
+                        @click="onClose"
                         class="close-button"
                         v-tooltip="'Đóng'"
                     ></div>
@@ -55,6 +56,7 @@
                                                 keyLabel="account_object_name"
                                                 :columnNames="columnNamesObject"
                                                 v-model="data.account_object_id"
+                                                :disabled="viewMode"
                                             />
                                         </BaseCol>
                                         <BaseCol
@@ -66,6 +68,7 @@
                                                 tabindex="2"
                                                 fullWidth
                                                 v-model="data.account_object_name"
+                                                :disabled="viewMode"
                                             />
                                         </BaseCol>
                                     </BaseRow>
@@ -76,6 +79,7 @@
                                                 tabindex="3"
                                                 fullWidth
                                                 v-model="data.account_object_address"
+                                                :disabled="viewMode"
                                             />
                                         </BaseCol>
                                     </BaseRow>
@@ -86,6 +90,7 @@
                                                 tabindex="4"
                                                 fullWidth
                                                 v-model="data.journal_memo"
+                                                :disabled="viewMode"
                                             />
                                         </BaseCol>
                                     </BaseRow>
@@ -102,6 +107,7 @@
                                                 keyLabel="employee_name"
                                                 :items="employees"
                                                 v-model="data.employee_id"
+                                                :disabled="viewMode"
                                             />
                                         </BaseCol>
                                         <BaseCol
@@ -115,6 +121,7 @@
                                                     enterRightToLeft
                                                     placeholder="Số lượng"
                                                     v-model="data.document_included"
+                                                    :disabled="viewMode"
                                                 />
                                                 <span style="padding: 28px 6.5px 0;">
                                                     chứng từ gốc
@@ -139,6 +146,7 @@
                                                     format="DD/MM/YYYY"
                                                     value-type="YYYY-MM-DD"
                                                     v-model="data.posted_date"
+                                                    :disabled="viewMode"
                                                 />
                                             </BaseCol>
                                         </BaseRow>
@@ -151,6 +159,7 @@
                                                     format="DD/MM/YYYY"
                                                     value-type="YYYY-MM-DD"
                                                     v-model="data.refdate"
+                                                    :disabled="viewMode"
                                                 />
                                             </BaseCol>
                                         </BaseRow>
@@ -161,6 +170,7 @@
                                                     fullWidth
                                                     tabindex="9"
                                                     v-model="data.refno_finance"
+                                                    :disabled="viewMode"
                                                 />
                                             </BaseCol>
                                         </BaseRow>
@@ -193,6 +203,7 @@
                                     keyLabel="currency_name"
                                     v-model="data.currency_id"
                                     tabindex="10"
+                                    :disabled="viewMode"
                                 />
                             </div>
                         </div>
@@ -207,6 +218,7 @@
                                     format="currency"
                                     placeholder="1,00"
                                     v-model="data.exchange_rate"
+                                    :disabled="viewMode"
                                 />
                             </div>
                         </div>
@@ -223,6 +235,7 @@
                         hasRowTotal
                         @getTotal="getTotal"
                         tabindex="11"
+                        :disabled="viewMode"
                     />
                 </div>
                 <div class="grid-control">
@@ -263,6 +276,7 @@
                         buttonName="Hủy"
                         secondaryButton
                         :style="{background: 'inherit', color: '#fff'}"
+                        @click="() => onClose(false)"
                     />
                 </div>
                 <div class="footer-right">
@@ -270,10 +284,14 @@
                         <BaseButton
                             buttonName="Cất"
                             secondaryButton
+                            @click="() => onSave()"
                             :style="{background: 'inherit', color: '#fff'}"
                         />
                     </div>
-                    <BaseButton buttonName="Cất và thêm" />
+                    <BaseButton
+                        buttonName="Cất và thêm"
+                        @click="() => onSave(true)"
+                    />
                 </div>
             </div>
             <div
@@ -298,6 +316,8 @@ import resources from "../../../resources";
 import utils from "../../../utils";
 import ProviderApi from "../../../api/service/provider";
 import EmployeeApi from "../../../api/service/employee";
+import PaymentApi from "../../../api/service/payment";
+import enums from "../../../enums";
 
 const debitAccount = [
     { account_number: "10000", account_name: "Tài khoản nợ 1" },
@@ -410,6 +430,33 @@ const currencies = [
 const paymentTypes = [
     { key: "Chi tiền cho", label: "5.Chi khác" }
 ];
+
+const dataDetailsDefault = [
+    {
+        description: "Chi tiền cho",
+        debit_account: "",
+        credit_account: "11111",
+        amount: 0,
+        account_object_code: "",
+        account_object_name: "",
+        bank_account: ""
+    }
+];
+
+const dataDefault = {
+    journal_memo: "Chi tiền cho",
+    posted_date: utils.formatDateValueInput(new Date()),
+    refdate: utils.formatDateValueInput(new Date()),
+    refno_finance: "",
+    currency_id: "VND",
+    exchange_rate: 1,
+    account_object_id: undefined,
+    account_object_name: "",
+    account_object_address: "",
+    employee_id: undefined,
+    total_amount: 0,
+    document_included: ""
+};
 export default {
     name: "PaymentDetails",
     components: { TableCommon },
@@ -418,51 +465,50 @@ export default {
         return {
             columnNames: columnNames,
 
-            dataDetails: [
-                {
-                    description: "Chi tiền cho",
-                    debit_account: "",
-                    credit_account: "11111",
-                    amount: 0,
-                    account_object_code: "",
-                    account_object_name: "",
-                    bank_account: ""
-                }
-            ],
+            dataDetails: dataDetailsDefault,
             paymentTypes,
             paymentType: "Chi tiền cho",
-            data: {
-                journal_memo: "Chi tiền cho",
-                posted_date: utils.formatDateValueInput(new Date()),
-                refdate: utils.formatDateValueInput(new Date()),
-                refno_finance: "",
-                currency_id: "VND",
-                exchange_rate: 1,
-                account_object_id: "",
-                account_object_name: "",
-                account_object_address: "",
-                employee_id: "",
-                total_amount: 0
-            },
+            data: { ...dataDefault },
             columnNamesCurrency,
             currencies,
 
             // loading
             loading: false,
+            edited: false,
+            recordInserted: 0,
 
             accountObjects: [],
             employees: [],
             columnNamesObject,
-            columnNamesEmployee
+            columnNamesEmployee,
+
+            currentState: enums.dialogState.post
         };
     },
 
     watch: {
+        data: {
+            handler() {
+                this.edited = true;
+            },
+            deep: true
+        },
+        dataDetails: {
+            handler() {
+                this.edited = true;
+            },
+            deep: true
+        },
         "data.account_object_id": {
             handler(value) {
+                // không làm gì cả khi ở view mode
+                if (this.viewMode) {
+                    return;
+                }
                 const accountObject = this.accountObjects.find(item => item.account_object_id === value);
                 if (accountObject) {
                     this.data.account_object_name = accountObject.account_object_name;
+                    this.data.account_object_code = accountObject.account_object_code;
                     this.data.account_object_address = accountObject.address;
                     this.data.journal_memo = this.paymentType + " " + accountObject.account_object_name;
 
@@ -470,10 +516,18 @@ export default {
                         return {
                             ...item,
                             account_object_code: accountObject.account_object_code,
-                            account_object_name: accountObject.account_object_name
+                            account_object_name: accountObject.account_object_name,
+                            account_object_id: accountObject.account_object_id
                         };
                     });
                 }
+            },
+            deep: true
+        },
+
+        "data.employee_id": {
+            handler(value) {
+                this.data.employee_name = this.employees.find(item => item.employee_id === value).employee_name;
             },
             deep: true
         },
@@ -498,7 +552,7 @@ export default {
             handler(value, oldValue) {
                 if (oldValue === this.data.refdate) {
                     this.data.refdate = value;
-                }
+                };
             },
             deep: true
         },
@@ -535,24 +589,46 @@ export default {
     computed: {
         totalAmountFormat() {
             return utils.formatNumber(this.data.total_amount);
+        },
+
+        viewMode() {
+            return !!this.$route.params?.id;
         }
     },
 
     async mounted() {
         try {
             this.loading = true;
+            if (this.viewMode) {
+                const promise = await PaymentApi.getPaymentById(this.$route.params.id);
+                this.data = promise.data?.Data?.payment ?? dataDefault;
+                this.dataDetails = promise.data?.Data?.payment_details ?? [];
+                this.accountObjects = [
+                    {
+                        account_object_id: this.data.account_object_id,
+                        account_object_name: this.data.account_object_name,
+                        address: this.data.account_object_address
+                    }];
+                this.employees = [{ employee_id: this.data.employee_id, employee_name: this.data.employee_name }];
+                this.loading = false;
+                this.edited = false;
+                return;
+            }
+
             const promise = await ProviderApi.getAll();
             this.accountObjects = promise?.data?.Data ?? [];
             const employeePromise = await EmployeeApi.getAll();
             this.employees = employeePromise?.data?.Data ?? [];
-
+            await this.setPaymentCode();
             this.loading = false;
+            this.edited = false;
         } catch (error) {
             this.loading = false;
 
             console.error(error);
         }
     },
+
     methods: {
 
         ...mapMutations("toastMessage", {
@@ -566,6 +642,16 @@ export default {
             this.data.total_amount = total.amount;
         },
 
+        async setPaymentCode() {
+            try {
+                const newCodePromise = await PaymentApi.getPaymentCode();
+
+                this.data.refno_finance = newCodePromise?.data ?? "";
+            } catch (error) {
+                console.error(error);
+            }
+        },
+
         /**
          * sửa tên của object theo đối tượng đã chọn trong data detail
          * Created by: VLVU(12/10/2021	)
@@ -574,15 +660,18 @@ export default {
             if (comboboxItem?.account_object_name) {
                 this.dataDetails[rowIndex].account_object_name = comboboxItem.account_object_name;
             }
+
+            this.dataDetails[rowIndex].account_object_id = comboboxItem.account_object_id;
         },
         /**
          * Thêm 1 hàng mới vào bảng
          * Created by: VLVU(9/9/2018)
          */
         addRow() {
-            let newRow = {
-
-            };
+            let newRow = {};
+            if (this.viewMode) {
+                return;
+            }
             if (this.dataDetails.length === 0) {
                 newRow = {
                     description: this.data.journal_memo,
@@ -604,6 +693,9 @@ export default {
          * Created by: VLVU (9/9/2021)
          */
         async deleteAllRows() {
+            if (this.viewMode) {
+                return;
+            }
             const ok = await this.confirmPopup(resources.popup.deleteAllRows);
             if (!ok) {
                 return;
@@ -617,7 +709,97 @@ export default {
          * Created by: VLVU(9/9/2021)
          */
         deleteRow(index) {
+            if (this.viewMode) {
+                return;
+            }
             this.dataDetails.splice(index, 1);
+        },
+
+        async onClose(confirm = true) {
+            if (this.edited && confirm && !this.viewMode) {
+                const ok = await this.confirmPopup(resources.popup.confirmCloseDetailForm);
+                // không làm gì cả
+                if (ok === null) {
+                    return;
+                }
+                // cất và đóng form
+                if (ok === true) {
+                    this.onSave();
+                    return;
+                }
+            }
+            if (this.$route.name === "PaymentDetailsFromProcessView") {
+                this.$router.push("/cash/process");
+                return;
+            }
+
+            if (this.recordInserted > 0) {
+                this.$router.push("/cash/receipt-payment-list?reload=1");
+            }
+            this.$router.push("/cash/receipt-payment-list");
+        },
+
+        /**
+         * Hàm cất dữ liệu, hàm này có thể thêm mới hoặc sửa dữ liệu
+         * @param {bool} keepCreating Check xem có phải button cất và thêm không
+         * Created by: VLVU (14/10/2021)
+         */
+        async onSave(keepCreating = false) {
+            if (this.viewMode) {
+                return;
+            }
+            // // trạng thái xem không xảy ra gì cả
+            // if (this.viewMode) {
+            //     return;
+            // }
+            // const validate = await this.validate();
+            // if (!validate) {
+            //     return;
+            // }
+            let promise = null;
+            try {
+                this.loading = true;
+                promise = await PaymentApi.insertPayment(this.data, this.dataDetails);
+
+                // lỗi validate
+                if (!promise.data.State) {
+                    await this.confirmPopup({
+                        content: promise.data.MsgUser,
+                        type: "warning",
+                        state: "alert"
+                    });
+                    this.loading = false;
+                    return;
+                }
+                this.setToast(resources.toast.addSuccess(this.data.refno_finance, "phiếu chi"));
+                this.data = {};
+                this.dataDetails = dataDetailsDefault;
+                if (keepCreating) {
+                    const newCodePromise = await PaymentApi.getPaymentCode();
+                    this.data.refno_finance = newCodePromise.data;
+                    this.$refs["1"].$refs.BaseInput.focus();
+                    this.loading = false;
+                    this.edited = false;
+
+                    this.recordInserted = this.recordInserted + 1;
+                    return;
+                }
+                this.onClose(false);
+            } catch (error) {
+                this.loading = false;
+                if (error?.response?.status === enums.statusCode.serverError) {
+                    this.setToast({
+                        type: "error",
+                        content: error.response?.data?.MsgUser || resources.serverErrorMessageDefault
+                    });
+                    return;
+                }
+
+                this.setToast({
+                    type: "error",
+                    content: resources.serverErrorMessageDefault
+                });
+            }
         }
     }
 };

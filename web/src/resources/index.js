@@ -101,9 +101,26 @@ const popup = {
 	 */
 	deleteOne(code, name) {
 		return {
-			content: `Bạn có thực sự muốn xóa ${name} <${code}> này không?`,
+			content: `Bạn có thực sự muốn xóa ${name} &lt;${code}&gt; này không?`,
 			state: "confirm",
 			type: "warning"
+		};
+	},
+
+	/**
+	 * popup thông báo có phát sinh
+	 * @param {string} name tên của đối tượng
+	 * @param {string} action tên của hành động
+	 * @returns object popup message
+	 */
+	arisingRelatedProvider(name, action) {
+		return {
+			content: `
+				<b>${action} không thành công.</b><br/><br/>
+				Nhà cung cấp <b>${name}</b> đã <b>có phát sinh.</b> Bạn phải xóa các phát sinh liên quan trước khi xóa nhà cung cấp.			
+			`,
+			type: "error",
+			state: "alert"
 		};
 	},
 

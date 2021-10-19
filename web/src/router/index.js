@@ -24,11 +24,30 @@ const routes = [
 		children: [
 			{
 				path: "process",
+				name: "Process",
 				component: Process
 			},
 			{
 				path: "receipt-payment-list",
+				name: "ReceiptPaymentList",
 				component: ReceiptPaymentList,
+				meta: {
+					title: "Công ty Misa"
+				}
+			},
+
+			{
+				path: "/popup/payment-details/:id",
+				name: "PaymentDetailsFromPaymentViewWithId",
+				components: { default: ReceiptPaymentList, "popup-view": PaymentDetails },
+				meta: {
+					title: "Công ty Misa"
+				}
+			},
+			{
+				path: "/popup/payment-details",
+				name: "PaymentDetailsFromPaymentView",
+				components: { default: ReceiptPaymentList, "popup-view": PaymentDetails },
 				meta: {
 					title: "Công ty Misa"
 				}
@@ -40,16 +59,8 @@ const routes = [
 				meta: {
 					title: "Công ty Misa"
 				}
-			},
-
-			{
-				path: "/popup/payment-details",
-				name: "PaymentDetailsFromPaymentView",
-				components: { default: ReceiptPaymentList, "popup-view": PaymentDetails },
-				meta: {
-					title: "Công ty Misa"
-				}
 			}
+
 		]
 	},
 

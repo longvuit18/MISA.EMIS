@@ -645,7 +645,7 @@ export default {
                 } else {
                     this.setToast(resources.toast.updateSuccess(this.currentProvider.account_object_code, "nhà cung cấp"));
                 }
-                this.currentEmployee = {};
+                this.currentProvider = {};
                 if (keepCreating) {
                     await this.setNewEmployeeCode();
                     this.$refs["1"].$refs.BaseInput.focus();

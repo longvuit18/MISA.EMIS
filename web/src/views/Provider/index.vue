@@ -533,11 +533,15 @@ export default {
             this.selected = selected;
         },
 
+        /**
+         * sự kiến xóa nhiều
+         * Created by: VLVU (10/10/2021)
+         */
         async handleClickDeleteMulti() {
             this.isOpenCheckAll = false;
             const listId = [];
             this.selected.forEach(item => {
-                listId.push(this.providers[item].provider_id);
+                listId.push(this.providers[item].account_object_id);
             });
 
             const ok = await this.confirmPopup(resources.popup.deleteMultiple("nhà cung cấp"));
@@ -546,8 +550,12 @@ export default {
             }
 
             try {
-                await ProviderApi.deleteMultiple(listId);
+                const promise = await ProviderApi.deleteMultiple(listId);
 
+                if (!promise?.data?.State) {
+                    await this.confirmPopup(resources.popup.arisingRelatedProvider("", "Xóa"));
+                    return;
+                }
                 this.setToast(resources.toast.deleteSuccess(this.currentProvider.provider_code, "nhà cung cấp"));
                 this.selected = [];
                 this.reloadProviders();
@@ -706,7 +714,7 @@ export default {
          */
         async handleClickDelete(provider) {
             this.currentProvider = provider;
-            const ok = await this.confirmPopup(resources.popup.deleteOne(provider.provider_code, "nhà cung cấp"));
+            const ok = await this.confirmPopup(resources.popup.deleteOne(provider.account_object_code, "nhà cung cấp"));
             if (!ok) {
                 return;
             }
@@ -736,15 +744,13 @@ export default {
 
         async onDelete() {
             try {
-                const promise = await ProviderApi.deleteOne(this.currentProvider.provider_id);
+                const promise = await ProviderApi.deleteOne(this.currentProvider.account_object_id);
                 if (!promise?.data?.State) {
-                    this.setToast({
-                        content: promise?.data?.MsgUser,
-                        type: "error"
-                    });
+                    await this.confirmPopup(resources.popup.arisingRelatedProvider(this.currentProvider.account_object_name, "Xóa"));
                     return;
                 }
-                this.setToast(resources.toast.deleteSuccess(this.currentProvider.provider_code, "nhà cung cấp"));
+
+                this.setToast(resources.toast.deleteSuccess(this.currentProvider.account_object_code, "nhà cung cấp"));
                 this.reloadProviders();
             } catch (error) {
                 if (error.response.status === enums.statusCode.serverError) {

@@ -280,3 +280,27 @@ table tbody tr {
 .filter .filter-text {
 	text-transform: none;
 }
+
+.total-row {
+	font-weight: 700;
+	position: sticky;
+	bottom: 47px;
+	z-index: 17;
+}
+
+.total-row td {
+	height: 37px;
+}
+
+.total-row .td-viewer, .total-row .last-white-space, .total-row .first-white-space {
+	border: 0;
+	background-color: #F8F9FE !important;
+}
+
+.total-row .td-viewer {
+	border-top: 1px solid #c7c7c7;
+}
+
+.total-row:hover .td-viewer {
+	background-color: #F8F9FE !important;
+}

@@ -27,6 +27,7 @@
                         <div
                             class="filter"
                             style="display: none;"
+                            v-if="disabledFilter"
                         >
                             <div
                                 class="icon icon-size-16 mi-header-option"
@@ -88,7 +89,7 @@
                     @contextmenu="(e) => handleRightClick(e, item)"
                     :class="{'z-index-row': rowIndex === showedFeature}"
                 >
-                    <th class="first-white-space"></th>
+                    <td class="first-white-space"></td>
                     <td class="first-column-fixed align-center td-viewer">
                         <div>
                             <BaseCheckbox
@@ -128,17 +129,13 @@
                                 :class="rowIndex === data.length - 1 || rowIndex === data.length - 2 ? 'popup-top' : 'popup-bottom'"
                             >
                                 <li
-                                    @click="() =>handleClickEdit(item)"
+                                    @click="() =>handleClickDelete(item)"
                                     style="cursor: pointer;"
-                                >Sửa</li>
+                                >Xóa</li>
                                 <li
                                     @click="() =>handleClickReplication(item)"
                                     style="cursor: pointer;"
                                 >Nhân bản</li>
-                                <li
-                                    @click="() =>handleClickDelete(item)"
-                                    style="cursor: pointer;"
-                                >Xóa</li>
                             </ul>
                         </div>
 
@@ -148,6 +145,38 @@
 
                 </tr>
             </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td class="first-white-space"></td>
+                    <td class="first-column-fixed align-center td-viewer">
+
+                    </td>
+                    <td
+                        v-for="(value, index) in columnNames"
+                        :key="value.key"
+                        :class="{...setAlign(value.key), 'second-column-fixed': index === 0}"
+                        class="td-viewer"
+                    >
+                        <div
+                            v-if="index === 0"
+                            :style="{width: width(value.key)}"
+                            class="width-cell"
+                        >Tổng</div>
+
+                        <div
+                            v-else
+                            :style="{width: width(value.key)}"
+                            class="width-cell"
+                        >{{total(value.key)}}</div>
+                    </td>
+                    <td class="last-column-fixed align-center td-viewer">
+                        <div class="feature-column">
+                        </div>
+                    </td>
+                    <td class="last-white-space-1"></td>
+                    <td class="last-white-space-2"></td>
+                </tr>
+            </tfoot>
         </table>
         <div
             class="loading"
@@ -172,8 +201,8 @@
 <script>
 import utils from "../../../utils";
 /**
- * Table Employee
- * CreatedBy: Vũ Long Vũ 14/7/2021
+ * Table Thu chi
+ * CreatedBy: Vũ Long Vũ 13/10/2021
  */
 
 export default {
@@ -192,6 +221,15 @@ export default {
         filterProp: {
             type: Object,
             default: () => { }
+        },
+
+        totals: {
+            type: Object,
+            default: () => { }
+        },
+        disabledFilter: {
+            type: Boolean,
+            default: () => false
         }
     },
 
@@ -230,6 +268,15 @@ export default {
     },
 
     methods: {
+
+        total(key) {
+            const positionColumn = this.columnNames.findIndex(item => item.key === key);
+            if (positionColumn === -1) {
+                return null;
+            }
+
+            return utils.formatNumber(this.totals?.[key]);
+        },
         /**
          * Hàm bỏ lọc
          * Created by: VLVU (28/9/2021)
@@ -320,7 +367,7 @@ export default {
                         Object.assign(newItem, { [c.key]: utils.formatDateLocal(item[c.key]) });
                         return;
                     case "currency":
-                        Object.assign(newItem, { [c.key]: utils.formatCurency(item[c.key]) });
+                        Object.assign(newItem, { [c.key]: utils.formatNumber(item[c.key]) });
                         return;
                     default:
                         break;

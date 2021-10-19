@@ -114,6 +114,7 @@
                             placeholder="Tìm theo mã, tên, số điện thoại"
                             fullWidth
                             v-model="filterText"
+                            focusInput
                         />
 
                     </div>
@@ -121,15 +122,18 @@
                         class="reload-icon"
                         @click="reloadPayment"
                     ></div>
+                    <div class="icon icon-size-24 mi-excel__nav ml-12 mr-12"></div>
+                    <div class="icon icon-size-24 mi-setting__list"></div>
                 </div>
             </div>
             <div class="grid">
                 <PaymentTable
                     :columnNames="columnNames"
                     :dataProps="payments"
-                    @handleClickEdit="handleClickEdit"
+                    @handleClickView="handleClickView"
                     @handleClickDelete="handleClickDelete"
                     @handleClickRelication="handleClickRelication"
+                    :totals="totals"
                 />
             </div>
         </div>
@@ -290,7 +294,7 @@ const columnNames = [
     { key: "refdate", text: "Ngày chứng từ", width: 150, align: "center", format: "date" },
     { key: "refno_finance", text: "Số chứng từ", width: 125 },
     { key: "journal_memo", text: "Diễn giải", width: 320 },
-    { key: "total_amount", text: "Số tiền", width: 150 },
+    { key: "total_amount", text: "Số tiền", width: 150, format: "currency", align: "right" },
     { key: "account_object_code", text: "Mã đối tượng", width: 150 },
     { key: "account_object_name", text: "Đối tượng", width: 150 },
     { key: "account_object_address", text: "Địa chỉ", width: 250 }
@@ -309,6 +313,12 @@ const defaultPageSizes = [
     { value: 100, label: "100 bản ghi trên 1 trang" }
 ];
 const defaultPageSize = 20;
+
+const defaultFilter = {
+    CustomFilter: "",
+    PageIndex: 1,
+    PageSize: 20
+};
 export default {
     name: "ReceiptPaymentList",
     components: { PaymentTable },
@@ -319,6 +329,7 @@ export default {
             openDialog: false,
             currentPayment: {},
             stateDialog: enums.dialogState.post,
+            totals: {},
 
             // pagination
             pageSizes: defaultPageSizes,
@@ -330,7 +341,8 @@ export default {
 
             idTimeout: null, // id của setTimeOut khi thực hiện filter
 
-            showOverview: true
+            showOverview: true,
+            filter: defaultFilter
         };
     },
 
@@ -349,8 +361,8 @@ export default {
             immediate: true
         },
         /**
-         * Khi pageNumber thay thổi thì sẽ load lại employee
-         * Created by: VLVU (18/8/2021)
+         * Khi pageNumber thay thổi thì sẽ load lại phiếu chi
+         * Created by: VLVU (13/10/2021)
          */
         pageNumber() {
             this.payments = null;
@@ -358,8 +370,8 @@ export default {
         },
 
         /**
-         * Khi pageNumber thay thổi thì sẽ load lại employee
-         * Created by: VLVU (18/8/2021)
+         * Khi pageNumber thay thổi thì sẽ load lại phiếu chi
+         * Created by: VLVU (13/10/2021)
          */
         pageSize() {
             this.payments = null;
@@ -428,13 +440,16 @@ export default {
         async getData() {
             try {
                 const promise = await Promise.all([
-                    PaymentApi.getPaymentFilterPaging("")
+                    PaymentApi.getPaymentFilterPaging(defaultFilter)
                 ]);
 
                 this.payments = promise[0]?.data?.Data?.result ?? [];
 
-                this.totalPage = promise[0]?.data?.TotalPage === 0 ? 1 : promise[0]?.data?.TotalPage || 1; // số page luôn là 1
-                this.totalRecord = promise[0]?.data?.TotalRecord;
+                this.totalPage = promise[0]?.data?.Data?.total_page === 0 ? 1 : promise[0]?.data?.Data?.total_page || 1; // số page luôn là 1
+                this.totalRecord = promise[0]?.data?.Data?.total_record;
+                this.totals = {
+                    total_amount: promise[0]?.data?.Data?.total_amount_payment
+                };
             } catch (error) {
                 this.payments = [];
                 if (error?.response?.status === enums.statusCode.serverError) {
@@ -457,12 +472,18 @@ export default {
          */
         async loadPayment() {
             try {
-                const promise = await PaymentApi.getPaymentFilterPaging("");
+                this.filter = {
+                    ...this.filter,
+                    CustomFilter: this.filterText,
+                    PageIndex: this.pageNumber,
+                    PageSize: this.pageSize
+                };
+                const promise = await PaymentApi.getPaymentFilterPaging(this.filter);
 
-                this.payments = promise[0]?.data?.Data?.result ?? [];
+                this.payments = promise?.data?.Data?.result ?? [];
 
-                this.totalPage = promise[0]?.data?.TotalPage === 0 ? 1 : promise[0]?.data?.TotalPage || 1; // số page luôn là 1
-                this.totalRecord = promise[0]?.data?.TotalRecord;
+                this.totalPage = promise?.data?.Data?.total_page === 0 ? 1 : promise?.data?.Data?.total_page || 1; // số page luôn là 1
+                this.totalRecord = promise?.data?.Data?.total_record;
             } catch (error) {
                 this.payments = [];
                 if (error?.response?.status === enums.statusCode.serverError) {
@@ -518,8 +539,8 @@ export default {
          * Hàm khi người dùng dblclick vào 1 hàng hoặc ấn vào chữ sửa trên hàng đó
          * Created by: Vũ Long Vũ (19/7/2021)
          */
-        handleClickEdit(employee) {
-            this.currentPayment = employee;
+        handleClickEdit(payment) {
+            this.currentPayment = payment;
             this.stateDialog = enums.dialogState.put;
             this.openDialog = true;
         },
@@ -530,7 +551,7 @@ export default {
          */
         async handleClickDelete(payment) {
             this.currentPayment = payment;
-            const ok = await this.confirmPopup(resources.popup.deleteEmployee(payment.EmployeeCode));
+            const ok = await this.confirmPopup(resources.popup.deleteOne(payment.refno_finance, "phiếu chi"));
             if (!ok) {
                 return;
             }
@@ -545,6 +566,14 @@ export default {
             this.currentPayment = payment;
             this.stateDialog = enums.dialogState.post;
             this.openDialog = true;
+        },
+
+        /**
+         * Hàm khi người dùng nhấn view trên row
+         * Created by: Vũ Long Vũ (13/10/2021)
+         */
+        handleClickView(payment) {
+            this.$router.push(`/popup/payment-details/${payment.refid}`);
         },
 
         /**
