@@ -130,6 +130,11 @@ export default {
     align-items: center;
     margin-right: 8px;
 }
+#navbar .active {
+    position: relative;
+    font-weight: 700;
+    border-left: 6px solid #2ca01c;
+}
 
 #navbar .active:before {
     content: "";

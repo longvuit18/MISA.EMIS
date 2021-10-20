@@ -260,12 +260,8 @@ export default {
                 }
             },
             deep: true
-        },
-
-        focus() {
-            this.rowsSelected = 0;
-            this.cellFocus = 0;
         }
+
     },
 
     mounted() {

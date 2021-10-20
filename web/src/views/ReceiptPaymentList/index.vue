@@ -96,9 +96,14 @@
                     <div class="check-all">
                         <BaseDropdownButton
                             buttonName="Thực hiện hàng loạt"
-                            disabled
                             secondaryButton
-                        />
+                            :disabled="selected < 2"
+                            :isOpen="isOpenCheckAll"
+                            @click="isOpenCheckAll = !isOpenCheckAll"
+                            @close="isOpenCheckAll = false"
+                        >
+                            <BatchExecution @handleClickDeleteMulti="handleClickDeleteMulti" />
+                        </BaseDropdownButton>
                     </div>
                     <div class="filter">
                         <BaseDropdownButton
@@ -133,6 +138,7 @@
                     @handleClickView="handleClickView"
                     @handleClickDelete="handleClickDelete"
                     @handleClickRelication="handleClickRelication"
+                    @clickCheckbox="handleClickCheckbox"
                     :totals="totals"
                 />
             </div>
@@ -289,6 +295,7 @@ import { mapActions, mapMutations } from "vuex";
 import enums from "../../enums";
 import resources from "../../resources";
 import PaymentTable from "./Table";
+import BatchExecution from "./dropdown/BatchExecution.vue";
 const columnNames = [
     { key: "posted_date", text: "Ngày hạch toán", width: 145, align: "center", format: "date" },
     { key: "refdate", text: "Ngày chứng từ", width: 150, align: "center", format: "date" },
@@ -321,7 +328,7 @@ const defaultFilter = {
 };
 export default {
     name: "ReceiptPaymentList",
-    components: { PaymentTable },
+    components: { PaymentTable, BatchExecution },
     data() {
         return {
             columnNames: columnNames,
@@ -342,7 +349,11 @@ export default {
             idTimeout: null, // id của setTimeOut khi thực hiện filter
 
             showOverview: true,
-            filter: defaultFilter
+            filter: defaultFilter,
+
+            // index các phần tử đã chon trong bảng
+            selected: [],
+            isOpenCheckAll: false
         };
     },
 
@@ -355,6 +366,10 @@ export default {
             handler(query) {
                 if (query?.page) {
                     this.pageNumber = Number(query.page);
+                }
+
+                if (Number(query?.reload) === 1) {
+                    this.reloadPayment();
                 }
             },
             deep: true,
@@ -434,6 +449,54 @@ export default {
         }),
 
         /**
+         * Láy hết các index các hàng đã chọn
+         * Created by: VLVU (29/9/2021)
+         */
+        handleClickCheckbox(selected) {
+            this.selected = selected;
+        },
+
+        /**
+         * sự kiến xóa nhiều
+         * Created by: VLVU (10/10/2021)
+         */
+        async handleClickDeleteMulti() {
+            this.isOpenCheckAll = false;
+            const listId = [];
+            this.selected.forEach(item => {
+                listId.push(this.payments[item].refid);
+            });
+
+            const ok = await this.confirmPopup(resources.popup.deleteMultiple("phiếu chi"));
+            if (!ok) {
+                return;
+            }
+
+            try {
+                const promise = await PaymentApi.deleteMultiple(listId);
+
+                if (!promise?.data?.State) {
+                    await this.confirmPopup(resources.popup.arisingRelatedProvider("", "Xóa"));
+                    return;
+                }
+                this.setToast(resources.toast.deleteMultipleSuccess("phiếu chi"));
+                this.selected = [];
+                this.reloadPayment();
+            } catch (error) {
+                if (error.response.status === enums.statusCode.serverError) {
+                    this.setToast({
+                        content: error.response.data.MsgUser,
+                        type: "error"
+                    });
+                }
+                this.setToast({
+                    content: resources.serverErrorMessageDefault,
+                    type: "error"
+                });
+            }
+        },
+
+        /**
          * Hàm lấy dữ liệu và thông tin đơn vị
          * Created by: Vũ Long Vũ (19/7/2021)
          */
@@ -484,6 +547,10 @@ export default {
 
                 this.totalPage = promise?.data?.Data?.total_page === 0 ? 1 : promise?.data?.Data?.total_page || 1; // số page luôn là 1
                 this.totalRecord = promise?.data?.Data?.total_record;
+
+                this.totals = {
+                    total_amount: promise?.data?.Data?.total_amount_payment
+                };
             } catch (error) {
                 this.payments = [];
                 if (error?.response?.status === enums.statusCode.serverError) {
@@ -577,28 +644,28 @@ export default {
         },
 
         /**
-         * Hàm xóa 1 nhân viên
-         * Created by: Vũ Long Vũ (19/7/2021)
+         * Hàm xóa 1 phiếu chi
+         * Created by: Vũ Long Vũ (19/10/2021)
          */
 
         async onDelete() {
-            // try {
-            //     await PaymentApi.deleteOne(this.currentPayment.ref_id);
-            //     this.setToast(resources.toast.deleteEmployeeSuccess(this.currentPayment.EmployeeCode));
-            //     this.reloadPayment();
-            // } catch (error) {
-            //     if (error.response.status === enums.statusCode.serverError) {
-            //         this.setToast({
-            //             content: error.response.data.MsgUser,
-            //             type: "error"
-            //         });
-            //     }
-            //     this.setToast({
-            //         content: resources.serverErrorMessageDefault,
-            //         type: "error"
-            //     });
-            // }
-            // this.currentPayment = {};
+            try {
+                await PaymentApi.deleteMultiple([this.currentPayment.refid]);
+                this.setToast(resources.toast.deleteSuccess(this.currentPayment.refno_finance));
+                this.reloadPayment();
+            } catch (error) {
+                if (error.response.status === enums.statusCode.serverError) {
+                    this.setToast({
+                        content: error.response.data.MsgUser,
+                        type: "error"
+                    });
+                }
+                this.setToast({
+                    content: resources.serverErrorMessageDefault,
+                    type: "error"
+                });
+            }
+            this.currentPayment = {};
         },
 
         /**

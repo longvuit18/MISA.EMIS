@@ -285,7 +285,7 @@ table tbody tr {
 	font-weight: 700;
 	position: sticky;
 	bottom: 47px;
-	z-index: 17;
+	z-index: 9;
 }
 
 .total-row td {

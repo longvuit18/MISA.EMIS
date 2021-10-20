@@ -556,7 +556,7 @@ export default {
                     await this.confirmPopup(resources.popup.arisingRelatedProvider("", "Xóa"));
                     return;
                 }
-                this.setToast(resources.toast.deleteSuccess(this.currentProvider.provider_code, "nhà cung cấp"));
+                this.setToast(resources.toast.deleteMultipleSuccess("nhà cung cấp"));
                 this.selected = [];
                 this.reloadProviders();
             } catch (error) {

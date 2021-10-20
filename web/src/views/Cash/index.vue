@@ -39,7 +39,6 @@ export default {
     watch: {
         $route: {
             handler(newValue, oldValue) {
-                console.log(newValue);
                 if (newValue.fullPath.startsWith("/popup/payment-details")) {
                     this.showPopupView = true;
                 } else {

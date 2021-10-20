@@ -67,7 +67,7 @@
                                                 label="Người nhận"
                                                 tabindex="2"
                                                 fullWidth
-                                                v-model="data.account_object_name"
+                                                v-model="data.account_object_contact_name"
                                                 :disabled="viewMode"
                                             />
                                         </BaseCol>
@@ -453,6 +453,7 @@ const dataDefault = {
     account_object_id: undefined,
     account_object_name: "",
     account_object_address: "",
+    account_object_contact_name: "",
     employee_id: undefined,
     total_amount: 0,
     document_included: ""
@@ -510,6 +511,7 @@ export default {
                     this.data.account_object_name = accountObject.account_object_name;
                     this.data.account_object_code = accountObject.account_object_code;
                     this.data.account_object_address = accountObject.address;
+                    this.data.account_object_contact_name = accountObject.account_object_name;
                     this.data.journal_memo = this.paymentType + " " + accountObject.account_object_name;
 
                     this.dataDetails = this.dataDetails.map(item => {
@@ -735,6 +737,7 @@ export default {
 
             if (this.recordInserted > 0) {
                 this.$router.push("/cash/receipt-payment-list?reload=1");
+                return;
             }
             this.$router.push("/cash/receipt-payment-list");
         },
@@ -774,14 +777,13 @@ export default {
                 this.setToast(resources.toast.addSuccess(this.data.refno_finance, "phiếu chi"));
                 this.data = {};
                 this.dataDetails = dataDetailsDefault;
+                this.recordInserted = this.recordInserted + 1;
                 if (keepCreating) {
                     const newCodePromise = await PaymentApi.getPaymentCode();
                     this.data.refno_finance = newCodePromise.data;
                     this.$refs["1"].$refs.BaseInput.focus();
                     this.loading = false;
                     this.edited = false;
-
-                    this.recordInserted = this.recordInserted + 1;
                     return;
                 }
                 this.onClose(false);

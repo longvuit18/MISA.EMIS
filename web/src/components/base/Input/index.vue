@@ -126,12 +126,6 @@ export default {
         };
     },
 
-    watch: {
-        value(v) {
-
-        }
-    },
-
     computed: {
         hasCurrencyFormat() {
             return this.format === "currency";

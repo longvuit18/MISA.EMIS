@@ -126,7 +126,7 @@
                             </div>
                             <ul
                                 v-if="rowIndex === showedFeature"
-                                :class="rowIndex === data.length - 1 || rowIndex === data.length - 2 ? 'popup-top' : 'popup-bottom'"
+                                :class="(rowIndex === data.length - 1 || rowIndex === data.length - 2) && rowIndex > 1 ? 'popup-top' : 'popup-bottom'"
                             >
                                 <li
                                     @click="() =>handleClickDelete(item)"

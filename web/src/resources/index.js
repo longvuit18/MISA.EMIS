@@ -49,6 +49,19 @@ const toast = {
 		};
 	},
 
+	/**
+	 * thông báo xóa  thành công
+	 * @param {string} code mã
+	 * @param {string} name tên toast
+	 * @returns object toast message
+	 */
+	deleteMultipleSuccess(name) {
+		return {
+			content: `Bạn đã xóa tất cả ${name} đã chọn thành công!`,
+			type: "success"
+		};
+	},
+
 	/// /// Account /// ///
 
 	/**
