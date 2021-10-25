@@ -103,7 +103,7 @@
                     <td class="last-column-fixed align-center td-viewer">
                         <div class="feature-column">
                             <span
-                                @click="() =>handleClickView(item[0])"
+                                @click="() =>handleClickView(item)"
                                 style="cursor: pointer;"
                             >Xem</span>
                             <div>
@@ -117,18 +117,18 @@
                             </div>
                             <ul
                                 v-if="rowIndex === showedFeature"
-                                :class="(rowIndex < data.length - 2 && data.length > 10) ? 'popup-top' : 'popup-bottom'"
+                                :class="(rowIndex < data.length - 2 && data.length > 10) ? 'popup-bottom' : 'popup-top'"
                             >
                                 <li
-                                    @click="() =>handleClickEdit(item[0])"
+                                    @click="() =>handleClickEdit(item)"
                                     style="cursor: pointer;"
                                 >Sửa</li>
                                 <li
-                                    @click="() =>handleClickReplication(item[0])"
+                                    @click="() =>handleClickReplication(item)"
                                     style="cursor: pointer;"
                                 >Nhân bản</li>
                                 <li
-                                    @click="() =>handleClickDelete(item[0])"
+                                    @click="() =>handleClickDelete(item)"
                                     style="cursor: pointer;"
                                 >Xóa</li>
                             </ul>

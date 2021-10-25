@@ -250,7 +250,7 @@ export default {
          * Created by: Vũ Long Vũ (19/7/2021)
          */
         handleClickEdit(account) {
-            this.currentAccount = account;
+            this.currentAccount = account[0];
             this.stateDialog = enums.dialogState.put;
             this.openDialog = true;
         },
@@ -261,7 +261,7 @@ export default {
          */
         async handleClickDelete(account) {
             this.currentAccount = account;
-            const ok = await this.confirmPopup(resources.popup.deleteOne(account.account_name, "tài khoản"));
+            const ok = await this.confirmPopup(resources.popup.deleteOne(account[0].account_name, "tài khoản"));
             if (!ok) {
                 return;
             }
@@ -273,7 +273,7 @@ export default {
          * Created by: Vũ Long Vũ (19/7/2021)
          */
         handleClickRelication(account) {
-            this.currentAccount = account;
+            this.currentAccount = account[0];
             this.stateDialog = enums.dialogState.post;
             this.openDialog = true;
         },
@@ -283,23 +283,29 @@ export default {
          * Created by: Vũ Long Vũ (19/7/2021)
          */
         handleClickView(account) {
-            this.currentAccount = account;
+            this.currentAccount = account[0];
             this.stateDialog = enums.dialogState.view;
             this.openDialog = true;
         },
 
         /**
-         * Hàm xóa 1 nhân viên
-         * Created by: Vũ Long Vũ (19/7/2021)
+         * Hàm xóa 1 account
+         * Created by: Vũ Long Vũ (19/10/2021)
          */
 
         async onDelete() {
+            if (this.currentAccount[1] === "is-parent") {
+                await this.confirmPopup(resources.popup.deleteAccountFail());
+                this.currentAccount = {};
+                return;
+            }
             try {
-                // await accountApi.deleteOne(this.currentAccount.accountId);
-                // this.setToast(resources.toast.deleteaccountSuccess(this.currentAccount.accountCode));
-                // this.reloadAccounts();
+                await AccountApi.deleteOne(this.currentAccount[0].account_id);
+                this.setToast(resources.toast.deleteSuccess(this.currentAccount[0].account_number, "tài khoản"));
+                this.reloadAccounts();
+                this.currentAccount = {};
             } catch (error) {
-                if (error.response.status === enums.statusCode.serverError) {
+                if (error?.response?.status === enums.statusCode.serverError) {
                     this.setToast({
                         content: error.response.data.MsgUser,
                         type: "error"

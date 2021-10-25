@@ -282,7 +282,6 @@ export default {
 
         toDataTable() {
             const data = (!this.data?.shipping_address || this.data?.shipping_address === "") ? "[{\"location_name\": \"\"}]" : this.data?.shipping_address;
-            console.log(data);
             return JSON.parse(data);
         }
     }

@@ -50,7 +50,8 @@ const routes = [
 				components: { default: ReceiptPaymentList, "popup-view": PaymentDetails },
 				meta: {
 					title: "Công ty Misa"
-				}
+				},
+				props: true
 			},
 			{
 				path: "/popup/payment-details",

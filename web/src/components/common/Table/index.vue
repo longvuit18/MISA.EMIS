@@ -82,6 +82,9 @@
                                 :focusInput="cellIndex === cellFocus"
                                 :tabindex="tabindexNumber + columnNames.length * (rowIndex) + cellIndex"
                                 :disabled="disabled"
+                                :required="mapAttribute(key, 'required', false)"
+                                :name="mapAttribute(key, 'text', '')"
+                                :ref="tabindexNumber + columnNames.length * (rowIndex) + cellIndex"
                             />
                             <BaseCombobox
                                 v-else-if="!disabled && mapAttribute(key, 'type', 'string') === 'combobox' && rowSelected(rowIndex)"
@@ -97,6 +100,9 @@
                                 :keyLabel="mapAttribute(key, 'keyLabel', 'text')"
                                 :positionOption="mapAttribute(key, 'positionOption', 'bottom')"
                                 @getOption="(option) =>watchDataCombobox(option, rowIndex, cellIndex)"
+                                :required="mapAttribute(key, 'required', false)"
+                                :name="mapAttribute(key, 'text', '')"
+                                :ref="tabindexNumber + columnNames.length * (rowIndex) + cellIndex"
                             />
                             <span
                                 v-else

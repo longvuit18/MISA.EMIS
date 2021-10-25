@@ -138,6 +138,21 @@ const popup = {
 	},
 
 	/**
+	 * popup thông báo xóa tài khoản bị lỗi
+	 * @returns object popup message
+	 */
+	deleteAccountFail() {
+		return {
+			content: `
+				<b>Xóa không thành công.</b><br/><br/>
+				Không thể xóa danh mục cha nếu chưa xóa tất cả các danh mục con.		
+			`,
+			type: "error",
+			state: "alert"
+		};
+	},
+
+	/**
 	 * popup hỏi muốn xóa nhiều không
 	 * @param {string} name tên đối tượng
 	 * @returns object popup message

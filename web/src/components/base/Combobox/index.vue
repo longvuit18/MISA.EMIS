@@ -183,7 +183,8 @@ export default {
         },
 
         name: {
-            type: String
+            type: String,
+            default: ""
 
         },
         placeholder: {
@@ -315,7 +316,7 @@ export default {
         chips() {
             const nameFirstColumn = this.columnNames[0].key;
             return this.options
-                .filter(x => this.value.findIndex(i => i === x.optionId) > -1)
+                .filter(x => this.value?.findIndex(i => i === x.optionId) > -1)
                 .map(item => ({ key: item.optionId, text: item[nameFirstColumn] }));
         },
 

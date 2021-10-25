@@ -5,10 +5,26 @@
                 :cols="6"
                 class="mr-10"
             >
-                <BaseCombobox label="Loại" />
+                <BaseCombobox
+                    label="Loại"
+                    :items="[{value: null, label: 'Tất cả'},{value: 0, label: 'Tổ chức'}, {value: 1, label: 'Cá nhân'}]"
+                    optionId="value"
+                    keyLabel="label"
+                    v-model="filter.account_object_type"
+                />
             </BaseCol>
             <BaseCol :cols="6">
-                <BaseCombobox label="Nhóm" />
+                <BaseCombobox
+                    label="Nhóm"
+                    name="Nhóm nhà cung cấp"
+                    placeholder=""
+                    :items="groupProviderData"
+                    v-model="filter.account_object_group"
+                    :columnNames="columnNamesProriverGroup"
+                    optionId="account_object_group_code"
+                    keyLabel="account_object_group_name"
+                    optionsTable
+                />
             </BaseCol>
         </BaseRow>
         <BaseRow>
@@ -77,6 +93,10 @@
 <script>
 import LocationApi from "../../../api/service/location";
 
+const columnNamesProriverGroup = [
+    { key: "account_object_group_code", text: "Mã nhóm KH, NCC", width: 170 },
+    { key: "account_object_group_name", text: "Tên nhóm KH, NCC", width: 190 }
+];
 export default {
     name: "FilterDropdown",
 
@@ -85,20 +105,27 @@ export default {
             type: Object,
             default: () => { }
         }
-        // isOpen: {
-        //     type: Boolean,
-        //     default: () => false
-        // }
     },
+
     data() {
         return {
-            filter: { ...this.filterProp },
+            filter: { ...this.filterProp, account_object_type: this.filterProp?.account_object_type ?? null },
             provinces: [],
             districts: [],
             wards: [],
             countryId: "22d23039-6d1b-4a11-8fea-d9e066a39b92",
             provinceId: "",
-            districtId: ""
+            districtId: "",
+            columnNamesProriverGroup,
+            groupProviderData: [
+                { account_object_group_code: "NCC-1", account_object_group_name: "Nhóm nhà cung cấp 1" },
+                { account_object_group_code: "NCC-2", account_object_group_name: "Nhóm nhà cung cấp 2" },
+                { account_object_group_code: "NCC-3", account_object_group_name: "Nhóm nhà cung cấp 3" },
+                { account_object_group_code: "NCC-4", account_object_group_name: "Nhóm nhà cung cấp 4" },
+                { account_object_group_code: "NCC-5", account_object_group_name: "Nhóm nhà cung cấp 5" },
+                { account_object_group_code: "NCC-6", account_object_group_name: "Nhóm nhà cung cấp 6" },
+                { account_object_group_code: "NCC-7", account_object_group_name: "Nhóm nhà cung cấp 7" }
+            ]
         };
     },
     watch: {
@@ -159,7 +186,8 @@ export default {
             this.filter = {
                 province_or_city: "",
                 district: "",
-                ward_or_commune: ""
+                ward_or_commune: "",
+                account_object_group: ""
             };
 
             this.districts = [];

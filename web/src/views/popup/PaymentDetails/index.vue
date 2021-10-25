@@ -13,6 +13,7 @@
                             keyLabel="label"
                             v-model="paymentType"
                             :disabled="viewMode"
+                            readonly
                         />
                     </div>
                 </div>
@@ -32,7 +33,7 @@
                     <div
                         @click="onClose"
                         class="close-button"
-                        v-tooltip="'Đóng'"
+                        v-tooltip="'Đóng (Esc)'"
                     ></div>
                 </div>
             </div>
@@ -57,6 +58,9 @@
                                                 :columnNames="columnNamesObject"
                                                 v-model="data.account_object_id"
                                                 :disabled="viewMode"
+                                                required
+                                                ref="1"
+                                                name="Đối tượng"
                                             />
                                         </BaseCol>
                                         <BaseCol
@@ -69,6 +73,7 @@
                                                 fullWidth
                                                 v-model="data.account_object_contact_name"
                                                 :disabled="viewMode"
+                                                name="Người nhận"
                                             />
                                         </BaseCol>
                                     </BaseRow>
@@ -80,6 +85,7 @@
                                                 fullWidth
                                                 v-model="data.account_object_address"
                                                 :disabled="viewMode"
+                                                name="Địa chỉ"
                                             />
                                         </BaseCol>
                                     </BaseRow>
@@ -91,6 +97,7 @@
                                                 fullWidth
                                                 v-model="data.journal_memo"
                                                 :disabled="viewMode"
+                                                name="Lý do nộp"
                                             />
                                         </BaseCol>
                                     </BaseRow>
@@ -108,6 +115,7 @@
                                                 :items="employees"
                                                 v-model="data.employee_id"
                                                 :disabled="viewMode"
+                                                name="Nhân viên"
                                             />
                                         </BaseCol>
                                         <BaseCol
@@ -122,6 +130,8 @@
                                                     placeholder="Số lượng"
                                                     v-model="data.document_included"
                                                     :disabled="viewMode"
+                                                    name="Kèm thêm"
+                                                    format="number"
                                                 />
                                                 <span style="padding: 28px 6.5px 0;">
                                                     chứng từ gốc
@@ -147,19 +157,21 @@
                                                     value-type="YYYY-MM-DD"
                                                     v-model="data.posted_date"
                                                     :disabled="viewMode"
+                                                    name="Ngày hạch toán"
                                                 />
                                             </BaseCol>
                                         </BaseRow>
                                         <BaseRow>
                                             <BaseCol>
                                                 <BaseDatePicker
-                                                    label="Ngày phiếu thu"
+                                                    label="Ngày phiếu chi"
                                                     fullWidth
                                                     tabindex="8"
                                                     format="DD/MM/YYYY"
                                                     value-type="YYYY-MM-DD"
                                                     v-model="data.refdate"
                                                     :disabled="viewMode"
+                                                    name="Ngày phiếu chi"
                                                 />
                                             </BaseCol>
                                         </BaseRow>
@@ -171,6 +183,9 @@
                                                     tabindex="9"
                                                     v-model="data.refno_finance"
                                                     :disabled="viewMode"
+                                                    required
+                                                    ref="2"
+                                                    name="Số phiếu chi"
                                                 />
                                             </BaseCol>
                                         </BaseRow>
@@ -236,6 +251,7 @@
                         @getTotal="getTotal"
                         tabindex="11"
                         :disabled="viewMode"
+                        ref="detail"
                     />
                 </div>
                 <div class="grid-control">
@@ -286,12 +302,29 @@
                             secondaryButton
                             @click="() => onSave()"
                             :style="{background: 'inherit', color: '#fff'}"
+                            v-tooltip="'Cất (Ctrl + S)'"
                         />
                     </div>
-                    <BaseButton
-                        buttonName="Cất và thêm"
-                        @click="() => onSave(true)"
-                    />
+                    <BaseDropdownButton
+                        :buttonName="nameFooterPrimaryButton"
+                        borderRadius="3px"
+                        :isOpen="openBoxStateFooter"
+                        @openBox="openBoxStateFooter = !openBoxStateFooter"
+                        positionOption="top"
+                        @close="openBoxStateFooter = false"
+                        @click="nameFooterPrimaryButton === 'Cất và đóng' ? saveAndClose() : saveAndAdd()"
+                    >
+                        <div class="payment-detail-footer">
+                            <div
+                                class="option"
+                                @click="() => saveAndClose()"
+                            >Cất và đóng</div>
+                            <div
+                                class="option"
+                                @click="() => saveAndAdd()"
+                            >Cất và thêm</div>
+                        </div>
+                    </BaseDropdownButton>
                 </div>
             </div>
             <div
@@ -368,7 +401,8 @@ const columnNames = [
         optionId: "account_number",
         keyLabel: "account_number",
         columnNames: columnNameAccount,
-        isOptionsTable: true
+        isOptionsTable: true,
+        required: true
     },
     { key: "description", text: "Diễn giải", width: 320, type: "input" },
     {
@@ -380,7 +414,8 @@ const columnNames = [
         optionId: "account_number",
         keyLabel: "account_number",
         columnNames: columnNameAccount,
-        isOptionsTable: true
+        isOptionsTable: true,
+        required: true
     },
     { key: "amount", text: "Số tiền", width: 150, align: "right", type: "input", format: "currency", total: true },
     {
@@ -423,8 +458,7 @@ const columnNamesCurrency = [
 ];
 
 const currencies = [
-    { currency_id: "VND", currency_name: "VND" },
-    { currency_id: "USD", currency_name: "USD" }
+    { currency_id: "VND", currency_name: "VND" }
 ];
 
 const paymentTypes = [
@@ -483,7 +517,10 @@ export default {
             columnNamesObject,
             columnNamesEmployee,
 
-            currentState: enums.dialogState.post
+            currentState: enums.dialogState.post,
+
+            openBoxStateFooter: false,
+            nameFooterPrimaryButton: "Cất và đóng"
         };
     },
 
@@ -529,7 +566,7 @@ export default {
 
         "data.employee_id": {
             handler(value) {
-                this.data.employee_name = this.employees.find(item => item.employee_id === value).employee_name;
+                this.data.employee_name = this.employees.find(item => item.employee_id === value)?.employee_name;
             },
             deep: true
         },
@@ -599,9 +636,53 @@ export default {
     },
 
     async mounted() {
-        try {
-            this.loading = true;
-            if (this.viewMode) {
+        // lấy tên của primary button footer
+
+        const buttonName = localStorage.getItem("paymentDetailFooterPrimaryButtonName");
+
+        this.nameFooterPrimaryButton = buttonName ?? "Cất và đóng";
+
+        // lắng nghe sự kiện ấn phím
+        document.addEventListener("keydown", (e) => this.listenerKeyPress(e));
+        this.loading = true;
+        if (this.$route.params?.replicationId) {
+            let providerPromise = {};
+            let employeePromise = {};
+            let dataPromise = {};
+            try {
+                providerPromise = ProviderApi.getAll();
+            } catch (error) {
+                console.log(error);
+            }
+
+            try {
+                employeePromise = EmployeeApi.getAll();
+            } catch (error) {
+                console.log(error);
+            }
+
+            try {
+                dataPromise = PaymentApi.getPaymentById(this.$route.params?.replicationId);
+            } catch (error) {
+                console.log(error);
+            }
+
+            const accountObject = await providerPromise ?? [];
+            const employees = await employeePromise ?? [];
+            const data = await dataPromise;
+
+            this.accountObjects = accountObject?.data?.Data ?? [];
+            this.employees = employees?.data?.Data ?? [];
+            this.data = data?.data?.Data?.payment ?? dataDefault;
+
+            await this.setPaymentCode();
+            this.loading = false;
+            this.edited = false;
+            return;
+        }
+
+        if (this.viewMode) {
+            try {
                 const promise = await PaymentApi.getPaymentById(this.$route.params.id);
                 this.data = promise.data?.Data?.payment ?? dataDefault;
                 this.dataDetails = promise.data?.Data?.payment_details ?? [];
@@ -615,20 +696,39 @@ export default {
                 this.loading = false;
                 this.edited = false;
                 return;
+            } catch (error) {
+                this.loading = false;
+
+                console.log(error);
             }
-
-            const promise = await ProviderApi.getAll();
-            this.accountObjects = promise?.data?.Data ?? [];
-            const employeePromise = await EmployeeApi.getAll();
-            this.employees = employeePromise?.data?.Data ?? [];
-            await this.setPaymentCode();
-            this.loading = false;
-            this.edited = false;
-        } catch (error) {
-            this.loading = false;
-
-            console.error(error);
         }
+
+        let promise = {};
+        let employeePromise = {};
+        try {
+            promise = ProviderApi.getAll();
+        } catch (error) {
+            console.log(error);
+        }
+
+        try {
+            employeePromise = EmployeeApi.getAll();
+        } catch (error) {
+            console.log(error);
+        }
+
+        const accountObject = await promise ?? [];
+        const employees = await employeePromise ?? [];
+
+        this.accountObjects = accountObject?.data?.Data ?? [];
+        this.employees = employees?.data?.Data ?? [];
+        await this.setPaymentCode();
+        this.loading = false;
+        this.edited = false;
+    },
+
+    destroyed() {
+        document.removeEventListener("keydown", (e) => this.listenerKeyPress(e));
     },
 
     methods: {
@@ -639,6 +739,28 @@ export default {
         ...mapActions("popup", {
             confirmPopup: "confirmPopup"
         }),
+        /**
+         * listener key press
+         */
+        listenerKeyPress(event) {
+            if (event.keyCode === 27) {
+                this.onClose(true);
+                return;
+            }
+            if (event.ctrlKey || event.metaKey) {
+                switch (String.fromCharCode(event.which).toLowerCase()) {
+                    case "s":
+                        event.preventDefault();
+                        this.onSave();
+                        return;
+                }
+            }
+
+            if (event.ctrlKey && event.shiftKey && event.keyCode === 83) {
+                event.preventDefault();
+                this.onSave(true);
+            }
+        },
 
         getTotal(total) {
             this.data.total_amount = total.amount;
@@ -743,22 +865,126 @@ export default {
         },
 
         /**
+         * Hàm kiểm tra validate dữ liệu trước khi gửi lên
+         * Created by: VLVU (10/8/2021)
+         */
+        async validate() {
+            let isError;
+            // vị trí của lỗi
+            const indexErrors = [];
+            const errorsMessage = [];
+            // tìm tất cả vị trí lỗi, sắp xếp theo vị trí thứ thự của tabindex
+            Object.entries(this.$refs).sort((a, b) => a[0] < b[0]).forEach((item, index) => {
+                if (item[0] === "detail") {
+                    return;
+                }
+                item[1].$refs.BaseInput.focus();
+                item[1].$refs.BaseInput.blur();
+                if (item[1].error === true) {
+                    isError = true;
+                    // thêm vị trí lỗi vào array
+                    indexErrors.push(index);
+                    // thêm câu thông báo lỗi vào array
+                    errorsMessage.push(item[1].errorMessage);
+                }
+            });
+            if (!isError) {
+                return true;
+            } else {
+                // focus vào lỗi đầu tiên
+                // hiển thị ra toast lỗi
+                await this.confirmPopup({
+                    content: errorsMessage[0],
+                    type: "error",
+                    state: "alert"
+                });
+                Object.values(this.$refs)[indexErrors[0]].$refs.BaseInput.focus();
+                return false;
+            }
+        },
+
+        /**
+         * validate các trường ở trong bảng detail
+         * Created by: VLVU (21/10/2021)
+         */
+        async validateDetails() {
+            let isError;
+            // vị trí của lỗi
+            const indexErrors = [];
+            const errorsMessage = [];
+            // tìm tất cả vị trí lỗi, sắp xếp theo vị trí thứ thự của tabindex
+            Object.values(this.$refs.detail.$refs).forEach((item, index) => {
+                if (item.length === 0) {
+                    return;
+                }
+                item[0].$refs.BaseInput.focus();
+                item[0].$refs.BaseInput.blur();
+                if (item[0].error === true) {
+                    isError = true;
+                    // thêm vị trí lỗi vào array
+                    indexErrors.push(index);
+                    // thêm câu thông báo lỗi vào array
+                    errorsMessage.push(item[0].errorMessage);
+                }
+            });
+            if (!isError) {
+                return true;
+            } else {
+                // focus vào lỗi đầu tiên
+                // hiển thị ra toast lỗi
+                await this.confirmPopup({
+                    content: errorsMessage[0],
+                    type: "error",
+                    state: "alert"
+                });
+                Object.values(this.$refs.detail.$refs)[indexErrors[0]][0].$refs.BaseInput.focus();
+                return false;
+            }
+        },
+
+        /**
          * Hàm cất dữ liệu, hàm này có thể thêm mới hoặc sửa dữ liệu
          * @param {bool} keepCreating Check xem có phải button cất và thêm không
          * Created by: VLVU (14/10/2021)
          */
         async onSave(keepCreating = false) {
+            // trạng thái xem không xảy ra gì cả
             if (this.viewMode) {
                 return;
             }
-            // // trạng thái xem không xảy ra gì cả
-            // if (this.viewMode) {
-            //     return;
-            // }
-            // const validate = await this.validate();
-            // if (!validate) {
-            //     return;
-            // }
+            // validate các trường trên master
+            const validate = await this.validate();
+            if (!validate) {
+                return;
+            }
+
+            // kiểm tra xem chi tiết chứng từ có để trống hay không
+            if (this.dataDetails.length === 0) {
+                await this.confirmPopup({
+                    content: "Bạn phải nhập chứng từ chi tiết!",
+                    type: "error",
+                    state: "alert"
+                });
+                return;
+            }
+
+            // validate các trường ở detail
+            const isValidateDetails = await this.validateDetails();
+            if (!isValidateDetails) {
+                return;
+            }
+
+            // Kiêm tra ngày hạch toán có lớn hơn ngày chứng từ hay không
+            if (new Date(this.data.refdate).getTime() > new Date(this.data.posted_date).getTime()) {
+                await this.confirmPopup({
+                    content: `Ngày hạch toán &lt;${utils.formatDateLocal(this.data.refdate)}&gt; phải lớn hơn hoặc bằng 
+						ngày chứng từ &lt;${utils.formatDateLocal(this.data.posted_date)}&gt;.`,
+                    type: "error",
+                    state: "alert"
+                });
+                return;
+            }
+
             let promise = null;
             try {
                 this.loading = true;
@@ -775,7 +1001,7 @@ export default {
                     return;
                 }
                 this.setToast(resources.toast.addSuccess(this.data.refno_finance, "phiếu chi"));
-                this.data = {};
+                this.data = { ...dataDefault };
                 this.dataDetails = dataDetailsDefault;
                 this.recordInserted = this.recordInserted + 1;
                 if (keepCreating) {
@@ -802,6 +1028,28 @@ export default {
                     content: resources.serverErrorMessageDefault
                 });
             }
+        },
+
+        saveAndClose() {
+            // trạng thái xem không xảy ra gì cả
+            if (this.viewMode) {
+                return;
+            }
+            this.openBoxStateFooter = false;
+            localStorage.setItem("paymentDetailFooterPrimaryButtonName", "Cất và đóng");
+            this.nameFooterPrimaryButton = "Cất và đóng";
+            this.onSave();
+        },
+
+        saveAndAdd() {
+            // trạng thái xem không xảy ra gì cả
+            if (this.viewMode) {
+                return;
+            }
+            this.openBoxStateFooter = false;
+            localStorage.setItem("paymentDetailFooterPrimaryButtonName", "Cất và thêm");
+            this.nameFooterPrimaryButton = "Cất và thêm";
+            this.onSave(true);
         }
     }
 };
@@ -1002,5 +1250,33 @@ export default {
     left: 0;
     right: 0;
     text-align: center;
+}
+</style>
+<style>
+.payment-detail-footer {
+    width: 100%;
+    background: #fff;
+    padding: 2px 1px;
+    border-radius: 2px;
+    border: 1px solid #babec5;
+    position: relative;
+}
+
+.payment-detail-footer .option {
+    background: inherit;
+    color: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+    position: relative;
+    display: block;
+}
+
+.payment-detail-footer .option:hover {
+    color: #08bf1e;
+    background-color: #e8e9ec;
 }
 </style>

@@ -319,16 +319,16 @@ table tbody tr {
 }
 
 table tbody tr:hover {
-    background-color: #ebedf0 !important;
+    background-color: #ebedf0;
     color: #35bf22;
     font-weight: 700;
 }
 
-table tbody tr:hover .td-viewer {
-    background-color: #ebedf0 !important;
+/* table tbody tr:hover .td-viewer {
+    background-color: #ebedf0;
     color: #35bf22;
     font-weight: 700;
-}
+} */
 
 table tbody tr {
     position: relative;
@@ -493,8 +493,9 @@ button {
     font-weight: 700;
 }
 
-.is-active {
-    background-color: #2ca01c;
+.is-active,
+.is-active:hover {
+    background-color: #2ca01c !important;
     color: white;
 }
 

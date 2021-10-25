@@ -9,6 +9,7 @@
                 v-on="$listeners"
                 v-bind="$attrs"
                 :disabled="disabled"
+                :style="{'border-radius': borderRadius + ' 0px 0px ' + borderRadius}"
             >
                 <img
                     v-if="startIcon"
@@ -31,7 +32,7 @@
             @click="onOpenBox"
         >
             <div class="line" />
-            <button>
+            <button :style="{'border-radius': '0px ' + borderRadius + ' ' + borderRadius + ' ' + '0px'}">
                 <div class="angle-down-icon" />
             </button>
         </div>
@@ -87,6 +88,11 @@ export default {
         isOpen: {
             type: Boolean,
             default: () => false
+        },
+
+        borderRadius: {
+            type: String,
+            default: () => null
         }
     },
 
@@ -156,7 +162,8 @@ export default {
     methods: {
         // phương thức khi người dùng click ra bên ngoài combobox
         handleClickOutside(event) {
-            if (this.$refs.dropdownButton?.contains(event.target) || event.target.className === "combobox-result") {
+            const t = event.path.findIndex(item => item.className === "combobox-options" || item.className?.search("mx-datepicker-main") > -1) > -1;
+            if (this.$refs.dropdownButton?.contains(event.target) || t) {
                 return;
             }
             this.$emit("close");

@@ -166,6 +166,8 @@
                                 placeholder="Ngày cấp"
                                 v-model="data.personal_contact_identity_date"
                                 :disabled="disabled"
+                                format="DD/MM/YYYY"
+                                value-type="YYYY-MM-DD"
                             />
                         </BaseCol>
                     </BaseRow>

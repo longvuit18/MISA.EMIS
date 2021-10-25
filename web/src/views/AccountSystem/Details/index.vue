@@ -20,7 +20,7 @@
                         <div
                             class="close-button"
                             @click="onClose"
-                            v-tooltip="'Đóng'"
+                            v-tooltip="'Đóng (Esc)'"
                         ></div>
                     </div>
                 </div>
@@ -36,6 +36,7 @@
                                 ref="1"
                                 fullWidth
                                 v-model="currentAccount.account_number"
+                                :disabled="viewMode"
                             />
                         </BaseCol>
                     </BaseRow>
@@ -52,6 +53,7 @@
                                 ref="2"
                                 fullWidth
                                 v-model="currentAccount.account_name"
+                                :disabled="viewMode"
                             />
                         </BaseCol>
                         <BaseCol :cols="6">
@@ -61,6 +63,7 @@
                                 tabindex="3"
                                 fullWidth
                                 v-model="currentAccount.account_name_english"
+                                :disabled="viewMode"
                             />
                         </BaseCol>
                     </BaseRow>
@@ -82,6 +85,7 @@
                                 :columnNames="columnNames"
                                 :items="accounts"
                                 v-model="currentAccount.parent_id"
+                                :disabled="viewMode"
                             />
                         </BaseCol>
                         <BaseCol
@@ -99,6 +103,7 @@
                                 :items="properties"
                                 optionId="id"
                                 keyLabel="name"
+                                :disabled="viewMode"
                             />
                         </BaseCol>
                     </BaseRow>
@@ -112,6 +117,7 @@
                                 tabindex="6"
                                 fullWidth
                                 v-model="currentAccount.desciption"
+                                :disabled="viewMode"
                             />
                         </BaseCol>
                     </BaseRow>
@@ -121,6 +127,7 @@
                                 label="Có hoạch toán ngoại lệ"
                                 tabindex="7"
                                 v-model="currentAccount.is_postable_in_foreign_currency"
+                                :disabled="viewMode"
                             />
                         </BaseCol>
                     </BaseRow>
@@ -153,13 +160,14 @@
                                                         label="Đối tượng"
                                                         tabindex="8"
                                                         v-model="currentAccount.detail_by_account_object"
+                                                        :disabled="viewMode"
                                                     />
                                                 </BaseCol>
                                                 <BaseCol :cols="6">
                                                     <BaseCombobox
                                                         tabindex="9"
                                                         fullWidth
-                                                        :disabled="!currentAccount.detail_by_account_object"
+                                                        :disabled="!currentAccount.detail_by_account_object || viewMode"
                                                         v-model="currentAccount.account_object_type"
                                                         :items="objects"
                                                         optionId="id"
@@ -178,6 +186,7 @@
                                                         label="Đối tượng THCP"
                                                         tabindex="8"
                                                         v-model="currentAccount.detail_by_job"
+                                                        :disabled="viewMode"
                                                     />
                                                 </BaseCol>
                                                 <BaseCol :cols="6">
@@ -188,7 +197,7 @@
                                                         optionId="id"
                                                         keyLabel="name"
                                                         readonly
-                                                        :disabled="!currentAccount.detail_by_job"
+                                                        :disabled="!currentAccount.detail_by_job || viewMode"
                                                         v-model="currentAccount.detail_by_job_kind"
                                                     />
                                                 </BaseCol>
@@ -203,6 +212,7 @@
                                                         label="Đơn đặt hàng"
                                                         tabindex="8"
                                                         v-model="currentAccount.detail_by_order"
+                                                        :disabled="viewMode"
                                                     />
                                                 </BaseCol>
                                                 <BaseCol :cols="6">
@@ -213,7 +223,7 @@
                                                         optionId="id"
                                                         keyLabel="name"
                                                         readonly
-                                                        :disabled="!currentAccount.detail_by_order"
+                                                        :disabled="!currentAccount.detail_by_order || viewMode"
                                                         v-model="currentAccount.detail_by_order_kind"
                                                     />
                                                 </BaseCol>
@@ -228,6 +238,7 @@
                                                         label="Hợp đồng mua"
                                                         tabindex="8"
                                                         v-model="currentAccount.detail_by_pu_contract"
+                                                        :disabled="viewMode"
                                                     />
                                                 </BaseCol>
                                                 <BaseCol :cols="6">
@@ -238,7 +249,7 @@
                                                         optionId="id"
                                                         keyLabel="name"
                                                         readonly
-                                                        :disabled="!currentAccount.detail_by_pu_contract"
+                                                        :disabled="!currentAccount.detail_by_pu_contract || viewMode"
                                                         v-model="currentAccount.detail_by_pu_contract_kind"
                                                     />
                                                 </BaseCol>
@@ -253,6 +264,7 @@
                                                         label="Đơn vị"
                                                         tabindex="8"
                                                         v-model="currentAccount.detail_by_department"
+                                                        :disabled="viewMode"
                                                     />
                                                 </BaseCol>
                                                 <BaseCol :cols="6">
@@ -263,7 +275,7 @@
                                                         optionId="id"
                                                         keyLabel="name"
                                                         readonly
-                                                        :disabled="!currentAccount.detail_by_department"
+                                                        :disabled="!currentAccount.detail_by_department || viewMode"
                                                         v-model="currentAccount.detail_by_department_kind"
                                                     />
                                                 </BaseCol>
@@ -280,6 +292,7 @@
                                                         label="Tài khoảng ngân hàng"
                                                         tabindex="8"
                                                         v-model="currentAccount.detail_by_bank_account"
+                                                        :disabled="viewMode"
                                                     />
                                                 </BaseCol>
                                             </BaseRow>
@@ -293,6 +306,7 @@
                                                         label="Công trình"
                                                         tabindex="8"
                                                         v-model="currentAccount.detail_by_project_work"
+                                                        :disabled="viewMode"
                                                     />
                                                 </BaseCol>
                                                 <BaseCol :cols="6">
@@ -303,7 +317,7 @@
                                                         optionId="id"
                                                         keyLabel="name"
                                                         readonly
-                                                        :disabled="!currentAccount.detail_by_project_work"
+                                                        :disabled="!currentAccount.detail_by_project_work || viewMode"
                                                         v-model="currentAccount.detail_by_project_work_kind"
                                                     />
                                                 </BaseCol>
@@ -318,6 +332,7 @@
                                                         label="Hợp đồng bán"
                                                         tabindex="8"
                                                         v-model="currentAccount.detail_by_contract"
+                                                        :disabled="viewMode"
                                                     />
                                                 </BaseCol>
                                                 <BaseCol :cols="6">
@@ -328,7 +343,7 @@
                                                         optionId="id"
                                                         keyLabel="name"
                                                         readonly
-                                                        :disabled="!currentAccount.detail_by_contract"
+                                                        :disabled="!currentAccount.detail_by_contract || viewMode"
                                                         v-model="currentAccount.detail_by_contract_kind"
                                                     />
                                                 </BaseCol>
@@ -343,6 +358,7 @@
                                                         label="Khoản mục CP"
                                                         tabindex="8"
                                                         v-model="currentAccount.detail_by_expense_item"
+                                                        :disabled="viewMode"
                                                     />
                                                 </BaseCol>
                                                 <BaseCol :cols="6">
@@ -353,7 +369,7 @@
                                                         optionId="id"
                                                         keyLabel="name"
                                                         readonly
-                                                        :disabled="!currentAccount.detail_by_expense_item"
+                                                        :disabled="!currentAccount.detail_by_expense_item || viewMode"
                                                         v-model="currentAccount.detail_by_expense_item_kind"
                                                     />
                                                 </BaseCol>
@@ -368,6 +384,7 @@
                                                         label="Mã thống kê"
                                                         tabindex="8"
                                                         v-model="currentAccount.detail_by_list_item"
+                                                        :disabled="viewMode"
                                                     />
                                                 </BaseCol>
                                                 <BaseCol :cols="6">
@@ -378,7 +395,7 @@
                                                         optionId="id"
                                                         keyLabel="name"
                                                         readonly
-                                                        :disabled="!currentAccount.detail_by_list_item"
+                                                        :disabled="!currentAccount.detail_by_list_item || viewMode"
                                                         v-model="currentAccount.detail_by_list_item_kind"
                                                     />
                                                 </BaseCol>
@@ -404,11 +421,13 @@
                                 buttonName="Cất"
                                 secondaryButton
                                 @click="() => onSave()"
+                                v-tooltip="'Cất (Ctrl + S)'"
                             />
                         </div>
                         <BaseButton
                             buttonName="Cất và thêm"
                             @click="() => onSave(true)"
+                            v-tooltip="'Cất (Ctrl + Shift + S)'"
                         />
                     </div>
                 </div>
@@ -492,6 +511,7 @@ export default {
             loading: false,
 
             currentState: this.state,
+            viewMode: this.state === enums.dialogState.view,
 
             showMonitorDetails: true,
             fullWidth: false,
@@ -505,12 +525,17 @@ export default {
     },
 
     async mounted() {
+        document.addEventListener("keydown", (e) => this.listenerKeyPress(e));
+
         if (this.currentState === enums.dialogState.post) {
             this.$refs["1"].$refs.BaseInput.focus();
             this.edited = false;
         } else {
             this.$refs["1"].$refs.BaseInput.focus();
         }
+    },
+    destroyed() {
+        document.removeEventListener("keydown", (e) => this.listenerKeyPress(e));
     },
 
     watch: {
@@ -624,6 +649,29 @@ export default {
         }),
 
         /**
+         * listener key press
+         */
+        listenerKeyPress(event) {
+            if (event.keyCode === 27) {
+                this.onClose(true);
+                return;
+            }
+            if (event.ctrlKey || event.metaKey) {
+                switch (String.fromCharCode(event.which).toLowerCase()) {
+                    case "s":
+                        event.preventDefault();
+                        this.onSave();
+                        return;
+                }
+            }
+
+            if (event.ctrlKey && event.shiftKey && event.keyCode === 83) {
+                event.preventDefault();
+                this.onSave(true);
+            }
+        },
+
+        /**
          * validete account number
          * Created by: VLVU (4/10/2021)
          */
@@ -717,6 +765,9 @@ export default {
          * Created by: VLVU (21/8/2021)
          */
         async onSave(keepCreating = false) {
+            if (this.viewMode) {
+                return;
+            }
             const validate = await this.validate();
             if (!validate) {
                 return;

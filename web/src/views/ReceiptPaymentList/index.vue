@@ -109,7 +109,38 @@
                         <BaseDropdownButton
                             buttonName="Lọc"
                             secondaryButton
-                        />
+                            @click="isOpenFeatureFilter = !isOpenFeatureFilter"
+                            :isOpen="isOpenFeatureFilter"
+                            @close="isOpenFeatureFilter = false"
+                        >
+
+                            <FilterDropdown
+                                :filterProp="filter"
+                                @close="isOpenFeatureFilter = false"
+                                @filterValue="getFilterValue"
+                            />
+                        </BaseDropdownButton>
+                    </div>
+                    <div class="filter-bar-center">
+                        <div
+                            class="filter-user-view-item"
+                            v-for="(value, index) in filterView"
+                            :key="index"
+                            :class="{'filter-user-text-color': value[0] === 'time'}"
+                        >
+                            {{value[1]}}
+                            <div
+                                v-if="value[0] !== 'time'"
+                                class="icon icon-size-16 mi-close--small"
+                                style="cursor: pointer;"
+                                @click="() => deleteAItemFilter(value[0])"
+                            ></div>
+                        </div>
+                        <div
+                            v-if="filterView.length !== 0 && filterView[0][0] !== 'time'"
+                            class="filter-user-view-item delete-condition"
+                            @click="reloadPayment"
+                        >Xóa điều kiện lọc</div>
                     </div>
                 </div>
                 <div class="filter-bar-right-area">
@@ -296,6 +327,8 @@ import enums from "../../enums";
 import resources from "../../resources";
 import PaymentTable from "./Table";
 import BatchExecution from "./dropdown/BatchExecution.vue";
+import FilterDropdown from "./dropdown/FilterDropdown.vue";
+import utils from "../../utils";
 const columnNames = [
     { key: "posted_date", text: "Ngày hạch toán", width: 145, align: "center", format: "date" },
     { key: "refdate", text: "Ngày chứng từ", width: 150, align: "center", format: "date" },
@@ -324,11 +357,14 @@ const defaultPageSize = 20;
 const defaultFilter = {
     CustomFilter: "",
     PageIndex: 1,
-    PageSize: 20
+    PageSize: 20,
+    time: 0,
+    StartDate: `${new Date().getFullYear()}-01-01`,
+    EndDate: utils.formatDateValueInput(new Date())
 };
 export default {
     name: "ReceiptPaymentList",
-    components: { PaymentTable, BatchExecution },
+    components: { PaymentTable, BatchExecution, FilterDropdown },
     data() {
         return {
             columnNames: columnNames,
@@ -350,6 +386,7 @@ export default {
 
             showOverview: true,
             filter: defaultFilter,
+            isOpenFeatureFilter: false,
 
             // index các phần tử đã chon trong bảng
             selected: [],
@@ -427,6 +464,27 @@ export default {
          */
         threePagesCloseTogether() {
             return [this.pageNumber - 1, this.pageNumber, this.pageNumber + 1];
+        },
+
+        /**
+         * filter hiển thị cho người dùng
+         */
+        filterView() {
+            const vFilter = { ...this.filter };
+            delete vFilter.CustomFilter;
+            delete vFilter.PageIndex;
+            delete vFilter.PageSize;
+            if (vFilter.time < 3) {
+                switch (vFilter.time) {
+                    case 0:
+                        return [["time", "Từ đầu năm đến nay"]];
+                    case 1:
+                        return [["time", "Hôm nay"]];
+                    case 2:
+                        return [["time", "Tháng này"]];
+                };
+            }
+            return [["rangTime", `${utils.formatDateLocal(vFilter.StartDate)}-${utils.formatDateLocal(vFilter.EndDate)}`]];
         }
     },
     /**
@@ -447,6 +505,21 @@ export default {
         ...mapActions("popup", {
             confirmPopup: "confirmPopup"
         }),
+
+        deleteAItemFilter(key) {
+            this.filter = { ...defaultFilter };
+            this.loadPayment();
+        },
+
+        /**
+         * Lấy thông tin filter từ bảng
+         * Created by: VLVU (28/9/2021)
+         */
+        getFilterValue(filter) {
+            this.filter = { ...this.filter, ...filter };
+            this.loadPayment();
+            this.isOpenFeatureFilter = false;
+        },
 
         /**
          * Láy hết các index các hàng đã chọn
@@ -579,6 +652,7 @@ export default {
             this.totalRecord = defaultTotalRecord;
             this.filterText = defaultFilterText;
 
+            this.filter = { ...defaultFilter };
             this.loadPayment();
         },
 
@@ -602,15 +676,6 @@ export default {
                 this.reloadPayment();
             }
         },
-        /**
-         * Hàm khi người dùng dblclick vào 1 hàng hoặc ấn vào chữ sửa trên hàng đó
-         * Created by: Vũ Long Vũ (19/7/2021)
-         */
-        handleClickEdit(payment) {
-            this.currentPayment = payment;
-            this.stateDialog = enums.dialogState.put;
-            this.openDialog = true;
-        },
 
         /**
          * Hàm khi người dùng dblclick vào 1 hàng hoặc ấn vào chữ sửa trên hàng đó
@@ -630,9 +695,12 @@ export default {
          * Created by: Vũ Long Vũ (19/7/2021)
          */
         handleClickRelication(payment) {
-            this.currentPayment = payment;
-            this.stateDialog = enums.dialogState.post;
-            this.openDialog = true;
+            this.$router.push({
+                name: "PaymentDetailsFromPaymentView",
+                params: {
+                    replicationId: payment.refid
+                }
+            });
         },
 
         /**

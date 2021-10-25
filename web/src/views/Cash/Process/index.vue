@@ -27,15 +27,6 @@
                             :cols="3"
                             :padding="0"
                         >
-                            <div class="content">
-                                <div class="icon icon-size-24 mi-process-customer"></div>
-                                <div class="text">Khách hàng</div>
-                            </div>
-                        </BaseCol>
-                        <BaseCol
-                            :cols="3"
-                            :padding="0"
-                        >
                             <div
                                 class="content"
                                 @click="toProviderPage"
@@ -44,7 +35,7 @@
                                 <div class="text">Nhà cung cấp</div>
                             </div>
                         </BaseCol>
-                        <BaseCol
+                        <!-- <BaseCol
                             :cols="3"
                             :padding="0"
                         >
@@ -55,7 +46,7 @@
                                 <div class="icon icon-size-24 mi-process-employee"></div>
                                 <div class="text">Nhân viên</div>
                             </div>
-                        </BaseCol>
+                        </BaseCol> -->
                         <BaseCol
                             :cols="3"
                             :padding="0"

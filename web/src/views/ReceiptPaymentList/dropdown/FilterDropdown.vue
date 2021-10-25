@@ -2,24 +2,18 @@
     <div class="filter">
         <BaseRow>
             <BaseCol
-                :cols="6"
+                :cols="12"
                 class="mr-10"
             >
-                <BaseCombobox label="Loại" />
-            </BaseCol>
-            <BaseCol :cols="6">
-                <BaseCombobox label="Nhóm" />
+                <BaseCombobox label="Lý do chi" />
             </BaseCol>
         </BaseRow>
         <BaseRow>
             <BaseCol
-                :cols="6"
+                :cols="12"
                 class="mr-10"
             >
-                <BaseCombobox label="Tình trạng công nợ" />
-            </BaseCol>
-            <BaseCol :cols="6">
-                <BaseCombobox label="Trạng thái" />
+                <BaseCombobox label="Trạng thái ghi nợ" />
             </BaseCol>
         </BaseRow>
         <BaseRow>
@@ -28,35 +22,30 @@
                 class="mr-10"
             >
                 <BaseCombobox
-                    label="Tỉnh/TP"
-                    placeholder="Tỉnh/Thành phố"
-                    :items="provinces"
-                    optionId="name"
-                    keyLabel="name"
-                    v-model="filter.province_or_city"
+                    label="Thời gian"
+                    :items="time"
+                    optionId="value"
+                    keyLabel="label"
+                    v-model="filter.time"
                 />
             </BaseCol>
             <BaseCol
                 :cols="4"
                 class="mr-10"
             >
-                <BaseCombobox
-                    label="Quận/Huyện"
-                    placeholder="Quận/Huyện"
-                    :items="districts"
-                    optionId="fullName"
-                    keyLabel="fullName"
-                    v-model="filter.district"
+                <BaseDatePicker
+                    label="Từ ngày"
+                    v-model="filter.StartDate"
+                    format="DD/MM/YYYY"
+                    value-type="YYYY-MM-DD"
                 />
             </BaseCol>
             <BaseCol :cols="4">
-                <BaseCombobox
-                    label="Xã phường"
-                    placeholder="Xã/Phường"
-                    :items="wards"
-                    optionId="fullName"
-                    keyLabel="fullName"
-                    v-model="filter.ward_or_commune"
+                <BaseDatePicker
+                    label="Đến ngày"
+                    v-model="filter.EndDate"
+                    format="DD/MM/YYYY"
+                    value-type="YYYY-MM-DD"
                 />
             </BaseCol>
         </BaseRow>
@@ -75,8 +64,14 @@
 </template>
 
 <script>
-import LocationApi from "../../../api/service/location";
+import utils from "../../../utils";
 
+const time = [
+    { value: 0, label: "Từ đầu năm đến nay" },
+    { value: 1, label: "Hôm nay" },
+    { value: 2, label: "Tháng này" },
+    { value: 3, label: "Tùy chọn" }
+];
 export default {
     name: "FilterDropdown",
 
@@ -85,68 +80,37 @@ export default {
             type: Object,
             default: () => { }
         }
-        // isOpen: {
-        //     type: Boolean,
-        //     default: () => false
-        // }
     },
     data() {
         return {
-            filter: { ...this.filterProp },
-            provinces: [],
-            districts: [],
-            wards: [],
-            countryId: "22d23039-6d1b-4a11-8fea-d9e066a39b92",
-            provinceId: "",
-            districtId: ""
+            filter: {
+                ...this.filterProp,
+                StartDate: this.filterProp?.StartDate ?? utils.formatDateValueInput(`${new Date().getFullYear()}-01-01`),
+                EndDate: this.filterProp?.EndDate ?? utils.formatDateValueInput(new Date()),
+                time: this.filterProp?.time ?? 0
+            },
+            time
         };
     },
+
     watch: {
-        async "filter.province_or_city"(value) {
-            if (!value) {
-                return;
-            }
-            this.wards = [];
-            const provinceId = this.provinces.find(item => item.name === value)?.id ?? "";
-            this.provinceId = provinceId;
-            try {
-                const districtsPromise = await LocationApi.getDistricts(this.countryId, provinceId);
-                this.districts = districtsPromise.data.map(item => ({ ...item, fullName: item.prefix + " " + item.name }));
-            } catch (error) {
-                console.error(error);
-            }
-        },
-
-        async "filter.district"() {
-            const districtId = this.districts.find(item => item.prefix + " " + item.name === this.filter.district)?.id ?? "";
-            this.districtId = districtId;
-
-            try {
-                const districtsPromise = await LocationApi.getWards(this.countryId, this.provinceId, districtId);
-                this.wards = districtsPromise.data.map(item => ({ ...item, fullName: item.prefix + " " + item.name }));
-            } catch (error) {
-                console.error(error);
-            }
-        }
-    },
-    async mounted() {
-        try {
-            const provincesPromise = await LocationApi.getProvinces(this.countryId);
-            this.provinces = provincesPromise.data;
-            if (this.filter?.district) {
-                const provinceId = this.provinces.find(item => item.name === this.filter.province_or_city)?.id ?? "";
-                this.provinceId = provinceId;
-                const districtsPromise = await LocationApi.getDistricts(this.countryId, provinceId);
-                this.districts = districtsPromise.data.map(item => ({ ...item, fullName: item.prefix + " " + item.name }));
-            }
-            if (this.filter?.ward_or_commune) {
-                const districtId = this.districts.find(item => item.prefix + " " + item.name === this.filter.district)?.id ?? "";
-                this.districtId = districtId;
-                const districtsPromise = await LocationApi.getWards(this.countryId, this.provinceId, districtId);
-                this.wards = districtsPromise.data.map(item => ({ ...item, fullName: item.prefix + " " + item.name }));
-            }
-        } catch (error) {
-            console.error(error);
+        "filter.time": {
+            handler(value) {
+                switch (value) {
+                    case 0:
+                        this.filter.StartDate = utils.formatDateValueInput(`${new Date().getFullYear()}-01-01`);
+                        this.filter.EndDate = utils.formatDateValueInput(new Date());
+                        return;
+                    case 1:
+                        this.filter.StartDate = utils.formatDateValueInput(new Date());
+                        this.filter.EndDate = utils.formatDateValueInput(new Date());
+                        return;
+                    case 2:
+                        this.filter.StartDate = utils.formatDateValueInput(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-01`);
+                        this.filter.EndDate = utils.formatDateValueInput(new Date());
+                }
+            },
+            deep: true
         }
     },
 
@@ -157,9 +121,7 @@ export default {
 
         reset() {
             this.filter = {
-                province_or_city: "",
-                district: "",
-                ward_or_commune: ""
+                time: 0
             };
 
             this.districts = [];

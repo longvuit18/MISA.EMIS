@@ -28,7 +28,7 @@
                         <div
                             class="close-button"
                             @click="onClose"
-                            v-tooltip="'Đóng'"
+                            v-tooltip="'Đóng (Esc)'"
                         ></div>
                     </div>
                 </div>
@@ -364,11 +364,13 @@
                                     buttonName="Cất"
                                     secondaryButton
                                     @click="() => onSave()"
+                                    v-tooltip="'Cất (Ctrl + S)'"
                                 />
                             </div>
                             <BaseButton
                                 buttonName="Cất và thêm"
                                 @click="() => onSave(true)"
+                                v-tooltip="'Cất (Ctrl + Shift + S)'"
                             />
                         </div>
                     </div>
@@ -458,13 +460,13 @@ export default {
 
             columnNamesProriverGroup,
             groupProviderData: [
-                { account_object_group_code: "NCC-1", account_object_group_name: "Vũ Long Vũ 1" },
-                { account_object_group_code: "NCC-2", account_object_group_name: "Vũ Long Vũ 2" },
-                { account_object_group_code: "NCC-3", account_object_group_name: "Vũ Long Vũ 3" },
-                { account_object_group_code: "NCC-4", account_object_group_name: "Vũ Long Vũ 4" },
-                { account_object_group_code: "NCC-5", account_object_group_name: "Vũ Long Vũ 5" },
-                { account_object_group_code: "NCC-6", account_object_group_name: "Vũ Long Vũ 6" },
-                { account_object_group_code: "NCC-7", account_object_group_name: "Vũ Long Vũ 7" }
+                { account_object_group_code: "NCC-1", account_object_group_name: "Nhóm nhà cung cấp 1" },
+                { account_object_group_code: "NCC-2", account_object_group_name: "Nhóm nhà cung cấp 2" },
+                { account_object_group_code: "NCC-3", account_object_group_name: "Nhóm nhà cung cấp 3" },
+                { account_object_group_code: "NCC-4", account_object_group_name: "Nhóm nhà cung cấp 4" },
+                { account_object_group_code: "NCC-5", account_object_group_name: "Nhóm nhà cung cấp 5" },
+                { account_object_group_code: "NCC-6", account_object_group_name: "Nhóm nhà cung cấp 6" },
+                { account_object_group_code: "NCC-7", account_object_group_name: "Nhóm nhà cung cấp 7" }
             ],
             groupProvider: this.provider?.account_object_group?.split(";") || [],
 
@@ -476,6 +478,7 @@ export default {
     },
 
     async mounted() {
+        document.addEventListener("keydown", (e) => this.listenerKeyPress(e));
         try {
             this.loading = true;
             if (this.currentState === enums.dialogState.post) {
@@ -491,6 +494,10 @@ export default {
             console.error(error);
             this.loading = false;
         }
+    },
+
+    destroyed() {
+        document.removeEventListener("keydown", (e) => this.listenerKeyPress(e));
     },
 
     watch: {
@@ -516,6 +523,28 @@ export default {
             confirmPopup: "confirmPopup"
         }),
 
+        /**
+         * listener key press
+         */
+        listenerKeyPress(event) {
+            if (event.keyCode === 27) {
+                this.onClose(true);
+                return;
+            }
+            if (event.ctrlKey || event.metaKey) {
+                switch (String.fromCharCode(event.which).toLowerCase()) {
+                    case "s":
+                        event.preventDefault();
+                        this.onSave();
+                        return;
+                }
+            }
+
+            if (event.ctrlKey && event.shiftKey && event.keyCode === 83) {
+                event.preventDefault();
+                this.onSave(true);
+            }
+        },
         /**
          * Lấy tên của tab hiện tại
          */

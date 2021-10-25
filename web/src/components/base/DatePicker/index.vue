@@ -21,8 +21,6 @@
  * Base Date Picker
  * Created by: VLVU (18/8/2021)
  */
-
-import enums from "../../../enums";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 
@@ -69,20 +67,6 @@ export default {
     },
 
     methods: {
-        /**
-         * update value handle
-         * Created by: VLVU (2021)
-         */
-        updateValue(event) {
-            let value = event.target.value;
-            if (this.format === enums.format.currency) {
-                value = this.formatCurrency(value);
-                this.$emit("input", value);
-                return;
-            }
-            this.$emit("input", value);
-        },
-
         /**
          * Handle ấn ra ngoài input
          * Created by: VLVU (2021)

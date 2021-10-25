@@ -135,7 +135,7 @@ label {
 	color: #2ca01c;
 }
 
-.combobox-result.is-active {
+.combobox-result.is-active, .combobox-result.is-active:hover {
 	background-color: #2ca01c;
 	color: white;
 }

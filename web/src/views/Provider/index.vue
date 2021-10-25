@@ -496,8 +496,16 @@ export default {
             delete vFilter.CustomFilter;
             delete vFilter.PageIndex;
             delete vFilter.PageSize;
-            return Object.entries(vFilter).filter(item => item[1])
+            return Object.entries(vFilter).filter(item => item[1] !== null && item[1] !== undefined && item[1] !== "")
                 .map(item => {
+                    if (item[0] === "account_object_type") {
+                        if (item[1] === 0) {
+                            return [item[0], "Tổ chức"];
+                        }
+                        if (item[1] === 1) {
+                            return [item[0], "Cá nhân"];
+                        }
+                    }
                     const i = columnNames.findIndex(c => c.key === item[0]);
                     if (i > -1) {
                         return [item[0], `${columnNames[i].text} chứa "${item[1]}"`];
@@ -747,6 +755,7 @@ export default {
                 const promise = await ProviderApi.deleteOne(this.currentProvider.account_object_id);
                 if (!promise?.data?.State) {
                     await this.confirmPopup(resources.popup.arisingRelatedProvider(this.currentProvider.account_object_name, "Xóa"));
+                    this.currentProvider = {};
                     return;
                 }
 
