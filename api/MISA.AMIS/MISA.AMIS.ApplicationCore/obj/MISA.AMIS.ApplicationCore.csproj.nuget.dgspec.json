@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {}
+    "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {}
   },
   "projects": {
-    "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {
+    "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj",
+        "projectUniqueName": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj",
         "projectName": "MISA.AMIS.ApplicationCore",
-        "projectPath": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj",
-        "packagesPath": "C:\\Users\\Zbook 15 G3\\.nuget\\packages\\",
-        "outputPath": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\obj\\",
+        "projectPath": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj",
+        "packagesPath": "C:\\Users\\Zbook G3\\.nuget\\packages\\",
+        "outputPath": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Zbook 15 G3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Zbook G3\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -67,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

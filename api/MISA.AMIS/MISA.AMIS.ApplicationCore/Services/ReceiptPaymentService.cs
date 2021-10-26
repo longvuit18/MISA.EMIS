@@ -26,8 +26,8 @@ namespace MISA.AMIS.ApplicationCore.Services
 
         public async Task<ServiceResult> DeleteBatch(Guid[] listId)
         {
-            var rowAffect =  await _receiptPaymentRepository.DeleteBatch(listId);
-            if(rowAffect < 1)
+            var rowAffect = await _receiptPaymentRepository.DeleteBatch(listId);
+            if (rowAffect < 1)
             {
                 return new ServiceResult
                 {
@@ -51,6 +51,18 @@ namespace MISA.AMIS.ApplicationCore.Services
             return await _receiptPaymentRepository.GetNewReceiptPaymentCode();
         }
 
+        public async Task<ServiceResult> GetPaymentById(Guid paymentId)
+        {
+            var data = await _receiptPaymentRepository.GetPaymentById(paymentId);
+            return new ServiceResult
+            {
+                Code = MisaCode.Success,
+                Data = data,
+                MsgUser = Properties.Resources.GetSuccessfully,
+                State = true
+            };
+        }
+
         public async Task<ServiceResult> GetReceiptPaymentFilterPaging(ReceiptPaymentFilter filter)
         {
             var data = await _receiptPaymentRepository.GetReceiptPaymentFilterPaging(filter);
@@ -63,5 +75,37 @@ namespace MISA.AMIS.ApplicationCore.Services
             };
         }
 
+        public async Task<ServiceResult> InsertPayment(ReceiptPayment receiptPayment, ReceiptPaymentDetail[] receiptPaymentDetails)
+        {
+            // validate entity
+            var isValid = await Validate(receiptPayment);
+            var serviceResult = new ServiceResult();
+            if (!isValid)
+            {
+                serviceResult.Code = MisaCode.Fail;
+                serviceResult.State = false;
+                serviceResult.MsgUser = errorValidate;
+                serviceResult.MsgDev = errorValidate;
+                return serviceResult;
+            }
+            var rowCount = await _receiptPaymentRepository.InsertPayment(receiptPayment, receiptPaymentDetails);
+            if (rowCount > 0)
+            {
+                return new ServiceResult
+                {
+                    Code = MisaCode.Success,
+                    Data = rowCount,
+                    MsgUser = Properties.Resources.AddedSuccessfully,
+                    State = true
+                };
+            }
+
+            // khi rowCount = 0 TODO
+            serviceResult.Code = MisaCode.Success;
+            serviceResult.State = false;
+            serviceResult.Data = rowCount;
+            serviceResult.MsgUser = Properties.Resources.NothingUpdate;
+            return serviceResult;
+        }
     }
 }

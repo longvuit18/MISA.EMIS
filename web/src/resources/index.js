@@ -6,6 +6,10 @@
 // thời gian mà toast message biết mất
 export const DURATION_TOAST_MESSAGE = 3500;
 
+/**
+ * id của VN trong db
+ */
+const countryIdVN = "3d7b52dc-1d60-45da-993d-32e8c20dc88b";
 const toast = {
 	/**
 	 * thông báo mặc định
@@ -187,5 +191,6 @@ export default {
 	DURATION_TOAST_MESSAGE,
 	popup,
 	toast,
-	serverErrorMessageDefault: "Đã có lỗi xảy ra, vui lòng liên hệ misa để biết thêm chi tiết!"
+	serverErrorMessageDefault: "Đã có lỗi xảy ra, vui lòng liên hệ misa để biết thêm chi tiết!",
+	countryIdVN
 };

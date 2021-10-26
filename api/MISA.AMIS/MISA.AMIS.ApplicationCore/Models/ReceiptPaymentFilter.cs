@@ -20,8 +20,13 @@ namespace MISA.AMIS.ApplicationCore.Models
         /// Số lượng record trong trang
         /// </summary>
         public int PageSize { get; set; } = 20;
+       /// <summary>
+       /// ngày bắt đầu filter
+       /// </summary>
+        public DateTime StartDate { get; set; }
         /// <summary>
-        /// mã nhà cung cấp
+        /// ngày kết thúc filter
         /// </summary>
+        public DateTime EndDate { get; set; }
     }
 }

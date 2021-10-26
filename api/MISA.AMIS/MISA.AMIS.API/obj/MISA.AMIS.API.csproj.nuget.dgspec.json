@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.API\\MISA.AMIS.API.csproj": {}
+    "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.API\\MISA.AMIS.API.csproj": {}
   },
   "projects": {
-    "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.API\\MISA.AMIS.API.csproj": {
+    "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.API\\MISA.AMIS.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.API\\MISA.AMIS.API.csproj",
+        "projectUniqueName": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.API\\MISA.AMIS.API.csproj",
         "projectName": "MISA.AMIS.API",
-        "projectPath": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.API\\MISA.AMIS.API.csproj",
-        "packagesPath": "C:\\Users\\Zbook 15 G3\\.nuget\\packages\\",
-        "outputPath": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.API\\obj\\",
+        "projectPath": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.API\\MISA.AMIS.API.csproj",
+        "packagesPath": "C:\\Users\\Zbook G3\\.nuget\\packages\\",
+        "outputPath": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.API\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Zbook 15 G3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Zbook G3\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -31,11 +28,11 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {
-                "projectPath": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj"
+              "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {
+                "projectPath": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj"
               },
-              "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.Infrastructure\\MISA.AMIS.Infrastructure.csproj": {
-                "projectPath": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.Infrastructure\\MISA.AMIS.Infrastructure.csproj"
+              "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.Infrastructure\\MISA.AMIS.Infrastructure.csproj": {
+                "projectPath": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.Infrastructure\\MISA.AMIS.Infrastructure.csproj"
               }
             }
           }
@@ -77,24 +74,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {
+    "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj",
+        "projectUniqueName": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj",
         "projectName": "MISA.AMIS.ApplicationCore",
-        "projectPath": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj",
-        "packagesPath": "C:\\Users\\Zbook 15 G3\\.nuget\\packages\\",
-        "outputPath": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\obj\\",
+        "projectPath": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj",
+        "packagesPath": "C:\\Users\\Zbook G3\\.nuget\\packages\\",
+        "outputPath": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Zbook 15 G3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Zbook G3\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -144,24 +138,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.Infrastructure\\MISA.AMIS.Infrastructure.csproj": {
+    "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.Infrastructure\\MISA.AMIS.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.Infrastructure\\MISA.AMIS.Infrastructure.csproj",
+        "projectUniqueName": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.Infrastructure\\MISA.AMIS.Infrastructure.csproj",
         "projectName": "MISA.AMIS.Infrastructure",
-        "projectPath": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.Infrastructure\\MISA.AMIS.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\Zbook 15 G3\\.nuget\\packages\\",
-        "outputPath": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.Infrastructure\\obj\\",
+        "projectPath": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.Infrastructure\\MISA.AMIS.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\Zbook G3\\.nuget\\packages\\",
+        "outputPath": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Zbook 15 G3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Zbook G3\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -175,8 +166,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {
-                "projectPath": "D:\\misa\\phase1\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj"
+              "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {
+                "projectPath": "D:\\Misa\\MISA.EMIS\\api\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj"
               }
             }
           }
@@ -194,6 +185,10 @@
             "Microsoft.Extensions.Configuration.Abstractions": {
               "target": "Package",
               "version": "[5.0.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
             },
             "Npgsql": {
               "target": "Package",
@@ -215,7 +210,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

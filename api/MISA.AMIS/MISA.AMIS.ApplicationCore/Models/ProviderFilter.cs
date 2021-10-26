@@ -68,5 +68,9 @@ namespace MISA.AMIS.ApplicationCore.Models
         ///nhóm nhà cung cấp
         /// </summary>
         public string provider_group { get; set; }
+        /// <summary>
+        /// loại nhà cung cấp
+        /// </summary>
+        public int account_object_type { get; set; }
     }
 }

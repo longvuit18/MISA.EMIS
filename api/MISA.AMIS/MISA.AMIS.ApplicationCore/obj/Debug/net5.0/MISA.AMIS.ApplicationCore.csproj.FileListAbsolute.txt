@@ -12,3 +12,16 @@ D:\misa\phase1\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMI
 D:\misa\phase1\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMIS.ApplicationCore.dll
 D:\misa\phase1\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\ref\MISA.AMIS.ApplicationCore.dll
 D:\misa\phase1\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMIS.ApplicationCore.pdb
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\bin\Debug\net5.0\MISA.AMIS.ApplicationCore.deps.json
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\bin\Debug\net5.0\MISA.AMIS.ApplicationCore.dll
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\bin\Debug\net5.0\ref\MISA.AMIS.ApplicationCore.dll
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\bin\Debug\net5.0\MISA.AMIS.ApplicationCore.pdb
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMIS.ApplicationCore.Properties.Resources.resources
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMIS.ApplicationCore.csproj.GenerateResource.cache
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMIS.ApplicationCore.GeneratedMSBuildEditorConfig.editorconfig
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMIS.ApplicationCore.AssemblyInfoInputs.cache
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMIS.ApplicationCore.AssemblyInfo.cs
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMIS.ApplicationCore.csproj.CoreCompileInputs.cache
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMIS.ApplicationCore.dll
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\ref\MISA.AMIS.ApplicationCore.dll
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMIS.ApplicationCore.pdb

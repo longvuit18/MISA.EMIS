@@ -92,6 +92,7 @@
 
 <script>
 import LocationApi from "../../../api/service/location";
+import resources from "../../../resources";
 
 const columnNamesProriverGroup = [
     { key: "account_object_group_code", text: "Mã nhóm KH, NCC", width: 170 },
@@ -113,7 +114,7 @@ export default {
             provinces: [],
             districts: [],
             wards: [],
-            countryId: "22d23039-6d1b-4a11-8fea-d9e066a39b92",
+            countryId: resources.countryIdVN,
             provinceId: "",
             districtId: "",
             columnNamesProriverGroup,

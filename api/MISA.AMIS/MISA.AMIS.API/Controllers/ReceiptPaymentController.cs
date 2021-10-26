@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MISA.AMIS.ApplicationCore.Constants;
 using MISA.AMIS.ApplicationCore.Interfaces;
 using MISA.AMIS.ApplicationCore.Models;
+using MISA.AMIS.ApplicationCore.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +55,37 @@ namespace MISA.AMIS.API.Controllers
         public async Task<IActionResult> DeleteBatch([FromBody]Guid[] listId)
         {
             var result = await _receiptPaymentService.DeleteBatch(listId);
+            return Ok(result);
+        }
+
+        [HttpPost("payment")]
+        public async Task<IActionResult> InsertPayment([FromBody] PaymentRequest paymentRequest)
+        {
+            var result = await _receiptPaymentService.InsertPayment(paymentRequest.payment, paymentRequest.paymentDetails);
+            return Ok(result);
+        }
+
+        [HttpGet("payment/{id}")]
+        public async Task<IActionResult> GetPaymentById(string id)
+        {
+            // convert string to guid
+            var isToGuid = Guid.TryParse(id, out Guid guid);
+            if (!isToGuid)
+            {
+                var errorResult = new ServiceResult();
+                errorResult.Code = MisaCode.Fail;
+                errorResult.State = false;
+                errorResult.MsgDev = Resources.IdInconrect;
+                errorResult.MsgUser = Resources.IdInconrect;
+                return Ok(errorResult);
+            }
+
+            var result = await _receiptPaymentService.GetPaymentById(guid);
+
+            if (result.Data == null)
+            {
+                return NoContent();
+            }
             return Ok(result);
         }
         #endregion

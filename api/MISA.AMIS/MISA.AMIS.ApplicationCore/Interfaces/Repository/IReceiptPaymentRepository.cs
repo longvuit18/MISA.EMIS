@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MISA.AMIS.ApplicationCore.Interfaces
 {
     /// <summary>
-    /// employee repository interface
+    ///  receiptPayment repository interface
     /// </summary>
     /// Created by: VLVU (18/8/2021)
     public interface IReceiptPaymentRepository : IBaseRepository<ReceiptPayment>
@@ -21,17 +21,32 @@ namespace MISA.AMIS.ApplicationCore.Interfaces
         /// Created by: VLVU (8/10/2021)
         Task<object> GetReceiptPaymentFilterPaging(ReceiptPaymentFilter filter);
         /// <summary>
-        /// service lấy một mã nhà cung cấp mới
+        /// reposirory lấy một mã nhà cung cấp mới
         /// </summary>
         /// <returns></returns>
         /// Created by: VLVU (20/9/2021)
         Task<string> GetNewReceiptPaymentCode();
         /// <summary>
-        /// service xóa hàng loạt
+        /// reposirory xóa hàng loạt
         /// </summary>
         /// <param name="listId"></param>
         /// <returns></returns>
         /// Created by: VLVU (8/10/2021)
         Task<int> DeleteBatch(Guid[] listId);
+        /// <summary>
+        /// Thêm 1 phiếu chi
+        /// </summary>
+        /// <param name="payment"></param>
+        /// <param name="paymentDetails"></param>
+        /// <returns></returns>
+        /// Created by: VLVU (15/10/2021)
+        Task<int> InsertPayment(ReceiptPayment payment, ReceiptPaymentDetail[] paymentDetails);
+        /// <summary>
+        /// Lấy 1 phiếu chi bằng id
+        /// </summary>
+        /// <param name="paymentId"></param>
+        /// <returns></returns>
+        /// /// Created by: VLVU (15/10/2021)
+        Task<object> GetPaymentById(Guid paymentId);
     }
 }

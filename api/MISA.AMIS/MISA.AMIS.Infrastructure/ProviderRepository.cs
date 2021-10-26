@@ -45,6 +45,7 @@ namespace MISA.AMIS.Infrastructure
             parameters.Add("@p_district", filter.district, DbType.String);
             parameters.Add("@p_ward_or_commune", filter.ward_or_commune, DbType.String);
             parameters.Add("@p_account_object_group", filter.provider_group, DbType.String);
+            parameters.Add("@p_account_object_type", filter.account_object_type);
 
             // query từ database
             var employeeFiltered = await _dbConnection.QueryAsync<AccountObject>($"func_get_{_tableName}_filter_paging", parameters, commandType: CommandType.StoredProcedure);
@@ -67,20 +68,35 @@ namespace MISA.AMIS.Infrastructure
         {
             // query từ database
             var maxCode = await _dbConnection.QueryFirstOrDefaultAsync<string>($"func_get_max_{_tableName}_code", commandType: CommandType.StoredProcedure);
-
+            if (maxCode == null)
+            {
+                return "NCC-00001";
+            }
             var prefix = "NCC-";
             var suffixes = "";
 
             foreach (char c in maxCode.Reverse())
             {
-                if (!Char.IsDigit(c))
+                if (!char.IsDigit(c))
                 {
                     break;
                 }
                 suffixes = c.ToString() + suffixes;
             }
 
-            var result = prefix + (Int32.Parse(suffixes) + 1);
+            var suffixesNumber = Int32.Parse(suffixes) + 1;
+            var prefixZero = "";
+
+            var lengthSuffixesNumber = suffixesNumber.ToString().Length;
+            if (lengthSuffixesNumber < 5)
+            {
+                for (int i = 0; i < 5 - lengthSuffixesNumber; i++)
+                {
+                    prefixZero += "0";
+                }
+            }
+
+            var result = prefix + prefixZero + suffixesNumber;
 
             return result;
         }
@@ -92,13 +108,12 @@ namespace MISA.AMIS.Infrastructure
             _dbConnection.Open();
             using (var transaction = _dbConnection.BeginTransaction())
             {
-                foreach (var item in listId)
-                {
-                    var parameter = new DynamicParameters();
-                    parameter.Add($"p_{_tableName}_id", item);
-                    rowAffected += await _dbConnection.ExecuteScalarAsync<int>($"func_delete_{_tableName}_by_id", parameter, commandType: CommandType.StoredProcedure, transaction: transaction);
-                    
-                }
+
+                var parameter = new DynamicParameters();
+                parameter.Add($"list_id", listId);
+                rowAffected += await _dbConnection.ExecuteScalarAsync<int>($"func_delete_multiple_{_tableName}_by_id", parameter, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+
                 transaction.Commit();
 
             }

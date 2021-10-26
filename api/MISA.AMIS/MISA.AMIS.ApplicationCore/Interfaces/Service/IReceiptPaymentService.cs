@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 namespace MISA.AMIS.ApplicationCore.Interfaces
 {
     /// <summary>
-    /// employee service interface
-    /// Created by: VLVU (18/8/2021)
+    /// receiptPayment service interface
+    /// Created by: VLVU (8/10/2021)
     /// </summary>
     public interface IReceiptPaymentService: IBaseService<ReceiptPayment>
     {
@@ -34,5 +34,19 @@ namespace MISA.AMIS.ApplicationCore.Interfaces
         /// <returns></returns>
         /// Created by: VLVU (8/10/2021)
         Task<ServiceResult> DeleteBatch(Guid[] listId);
+        /// <summary>
+        /// Thêm 1 phiếu chi
+        /// </summary>
+        /// <param name="payment"></param>
+        /// <param name="paymentDetails"></param>
+        /// <returns></returns>
+        /// Created by: VLVU (15/10/2021)
+        Task<ServiceResult> InsertPayment(ReceiptPayment payment, ReceiptPaymentDetail[] paymentDetails);
+        /// <summary>
+        /// Lấy 1 phiếu chi bằng id
+        /// </summary>
+        /// <param name="paymentId"></param>
+        /// <returns></returns>
+        Task<ServiceResult> GetPaymentById(Guid paymentId);
     }
 }
