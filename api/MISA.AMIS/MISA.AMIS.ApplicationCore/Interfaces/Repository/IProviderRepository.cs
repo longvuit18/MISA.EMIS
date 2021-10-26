@@ -33,5 +33,12 @@ namespace MISA.AMIS.ApplicationCore.Interfaces
         /// <returns></returns>
         /// Created by: VLVU (29/9/2021)
         Task<int> DeleteBatch(Guid[] listId);
+        /// <summary>
+        /// Check phát sinh dữ liệu
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <returns></returns>
+        /// Created by: VLVU (15/10/2021)
+        Task<int> CheckArising(Guid[] listId);
     }
 }

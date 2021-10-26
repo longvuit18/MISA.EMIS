@@ -63,7 +63,7 @@ namespace MISA.AMIS.Infrastructure
 
             if (maxCode == null)
             {
-                return "NCC-00001";
+                return "PC-00001";
             }
             var prefix = "PC-";
             var suffixes = "";

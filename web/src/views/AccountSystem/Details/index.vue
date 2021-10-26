@@ -116,7 +116,7 @@
                                 name="Số tài khoản"
                                 tabindex="6"
                                 fullWidth
-                                v-model="currentAccount.desciption"
+                                v-model="currentAccount.description"
                                 :disabled="viewMode"
                             />
                         </BaseCol>
@@ -697,7 +697,13 @@ export default {
                     this.setToast(resources.toast.accountNumberDuplicateChild(children[indexDuplicate].account_number));
                     return false;
                 }
+            } else {
+                if (this.currentAccount.account_number?.length > 3) {
+                this.setToast(resources.toast.accountNumberLengthError());
+                return false;
             }
+            }
+
             return true;
         },
 
@@ -806,7 +812,7 @@ export default {
                 } else {
                     this.setToast(resources.toast.updateSuccess(this.currentAccount.account_name, "tài khoản"));
                 }
-                this.currentEmployee = {};
+                this.currentAccount = {};
                 if (keepCreating) {
                     this.$refs["1"].$refs.BaseInput.focus();
                     this.loading = false;

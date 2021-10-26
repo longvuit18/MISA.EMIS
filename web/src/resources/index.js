@@ -80,6 +80,17 @@ const toast = {
 	},
 
 	/**
+	 * thông báo số tài khoản dài hơn 3
+	 * @returns object toast message
+	 */
+	accountNumberLengthError() {
+		return {
+			content: "Số tài khoản có độ dài > 3 ký tự phải điền thông tin <Tài khoản tổng hợp>",
+			type: "error"
+		};
+	},
+
+	/**
 	 * Thông báo tài khoản không hợp lệ
 	 * @param {*} startChildAccount string bắt đầu của con
 	 * @returns object toast message

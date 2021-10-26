@@ -34,8 +34,8 @@ namespace MISA.AMIS.Infrastructure
             // Tạo và set dynamic parameter
             var parameters = new DynamicParameters();
             parameters.Add("@custom_filter", filter.CustomFilter, DbType.String);
-            parameters.Add("@p_account_object_code", filter.provider_code, DbType.String);
-            parameters.Add("@p_account_object_name", filter.provider_name, DbType.String);
+            parameters.Add("@p_account_object_code", filter.account_object_code, DbType.String);
+            parameters.Add("@p_account_object_name", filter.account_object_name, DbType.String);
             parameters.Add("@p_address", filter.address, DbType.String);
             parameters.Add("@p_description", filter.description, DbType.String);
             parameters.Add("@p_tax_code", filter.tax_code, DbType.String);
@@ -44,7 +44,7 @@ namespace MISA.AMIS.Infrastructure
             parameters.Add("@p_province_or_city", filter.province_or_city, DbType.String);
             parameters.Add("@p_district", filter.district, DbType.String);
             parameters.Add("@p_ward_or_commune", filter.ward_or_commune, DbType.String);
-            parameters.Add("@p_account_object_group", filter.provider_group, DbType.String);
+            parameters.Add("@p_account_object_group", filter.account_object_group, DbType.String);
             parameters.Add("@p_account_object_type", filter.account_object_type);
 
             // query từ database
@@ -119,6 +119,15 @@ namespace MISA.AMIS.Infrastructure
             }
             return rowAffected;
         }
+
+        public async Task<int> CheckArising(Guid[] listId)
+        {
+            var parameter = new DynamicParameters();
+            parameter.Add("list_id", listId);
+            var arisingEffected = await _dbConnection.QueryFirstOrDefaultAsync<int>($"func_check_arising_account_object",parameter, commandType: CommandType.StoredProcedure);
+            return arisingEffected;
+        }
+
 
         #endregion
 

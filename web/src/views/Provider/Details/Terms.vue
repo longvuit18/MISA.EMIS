@@ -94,10 +94,10 @@
             <BaseInput
                 fullWidth
                 tabindex="11"
-                label="Số ngày đươc nọ tối đa"
+                label="Số nợ tối đa"
                 format="number"
                 enterRightToLeft
-                name="Số ngày đươc nọ tối đa"
+                name="Số nợ tối đa"
                 v-model.number="data.maximize_debt_amount"
                 :disabled="disabled"
             />

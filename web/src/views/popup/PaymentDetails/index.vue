@@ -4,7 +4,7 @@
             <div class="header">
                 <div class="header-left">
                     <div class="icon icon-size-24 mi-recent-log mr-10"></div>
-                    <div class="title">Phiếu chi {{data.refno_finance}}</div>
+                    <div class="title">Phiếu chi {{ data.refno_finance }}</div>
                     <div>
                         <BaseCombobox
                             class="payment-list"
@@ -22,19 +22,9 @@
                     <div class="tutorial">
                         Hướng dẫn
                     </div>
-                    <div
-                        class="icon icon-size-24 mi-setting__nav ml-10 mr-10"
-                        v-tooltip="'Tính năng chưa phát triển'"
-                    ></div>
-                    <div
-                        class="helper-button"
-                        v-tooltip="'Tính năng đang phát triển'"
-                    ></div>
-                    <div
-                        @click="onClose"
-                        class="close-button"
-                        v-tooltip="'Đóng (Esc)'"
-                    ></div>
+                    <div class="icon icon-size-24 mi-setting__nav ml-10 mr-10" v-tooltip="'Tính năng chưa phát triển'"></div>
+                    <div class="helper-button" v-tooltip="'Tính năng đang phát triển'"></div>
+                    <div @click="onClose" class="close-button" v-tooltip="'Đóng (Esc)'"></div>
                 </div>
             </div>
             <div class="content">
@@ -63,10 +53,7 @@
                                                 name="Đối tượng"
                                             />
                                         </BaseCol>
-                                        <BaseCol
-                                            :cols="7"
-                                            style="padding: 0 16px  0 12px;"
-                                        >
+                                        <BaseCol :cols="7" style="padding: 0 16px  0 12px;">
                                             <BaseInput
                                                 label="Người nhận"
                                                 tabindex="2"
@@ -118,10 +105,7 @@
                                                 name="Nhân viên"
                                             />
                                         </BaseCol>
-                                        <BaseCol
-                                            :cols="7"
-                                            style="padding: 0 16px  0 12px;"
-                                        >
+                                        <BaseCol :cols="7" style="padding: 0 16px  0 12px;">
                                             <div style="display: flex;">
                                                 <BaseInput
                                                     label="Kèm theo"
@@ -196,7 +180,7 @@
                         <BaseCol :cols="3">
                             <div class="total-money">
                                 <div class="money-title">Tổng tiền</div>
-                                <div class="total">{{totalAmountFormat}}</div>
+                                <div class="total">{{ totalAmountFormat }}</div>
                             </div>
                         </BaseCol>
                     </BaseRow>
@@ -222,26 +206,15 @@
                                 />
                             </div>
                         </div>
-                        <div
-                            class="exchange"
-                            v-if="data.currency_id !== 'VND'"
-                        >
+                        <div class="exchange" v-if="data.currency_id !== 'VND'">
                             <div class="label mr-10">Tỉ giá</div>
                             <div style="width: 100px">
-                                <BaseInput
-                                    fullWidth
-                                    format="currency"
-                                    placeholder="1,00"
-                                    v-model="data.exchange_rate"
-                                    :disabled="viewMode"
-                                />
+                                <BaseInput fullWidth format="currency" placeholder="1,00" v-model="data.exchange_rate" :disabled="viewMode" />
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div class="grid">
-
                     <TableCommon
                         :columnNames="columnNames"
                         v-model="dataDetails"
@@ -257,20 +230,10 @@
                 <div class="grid-control">
                     <div class="btn-grid-control flex">
                         <div class="mr-10">
-                            <BaseButton
-                                secondaryButton
-                                style="height: 24px;"
-                                buttonName="Thêm dòng"
-                                @click="addRow"
-                            />
+                            <BaseButton secondaryButton style="height: 24px;" buttonName="Thêm dòng" @click="addRow" />
                         </div>
                         <div>
-                            <BaseButton
-                                secondaryButton
-                                style="height: 24px;"
-                                buttonName="Xóa hết dòng"
-                                @click="deleteAllRows"
-                            />
+                            <BaseButton secondaryButton style="height: 24px;" buttonName="Xóa hết dòng" @click="deleteAllRows" />
                         </div>
                     </div>
                     <div class="upload">
@@ -284,16 +247,10 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <div class="footer">
                 <div>
-                    <BaseButton
-                        buttonName="Hủy"
-                        secondaryButton
-                        :style="{background: 'inherit', color: '#fff'}"
-                        @click="() => onClose(false)"
-                    />
+                    <BaseButton buttonName="Hủy" secondaryButton :style="{ background: 'inherit', color: '#fff' }" @click="() => onClose(false)" />
                 </div>
                 <div class="footer-right">
                     <div class="btn-first">
@@ -301,7 +258,7 @@
                             buttonName="Cất"
                             secondaryButton
                             @click="() => onSave()"
-                            :style="{background: 'inherit', color: '#fff'}"
+                            :style="{ background: 'inherit', color: '#fff' }"
                             v-tooltip="'Cất (Ctrl + S)'"
                         />
                     </div>
@@ -315,27 +272,14 @@
                         @click="nameFooterPrimaryButton === 'Cất và đóng' ? saveAndClose() : saveAndAdd()"
                     >
                         <div class="payment-detail-footer">
-                            <div
-                                class="option"
-                                @click="() => saveAndClose()"
-                            >Cất và đóng</div>
-                            <div
-                                class="option"
-                                @click="() => saveAndAdd()"
-                            >Cất và thêm</div>
+                            <div class="option" @click="() => saveAndClose()">Cất và đóng</div>
+                            <div class="option" @click="() => saveAndAdd()">Cất và thêm</div>
                         </div>
                     </BaseDropdownButton>
                 </div>
             </div>
-            <div
-                class="overlay"
-                v-if="loading"
-            >
-            </div>
-            <div
-                class="loading"
-                v-if="loading"
-            >
+            <div class="overlay" v-if="loading"></div>
+            <div class="loading" v-if="loading">
                 <BaseSpin />
             </div>
         </div>
@@ -356,21 +300,18 @@ const debitAccount = [
     { account_number: "10000", account_name: "Tài khoản nợ 1" },
     { account_number: "10001", account_name: "Tài khoản nợ 2" },
     { account_number: "10002", account_name: "Tài khoản nợ 3" }
-
 ];
 
 const creditAccount = [
     { account_number: "11111", account_name: "Tài khoản có 1" },
     { account_number: "11112", account_name: "Tài khoản có 2" },
     { account_number: "11113", account_name: "Tài khoản có 3" }
-
 ];
 
 const bankAccount = [
     { bank_number: "134673623", bank_name: "Ngân hàng quân đội MB", bank_branch_name: "Bà Triệu" },
     { bank_number: "111123512", bank_name: "Ngân hàng TMCB Á Châu", bank_branch_name: "Hà Thành" },
     { bank_number: "5262452", bank_name: "Vietcombank Phố Vọng", bank_branch_name: "Phố Vọng" }
-
 ];
 
 const columnNameAccount = [
@@ -443,7 +384,6 @@ const columnNames = [
         isOptionsTable: true,
         positionOption: "bottom-left"
     }
-
 ];
 
 const columnNamesEmployee = [
@@ -457,13 +397,9 @@ const columnNamesCurrency = [
     { key: "currency_name", text: "Tên loại tiền" }
 ];
 
-const currencies = [
-    { currency_id: "VND", currency_name: "VND" }
-];
+const currencies = [{ currency_id: "VND", currency_name: "VND" }];
 
-const paymentTypes = [
-    { key: "Chi tiền cho", label: "5.Chi khác" }
-];
+const paymentTypes = [{ key: "Chi tiền cho", label: "5.Chi khác" }];
 
 const dataDetailsDefault = [
     {
@@ -490,7 +426,7 @@ const dataDefault = {
     account_object_contact_name: "",
     employee_id: undefined,
     total_amount: 0,
-    document_included: ""
+    document_included: null
 };
 export default {
     name: "PaymentDetails",
@@ -579,7 +515,7 @@ export default {
                             ...item,
                             description: value
                         };
-                    };
+                    }
 
                     return item;
                 });
@@ -591,7 +527,7 @@ export default {
             handler(value, oldValue) {
                 if (oldValue === this.data.refdate) {
                     this.data.refdate = value;
-                };
+                }
             },
             deep: true
         },
@@ -643,7 +579,7 @@ export default {
         this.nameFooterPrimaryButton = buttonName ?? "Cất và đóng";
 
         // lắng nghe sự kiện ấn phím
-        document.addEventListener("keydown", (e) => this.listenerKeyPress(e));
+        document.addEventListener("keydown", e => this.listenerKeyPress(e));
         this.loading = true;
         if (this.$route.params?.replicationId) {
             let providerPromise = {};
@@ -667,8 +603,8 @@ export default {
                 console.log(error);
             }
 
-            const accountObject = await providerPromise ?? [];
-            const employees = await employeePromise ?? [];
+            const accountObject = (await providerPromise) ?? [];
+            const employees = (await employeePromise) ?? [];
             const data = await dataPromise;
 
             this.accountObjects = accountObject?.data?.Data ?? [];
@@ -691,7 +627,8 @@ export default {
                         account_object_id: this.data.account_object_id,
                         account_object_name: this.data.account_object_name,
                         address: this.data.account_object_address
-                    }];
+                    }
+                ];
                 this.employees = [{ employee_id: this.data.employee_id, employee_name: this.data.employee_name }];
                 this.loading = false;
                 this.edited = false;
@@ -717,8 +654,8 @@ export default {
             console.log(error);
         }
 
-        const accountObject = await promise ?? [];
-        const employees = await employeePromise ?? [];
+        const accountObject = (await promise) ?? [];
+        const employees = (await employeePromise) ?? [];
 
         this.accountObjects = accountObject?.data?.Data ?? [];
         this.employees = employees?.data?.Data ?? [];
@@ -728,11 +665,10 @@ export default {
     },
 
     destroyed() {
-        document.removeEventListener("keydown", (e) => this.listenerKeyPress(e));
+        document.removeEventListener("keydown", e => this.listenerKeyPress(e));
     },
 
     methods: {
-
         ...mapMutations("toastMessage", {
             setToast: "setToast"
         }),
@@ -874,20 +810,22 @@ export default {
             const indexErrors = [];
             const errorsMessage = [];
             // tìm tất cả vị trí lỗi, sắp xếp theo vị trí thứ thự của tabindex
-            Object.entries(this.$refs).sort((a, b) => a[0] < b[0]).forEach((item, index) => {
-                if (item[0] === "detail") {
-                    return;
-                }
-                item[1].$refs.BaseInput.focus();
-                item[1].$refs.BaseInput.blur();
-                if (item[1].error === true) {
-                    isError = true;
-                    // thêm vị trí lỗi vào array
-                    indexErrors.push(index);
-                    // thêm câu thông báo lỗi vào array
-                    errorsMessage.push(item[1].errorMessage);
-                }
-            });
+            Object.entries(this.$refs)
+                .sort((a, b) => a[0] < b[0])
+                .forEach((item, index) => {
+                    if (item[0] === "detail") {
+                        return;
+                    }
+                    item[1].$refs.BaseInput.focus();
+                    item[1].$refs.BaseInput.blur();
+                    if (item[1].error === true) {
+                        isError = true;
+                        // thêm vị trí lỗi vào array
+                        indexErrors.push(index);
+                        // thêm câu thông báo lỗi vào array
+                        errorsMessage.push(item[1].errorMessage);
+                    }
+                });
             if (!isError) {
                 return true;
             } else {

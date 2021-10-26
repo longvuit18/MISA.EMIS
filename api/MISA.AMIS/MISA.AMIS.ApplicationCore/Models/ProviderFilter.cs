@@ -27,11 +27,11 @@ namespace MISA.AMIS.ApplicationCore.Models
         /// <summary>
         /// mã nhà cung cấp
         /// </summary>
-        public string provider_code { get; set; }
+        public string account_object_code { get; set; }
         /// <summary>
         /// tên nhà cung cấp
         /// </summary>
-        public string provider_name { get; set; }
+        public string account_object_name { get; set; }
         /// <summary>
         /// địa chỉ
         /// </summary>
@@ -67,10 +67,10 @@ namespace MISA.AMIS.ApplicationCore.Models
         /// <summary>
         ///nhóm nhà cung cấp
         /// </summary>
-        public string provider_group { get; set; }
+        public string account_object_group { get; set; }
         /// <summary>
         /// loại nhà cung cấp
         /// </summary>
-        public int account_object_type { get; set; }
+        public int? account_object_type { get; set; }
     }
 }

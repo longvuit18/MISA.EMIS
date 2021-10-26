@@ -11,32 +11,19 @@
                         Hướng dẫn
                     </div>
                     <div class="utility">
-                        <BaseDropdownButton
-                            buttonName="Tiện ích"
-                            secondaryButton
-                        />
+                        <BaseDropdownButton buttonName="Tiện ích" secondaryButton />
                     </div>
                     <div class="add-button">
-                        <BaseDropdownButton
-                            buttonName="Thêm chi tiền"
-                            @click="toPopupPaymentDetails"
-                        />
+                        <BaseDropdownButton buttonName="Thêm chi tiền" @click="toPopupPaymentDetails" />
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="payment-body">
-            <div
-                class="overview"
-                v-if="showOverview"
-            >
+            <div class="overview" v-if="showOverview">
                 <BaseRow>
-                    <BaseCol
-                        :cols="4"
-                        :padding="4"
-                        style="padding-left:0;"
-                    >
+                    <BaseCol :cols="4" :padding="4" style="padding-left:0;">
                         <div class="debit">
                             <div class="data">
                                 <div class="total-money">100.360.100,0</div>
@@ -44,10 +31,7 @@
                             <div class="label">Tổng thu đầu năm hiện tại</div>
                         </div>
                     </BaseCol>
-                    <BaseCol
-                        :cols="4"
-                        :padding="4"
-                    >
+                    <BaseCol :cols="4" :padding="4">
                         <div class="total-debit">
                             <div class="data">
                                 <div class="total-money">10.000.115,0</div>
@@ -55,17 +39,10 @@
                             <div class="label">Tổng chi đầu năm hiện tại</div>
                         </div>
                     </BaseCol>
-                    <BaseCol
-                        :cols="4"
-                        :padding="4"
-                        style="padding-right:0;"
-                    >
+                    <BaseCol :cols="4" :padding="4" style="padding-right:0;">
                         <div class="payment">
                             <div class="data">
-                                <div
-                                    class="total-money"
-                                    style="color: red;"
-                                >(894.440.015,0)</div>
+                                <div class="total-money" style="color: red;">(894.440.015,0)</div>
                             </div>
                             <div class="label">Tồn quỹ hiện tại</div>
                         </div>
@@ -80,13 +57,10 @@
                 </ul>
             </div>
             <div class="filter-bar">
-                <div
-                    class="collapse-overview flex justify-center items-center"
-                    @click="showOverview = !showOverview"
-                >
+                <div class="collapse-overview flex justify-center items-center" @click="showOverview = !showOverview">
                     <div
                         class="icon icon-size-16 mi-chevron-up--primary"
-                        :class="{'rotate-down': !showOverview}"
+                        :class="{ 'rotate-down': !showOverview }"
                     ></div>
                 </div>
                 <div class="filter-area">
@@ -97,7 +71,7 @@
                         <BaseDropdownButton
                             buttonName="Thực hiện hàng loạt"
                             secondaryButton
-                            :disabled="selected < 2"
+                            :disabled="selected < 3"
                             :isOpen="isOpenCheckAll"
                             @click="isOpenCheckAll = !isOpenCheckAll"
                             @close="isOpenCheckAll = false"
@@ -113,7 +87,6 @@
                             :isOpen="isOpenFeatureFilter"
                             @close="isOpenFeatureFilter = false"
                         >
-
                             <FilterDropdown
                                 :filterProp="filter"
                                 @close="isOpenFeatureFilter = false"
@@ -126,9 +99,9 @@
                             class="filter-user-view-item"
                             v-for="(value, index) in filterView"
                             :key="index"
-                            :class="{'filter-user-text-color': value[0] === 'time'}"
+                            :class="{ 'filter-user-text-color': value[0] === 'time' }"
                         >
-                            {{value[1]}}
+                            {{ value[1] }}
                             <div
                                 v-if="value[0] !== 'time'"
                                 class="icon icon-size-16 mi-close--small"
@@ -140,7 +113,9 @@
                             v-if="filterView.length !== 0 && filterView[0][0] !== 'time'"
                             class="filter-user-view-item delete-condition"
                             @click="reloadPayment"
-                        >Xóa điều kiện lọc</div>
+                        >
+                            Xóa điều kiện lọc
+                        </div>
                     </div>
                 </div>
                 <div class="filter-bar-right-area">
@@ -152,12 +127,8 @@
                             v-model="filterText"
                             focusInput
                         />
-
                     </div>
-                    <div
-                        class="reload-icon"
-                        @click="reloadPayment"
-                    ></div>
+                    <div class="reload-icon" @click="reloadPayment"></div>
                     <div class="icon icon-size-24 mi-excel__nav ml-12 mr-12"></div>
                     <div class="icon icon-size-24 mi-setting__list"></div>
                 </div>
@@ -177,7 +148,7 @@
         <div class="pagination-bar">
             <div class="pagination-box">
                 <div class="paging-left">
-                    Tổng số: <b>{{totalRecord}}</b> bản ghi
+                    Tổng số: <b>{{ totalRecord }}</b> bản ghi
                 </div>
                 <div class="paging-right">
                     <div class="page-size">
@@ -190,41 +161,33 @@
                             readonly
                         />
                     </div>
-                    <div
-                        class="btn-prev-page"
-                        :class="{'disabled-text': pageNumber === 1}"
-                        @click="prevPage"
-                    >Trước</div>
+                    <div class="btn-prev-page" :class="{ 'disabled-text': pageNumber === 1 }" @click="prevPage">
+                        Trước
+                    </div>
                     <!-- Khi page có ít hơn 5 trang thì hiển thị toàn bộ số trang -->
-                    <div
-                        class="pagination"
-                        v-if="totalPage < 6"
-                    >
+                    <div class="pagination" v-if="totalPage < 6">
                         <div
                             v-for="page in totalPages"
                             :key="page"
                             class="pagination-item"
-                            :class="{'active': page == pageNumber}"
+                            :class="{ active: page == pageNumber }"
                             @click="() => onPagination(page)"
                         >
-                            {{page}}
+                            {{ page }}
                         </div>
                     </div>
                     <!-- Nếu không thì sẽ hiện thêm dấu 3 chấm ở giữa -->
                     <div v-else>
                         <!-- Nếu trang hiện tại là 3 trang đầu tiên vd: 1 2 3 ... 50 -->
-                        <div
-                            class="pagination"
-                            v-if="pageNumber < 3"
-                        >
+                        <div class="pagination" v-if="pageNumber < 3">
                             <div
-                                v-for="page in [1,2,3]"
+                                v-for="page in [1, 2, 3]"
                                 :key="page"
                                 class="pagination-item"
-                                :class="{'active': page == pageNumber}"
+                                :class="{ active: page == pageNumber }"
                                 @click="() => onPagination(page)"
                             >
-                                {{page}}
+                                {{ page }}
                             </div>
 
                             <div class="pagination-item">
@@ -232,61 +195,49 @@
                             </div>
                             <div
                                 class="pagination-item"
-                                :class="{'active': totalPage == pageNumber}"
+                                :class="{ active: totalPage == pageNumber }"
                                 @click="() => onPagination(totalPage)"
                             >
-                                {{totalPage}}
+                                {{ totalPage }}
                             </div>
                         </div>
                         <!-- Nếu trang hiện tại lớn hơn 3 thì sẽ xuất hiện thêm 1 dấu 3 chấm nữa vd: 1 ... 4 5 6 ... 50 -->
-                        <div
-                            v-else-if="pageNumber < totalPage - 1"
-                            class="pagination"
-                        >
+                        <div v-else-if="pageNumber < totalPage - 1" class="pagination">
                             <div
                                 class="pagination-item"
-                                :class="{'active': pageNumber === 1}"
+                                :class="{ active: pageNumber === 1 }"
                                 @click="() => onPagination(1)"
                             >
                                 1
                             </div>
-                            <div
-                                class="pagination-item"
-                                v-if="pageNumber !== 3"
-                            >
+                            <div class="pagination-item" v-if="pageNumber !== 3">
                                 ...
                             </div>
                             <div
                                 v-for="page in threePagesCloseTogether"
                                 :key="page"
                                 class="pagination-item"
-                                :class="{'active': page == pageNumber}"
+                                :class="{ active: page == pageNumber }"
                                 @click="() => onPagination(page)"
                             >
-                                {{page}}
+                                {{ page }}
                             </div>
-                            <div
-                                class="pagination-item"
-                                v-if="pageNumber !== totalPage - 2"
-                            >
+                            <div class="pagination-item" v-if="pageNumber !== totalPage - 2">
                                 ...
                             </div>
                             <div
                                 class="pagination-item"
-                                :class="{'active': pageNumber === totalPage}"
+                                :class="{ active: pageNumber === totalPage }"
                                 @click="() => onPagination(totalPage)"
                             >
-                                {{totalPage}}
+                                {{ totalPage }}
                             </div>
                         </div>
                         <!-- Khi trang hiện tại là nhưng trang cuối cùng thì bỏ 1 dấu 3 chấm đi: 1 ... 48 49 50 -->
-                        <div
-                            class="pagination"
-                            v-else
-                        >
+                        <div class="pagination" v-else>
                             <div
                                 class="pagination-item"
-                                :class="{'active': pageNumber === 1}"
+                                :class="{ active: pageNumber === 1 }"
                                 @click="() => onPagination(1)"
                             >
                                 1
@@ -296,31 +247,27 @@
                                 ...
                             </div>
                             <div
-                                v-for="page in [totalPage -2, totalPage -1, totalPage]"
+                                v-for="page in [totalPage - 2, totalPage - 1, totalPage]"
                                 :key="page"
                                 class="pagination-item"
-                                :class="{'active': page == pageNumber}"
+                                :class="{ active: page == pageNumber }"
                                 @click="() => onPagination(page)"
                             >
-                                {{page}}
+                                {{ page }}
                             </div>
                         </div>
                     </div>
 
-                    <div
-                        class="btn-next-page"
-                        :class="{'disabled-text': pageNumber === totalPage}"
-                        @click="nextPage"
-                    >Sau</div>
+                    <div class="btn-next-page" :class="{ 'disabled-text': pageNumber === totalPage }" @click="nextPage">
+                        Sau
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
-
 import PaymentApi from "../../api/service/payment";
 import { mapActions, mapMutations } from "vuex";
 import enums from "../../enums";
@@ -429,7 +376,7 @@ export default {
             this.payments = null;
             this.pageNumber = defaultPageNumber;
 
-            this.$router.push({ path: "receipt-payment-list", query: { page: 1 } }).catch(() => { });
+            this.$router.push({ path: "receipt-payment-list", query: { page: 1 } }).catch(() => {});
             this.loadPayment();
         },
 
@@ -443,7 +390,7 @@ export default {
             this.idTimeout = setTimeout(() => {
                 this.pageNumber = defaultPageNumber;
 
-                this.$router.push({ path: "receipt-payment-list", query: { page: 1 } }).catch(() => { });
+                this.$router.push({ path: "receipt-payment-list", query: { page: 1 } }).catch(() => {});
                 this.loadPayment();
             }, 700);
         }
@@ -482,9 +429,11 @@ export default {
                         return [["time", "Hôm nay"]];
                     case 2:
                         return [["time", "Tháng này"]];
-                };
+                }
             }
-            return [["rangTime", `${utils.formatDateLocal(vFilter.StartDate)}-${utils.formatDateLocal(vFilter.EndDate)}`]];
+            return [
+                ["rangTime", `${utils.formatDateLocal(vFilter.StartDate)}-${utils.formatDateLocal(vFilter.EndDate)}`]
+            ];
         }
     },
     /**
@@ -575,9 +524,7 @@ export default {
          */
         async getData() {
             try {
-                const promise = await Promise.all([
-                    PaymentApi.getPaymentFilterPaging(defaultFilter)
-                ]);
+                const promise = await Promise.all([PaymentApi.getPaymentFilterPaging(defaultFilter)]);
 
                 this.payments = promise[0]?.data?.Data?.result ?? [];
 
@@ -647,7 +594,7 @@ export default {
         reloadPayment() {
             this.payments = null;
             this.pageNumber = defaultPageNumber;
-            this.$router.push({ path: "receipt-payment-list", query: { page: defaultPageNumber } }).catch(() => { });
+            this.$router.push({ path: "receipt-payment-list", query: { page: defaultPageNumber } }).catch(() => {});
             this.totalPage = defaultTotalPage;
             this.totalRecord = defaultTotalRecord;
             this.filterText = defaultFilterText;
@@ -743,20 +690,22 @@ export default {
         // #region paging
 
         onPagination(page) {
-            this.$router.push({ path: "receipt-payment-list", query: { page: page } }).catch(() => { });
+            this.$router.push({ path: "receipt-payment-list", query: { page: page } }).catch(() => {});
         },
 
         nextPage() {
             if (this.pageNumber === this.totalPage) {
                 return;
             }
-            this.$router.push({ path: "receipt-payment-list", query: { page: this.pageNumber + 1 } }).catch(() => { });
+            this.$router.push({ path: "receipt-payment-list", query: { page: this.pageNumber + 1 } }).catch(() => {});
         },
         prevPage() {
             if (this.pageNumber - 1 === 0) {
                 return;
             }
-            this.$router.push({ path: "receipt-payment-list", query: { page: Math.max(0, this.pageNumber - 1) } }).catch(() => { });
+            this.$router
+                .push({ path: "receipt-payment-list", query: { page: Math.max(0, this.pageNumber - 1) } })
+                .catch(() => {});
         }
         // #endregion
     },
@@ -768,5 +717,4 @@ export default {
 };
 </script>
 
-<style scoped src="./style.css">
-</style>
+<style scoped src="./style.css"></style>

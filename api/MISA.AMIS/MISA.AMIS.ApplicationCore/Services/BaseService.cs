@@ -63,7 +63,7 @@ namespace MISA.AMIS.ApplicationCore.Services
             return serviceResult;
         }
 
-        public async Task<ServiceResult> DeleteOne(Guid entityId)
+        public virtual async Task<ServiceResult> DeleteOne(Guid entityId)
         {
             // TODO validate
             var rowCount = await _baseRepository.DeleteOne(entityId);

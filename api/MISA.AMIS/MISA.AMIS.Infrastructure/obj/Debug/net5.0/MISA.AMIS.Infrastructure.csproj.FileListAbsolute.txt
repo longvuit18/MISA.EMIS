@@ -27,3 +27,4 @@ D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.Infrastructure\obj\Debug\net5.0\MISA.A
 D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.Infrastructure\obj\Debug\net5.0\MISA.AMIS.Infrastructure.dll
 D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.Infrastructure\obj\Debug\net5.0\ref\MISA.AMIS.Infrastructure.dll
 D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.Infrastructure\obj\Debug\net5.0\MISA.AMIS.Infrastructure.pdb
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.Infrastructure\obj\Debug\net5.0\MISA.AMIS.Infrastructure.csproj.CopyComplete

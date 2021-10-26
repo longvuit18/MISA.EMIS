@@ -1,64 +1,29 @@
 <template>
     <div class="filter">
         <BaseRow>
-            <BaseCol
-                :cols="12"
-                class="mr-10"
-            >
-                <BaseCombobox label="Lý do chi" />
+            <BaseCol :cols="12" class="mr-10">
+                <BaseCombobox label="Lý do chi" :items="[{ label: 'Tất cả' }]" value="Tất cả" optionId="label" keyLabel="label" />
             </BaseCol>
         </BaseRow>
         <BaseRow>
-            <BaseCol
-                :cols="12"
-                class="mr-10"
-            >
-                <BaseCombobox label="Trạng thái ghi nợ" />
+            <BaseCol :cols="12" class="mr-10"
+                ><BaseCombobox label="Trạng thái ghi nợ" :items="[{ label: 'Tất cả' }]" value="Tất cả" optionId="label" keyLabel="label" />
             </BaseCol>
         </BaseRow>
         <BaseRow>
-            <BaseCol
-                :cols="4"
-                class="mr-10"
-            >
-                <BaseCombobox
-                    label="Thời gian"
-                    :items="time"
-                    optionId="value"
-                    keyLabel="label"
-                    v-model="filter.time"
-                />
+            <BaseCol :cols="4" class="mr-10">
+                <BaseCombobox label="Thời gian" :items="time" optionId="value" keyLabel="label" v-model="filter.time" />
             </BaseCol>
-            <BaseCol
-                :cols="4"
-                class="mr-10"
-            >
-                <BaseDatePicker
-                    label="Từ ngày"
-                    v-model="filter.StartDate"
-                    format="DD/MM/YYYY"
-                    value-type="YYYY-MM-DD"
-                />
+            <BaseCol :cols="4" class="mr-10">
+                <BaseDatePicker label="Từ ngày" v-model="filter.StartDate" format="DD/MM/YYYY" value-type="YYYY-MM-DD" />
             </BaseCol>
             <BaseCol :cols="4">
-                <BaseDatePicker
-                    label="Đến ngày"
-                    v-model="filter.EndDate"
-                    format="DD/MM/YYYY"
-                    value-type="YYYY-MM-DD"
-                />
+                <BaseDatePicker label="Đến ngày" v-model="filter.EndDate" format="DD/MM/YYYY" value-type="YYYY-MM-DD" />
             </BaseCol>
         </BaseRow>
         <BaseRow class="justify-space-between">
-            <BaseButton
-                secondaryButton
-                buttonName="Đặt lại"
-                @click="reset"
-            />
-            <BaseButton
-                buttonName="Lọc"
-                @click="onFilter"
-            />
+            <BaseButton secondaryButton buttonName="Đặt lại" @click="reset" />
+            <BaseButton buttonName="Lọc" @click="onFilter" />
         </BaseRow>
     </div>
 </template>
@@ -78,7 +43,7 @@ export default {
     props: {
         filterProp: {
             type: Object,
-            default: () => { }
+            default: () => {}
         }
     },
     data() {

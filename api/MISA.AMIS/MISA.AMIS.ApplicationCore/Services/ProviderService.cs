@@ -23,8 +23,35 @@ namespace MISA.AMIS.ApplicationCore.Services
             _providerRepository = providerRepository;
         }
 
+        public override async Task<ServiceResult> DeleteOne(Guid entityId)
+        {
+            Guid[] listId = { entityId };
+            var validateArising = await ValidateArising(listId);
+            if (!validateArising)
+            {
+                return new ServiceResult
+                {
+                    Code = MisaCode.Success,
+                    Data = null,
+                    MsgUser = Properties.Resources.ArisingData,
+                    State = false
+                };
+            }
+            return await base.DeleteOne(entityId);
+        }
         public async Task<ServiceResult> DeleteBatch(Guid[] listId)
         {
+            var validateArising = await ValidateArising(listId);
+            if (!validateArising)
+            {
+                return new ServiceResult
+                {
+                    Code = MisaCode.Success,
+                    Data = null,
+                    MsgUser = Properties.Resources.ArisingData,
+                    State = false
+                };
+            }
             var rowAffect =  await _providerRepository.DeleteBatch(listId);
             if(rowAffect < 1)
             {
@@ -60,6 +87,23 @@ namespace MISA.AMIS.ApplicationCore.Services
                 MsgUser = Properties.Resources.GetSuccessfully,
                 State = true
             };
+        }
+        /// <summary>
+        /// Kiểm tra phát sinh của account object
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <returns></returns>
+        /// Created by: VLVU (20/10/2021)
+        private async Task<bool> ValidateArising(Guid[] listId)
+        {
+            var arisingEffected = await _providerRepository.CheckArising(listId);
+
+            if (arisingEffected > 0)
+            {
+                return false;
+            }
+            return true;
+
         }
         #endregion
     }

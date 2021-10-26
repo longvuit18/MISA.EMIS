@@ -25,3 +25,4 @@ D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.
 D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMIS.ApplicationCore.dll
 D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\ref\MISA.AMIS.ApplicationCore.dll
 D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMIS.ApplicationCore.pdb
+D:\Misa\MISA.EMIS\api\MISA.AMIS\MISA.AMIS.ApplicationCore\obj\Debug\net5.0\MISA.AMIS.ApplicationCore.csproj.AssemblyReference.cache

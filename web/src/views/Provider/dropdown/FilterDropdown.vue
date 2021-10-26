@@ -1,13 +1,14 @@
 <template>
     <div class="filter">
         <BaseRow>
-            <BaseCol
-                :cols="6"
-                class="mr-10"
-            >
+            <BaseCol :cols="6" class="mr-10">
                 <BaseCombobox
                     label="Loại"
-                    :items="[{value: null, label: 'Tất cả'},{value: 0, label: 'Tổ chức'}, {value: 1, label: 'Cá nhân'}]"
+                    :items="[
+                        { value: null, label: 'Tất cả' },
+                        { value: 0, label: 'Tổ chức' },
+                        { value: 1, label: 'Cá nhân' }
+                    ]"
                     optionId="value"
                     keyLabel="label"
                     v-model="filter.account_object_type"
@@ -28,21 +29,15 @@
             </BaseCol>
         </BaseRow>
         <BaseRow>
-            <BaseCol
-                :cols="6"
-                class="mr-10"
-            >
-                <BaseCombobox label="Tình trạng công nợ" />
+            <BaseCol :cols="6" class="mr-10">
+                <BaseCombobox label="Tình trạng công nợ" :items="[{ label: 'Tất cả' }]" value="Tất cả" optionId="label" keyLabel="label" />
             </BaseCol>
             <BaseCol :cols="6">
-                <BaseCombobox label="Trạng thái" />
+                <BaseCombobox label="Trạng thái" :items="[{ label: 'Tất cả' }]" value="Tất cả" optionId="label" keyLabel="label" />
             </BaseCol>
         </BaseRow>
         <BaseRow>
-            <BaseCol
-                :cols="4"
-                class="mr-10"
-            >
+            <BaseCol :cols="4" class="mr-10">
                 <BaseCombobox
                     label="Tỉnh/TP"
                     placeholder="Tỉnh/Thành phố"
@@ -52,10 +47,7 @@
                     v-model="filter.province_or_city"
                 />
             </BaseCol>
-            <BaseCol
-                :cols="4"
-                class="mr-10"
-            >
+            <BaseCol :cols="4" class="mr-10">
                 <BaseCombobox
                     label="Quận/Huyện"
                     placeholder="Quận/Huyện"
@@ -77,15 +69,8 @@
             </BaseCol>
         </BaseRow>
         <BaseRow class="justify-space-between">
-            <BaseButton
-                secondaryButton
-                buttonName="Đặt lại"
-                @click="reset"
-            />
-            <BaseButton
-                buttonName="Lọc"
-                @click="onFilter"
-            />
+            <BaseButton secondaryButton buttonName="Đặt lại" @click="reset" />
+            <BaseButton buttonName="Lọc" @click="onFilter" />
         </BaseRow>
     </div>
 </template>
@@ -104,7 +89,7 @@ export default {
     props: {
         filterProp: {
             type: Object,
-            default: () => { }
+            default: () => {}
         }
     },
 

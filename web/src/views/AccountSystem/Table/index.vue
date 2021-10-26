@@ -5,67 +5,38 @@
                 <tr>
                     <th class="first-white-space z-index-header"></th>
                     <th
-                        v-for="(columnName,index) in columnNames"
+                        v-for="(columnName, index) in columnNames"
                         :key="columnName.key"
-                        :class="{'second-column-fixed z-index-header': index === 0}"
+                        :class="{ 'second-column-fixed z-index-header': index === 0 }"
                     >
                         <div
-                            :style="{width: width(columnName.key), 'min-width': width(columnName.key), 'background': '#ECEEF1'}"
-                            :class="{'align-center': columnName.align === 'center', 'align-right': columnName.align === 'right'}"
+                            :style="{ width: width(columnName.key), 'min-width': width(columnName.key), background: '#ECEEF1' }"
+                            :class="{ 'align-center': columnName.align === 'center', 'align-right': columnName.align === 'right' }"
                         >
-                            {{columnName.text}}
+                            {{ columnName.text }}
                         </div>
-                        <div
-                            v-if="!disabledFilter"
-                            class="filter"
-                            style="display: none;"
-                        >
-                            <div
-                                class="icon icon-size-16 mi-header-option"
-                                @click="() => showedFilter = index"
-                            >
-                            </div>
+                        <div v-if="!disabledFilter" class="filter" style="display: none;">
+                            <div class="icon icon-size-16 mi-header-option" @click="() => (showedFilter = index)"></div>
                             <BaseBoxPopup v-if="index === showedFilter">
-                                <div
-                                    class="base-table-filter"
-                                    v-click-outside="(e) => showedFilter = -1"
-                                >
-                                    <div
-                                        class="lock"
-                                        v-tooltip="'Tính năng đang phát triển'"
-                                    >
+                                <div class="base-table-filter" v-click-outside="e => (showedFilter = -1)">
+                                    <div class="lock" v-tooltip="'Tính năng đang phát triển'">
                                         Cố định cột này
                                     </div>
                                     <div class="filter-text">
-                                        <div class="title">Lọc {{columnName.text}}</div>
+                                        <div class="title">Lọc {{ columnName.text }}</div>
                                         <div class="mt-10 mb-10">
-                                            <BaseInput
-                                                fullWidth
-                                                placeholder="Nhập giá trị lọc"
-                                                focusInput
-                                                v-model="filter[columnName.key]"
-                                            />
+                                            <BaseInput fullWidth placeholder="Nhập giá trị lọc" focusInput v-model="filter[columnName.key]" />
                                         </div>
                                     </div>
                                     <BaseRow class="justify-space-between">
-                                        <BaseButton
-                                            secondaryButton
-                                            buttonName="Bỏ lọc"
-                                            @click="() => discardFilter(columnName.key)"
-                                        />
-                                        <BaseButton
-                                            buttonName="Lọc"
-                                            @click="() =>handleFilter()"
-                                        />
+                                        <BaseButton secondaryButton buttonName="Bỏ lọc" @click="() => discardFilter(columnName.key)" />
+                                        <BaseButton buttonName="Lọc" @click="() => handleFilter()" />
                                     </BaseRow>
                                 </div>
                             </BaseBoxPopup>
                         </div>
                     </th>
-                    <th
-                        class="last-column-fixed align-center"
-                        style="z-index:16; width: 120px; min-width: 120px;"
-                    >
+                    <th class="last-column-fixed align-center" style="z-index:16; width: 120px; min-width: 120px;">
                         Chức năng
                     </th>
                     <th class="last-white-space-1"></th>
@@ -76,40 +47,43 @@
                 <tr
                     v-for="(item, rowIndex) in treeData"
                     :key="rowIndex"
-                    @dblclick="(e) => handleDblClickRow(e, item[0])"
-                    @contextmenu="(e) => handleRightClick(e, item[0])"
-                    :class="{'z-index-row': rowIndex === showedFeature}"
+                    @dblclick="e => handleDblClickRow(e, item[0])"
+                    @contextmenu="e => handleRightClick(e, item[0])"
+                    :class="{ 'z-index-row': rowIndex === showedFeature }"
                     v-show="!rowHide(rowIndex)"
                 >
                     <th class="first-white-space"></th>
                     <td
                         v-for="(value, key, cellIndex) in mapDataFlowHeader(item[0])"
                         :key="key"
-                        :class="{...setAlign(key), 'second-column-fixed': cellIndex === 0, ['level-' + item[0].level]: cellIndex === 0, 'uppercase': item[1] === 'is-parent'}"
+                        :class="{
+                            ...setAlign(key),
+                            'second-column-fixed': cellIndex === 0,
+                            ['level-' + item[0].level]: cellIndex === 0,
+                            uppercase: item[1] === 'is-parent'
+                        }"
                         class="td-viewer"
                     >
-                        <div
-                            :style="{width: width(key)}"
-                            class="width-cell"
-                        >
+                        <div :style="{ width: width(key) }" class="width-cell">
                             <div
                                 class="collapse-icon"
-                                :class="{'icon icon-size-16': cellIndex === 0, 'mi-tree-collapse--small': item[1] === 'is-parent' && !isExtendIcon(rowIndex), 'mi-tree-expand--small': isExtendIcon(rowIndex)}"
+                                :class="{
+                                    'icon icon-size-16': cellIndex === 0,
+                                    'mi-tree-collapse--small': item[1] === 'is-parent' && !isExtendIcon(rowIndex),
+                                    'mi-tree-expand--small': isExtendIcon(rowIndex) && item[1] === 'is-parent'
+                                }"
                                 @click="() => handleCollapse(item, rowIndex)"
                             />
-                            <span :title="width(key) ? value : ''">{{value}}</span>
+                            <span :title="width(key) ? value : ''">{{ value }}</span>
                         </div>
                     </td>
                     <td class="last-column-fixed align-center td-viewer">
                         <div class="feature-column">
-                            <span
-                                @click="() =>handleClickView(item)"
-                                style="cursor: pointer;"
-                            >Xem</span>
+                            <span @click="() => handleClickEdit(item)" style="cursor: pointer;">Sửa</span>
                             <div>
                                 <button
                                     @click="handleClickFeature(rowIndex)"
-                                    :class="{'hide-border': rowIndex  !== showedFeature}"
+                                    :class="{ 'hide-border': rowIndex !== showedFeature }"
                                     class="td-viewer"
                                 >
                                     <div class="icon-arrow-down"></div>
@@ -117,45 +91,23 @@
                             </div>
                             <ul
                                 v-if="rowIndex === showedFeature"
-                                :class="(rowIndex < data.length - 2 && data.length > 10) ? 'popup-bottom' : 'popup-top'"
+                                :class="rowIndex < data.length - 2 && data.length > 10 ? 'popup-bottom' : 'popup-top'"
                             >
-                                <li
-                                    @click="() =>handleClickEdit(item)"
-                                    style="cursor: pointer;"
-                                >Sửa</li>
-                                <li
-                                    @click="() =>handleClickReplication(item)"
-                                    style="cursor: pointer;"
-                                >Nhân bản</li>
-                                <li
-                                    @click="() =>handleClickDelete(item)"
-                                    style="cursor: pointer;"
-                                >Xóa</li>
+                                <li @click="() => handleClickView(item)" style="cursor: pointer;">Xem</li>
+                                <li @click="() => handleClickDelete(item)" style="cursor: pointer;">Xóa</li>
                             </ul>
                         </div>
-
                     </td>
                     <td class="last-white-space-1"></td>
                     <td class="last-white-space-2"></td>
-
                 </tr>
             </tbody>
         </table>
-        <div
-            class="loading"
-            style="flex-direction: column;"
-            v-show="data && data.length === 0"
-        >
-            <img
-                src="../../../assets/icon/nodata.svg"
-                alt=""
-            >
+        <div class="loading" style="flex-direction: column;" v-show="data && data.length === 0">
+            <img src="../../../assets/icon/nodata.svg" alt="" />
             Không có dữ liệu
         </div>
-        <div
-            class="loading"
-            v-show="!data"
-        >
+        <div class="loading" v-show="!data">
             <BaseSpin size="40px" />
         </div>
     </div>
@@ -183,7 +135,7 @@ export default {
 
         filterProp: {
             type: Object,
-            default: () => { }
+            default: () => {}
         },
         disabledFilter: {
             type: Boolean,
@@ -222,32 +174,32 @@ export default {
          * Created by: VLVU (2/10/2021)
          */
         treeData() {
-            let result = [];
+            let result = [...this.data];
 
-            let levelCount = 0;
-            while (true) {
-                const dataLevelN = this.data.filter(item => item.level === levelCount);
-                if (dataLevelN.length === 0 && result.length === this.data.length) {
-                    break;
-                }
-                // level 0 là lấy luôn
-                if (levelCount === 0) {
-                    result = [...dataLevelN];
-                    levelCount++;
-                    continue;
-                }
+            // let levelCount = 0;
+            // while (true) {
+            //     const dataLevelN = this.data.filter(item => item.level === levelCount);
+            //     if (dataLevelN.length === 0 && result.length === this.data.length) {
+            //         break;
+            //     }
+            //     // level 0 là lấy luôn
+            //     if (levelCount === 0) {
+            //         result = [...dataLevelN];
+            //         levelCount++;
+            //         continue;
+            //     }
 
-                dataLevelN.forEach(item => {
-                    const indexParent = result.findIndex(r => r.account_id === item.parent_id);
-                    if (indexParent === -1) {
-                        result.push(item);
-                        return;
-                    }
+            //     dataLevelN.forEach(item => {
+            //         const indexParent = result.findIndex(r => r.account_id === item.parent_id);
+            //         if (indexParent === -1) {
+            //             result.push(item);
+            //             return;
+            //         }
 
-                    result = [...result.slice(0, indexParent + 1), item, ...result.slice(indexParent + 1)];
-                });
-                levelCount++;
-            }
+            //         result = [...result.slice(0, indexParent + 1), item, ...result.slice(indexParent + 1)];
+            //     });
+            //     levelCount++;
+            // }
 
             result = result.map((item, index, array) => {
                 if (index === array.length - 1) {
@@ -256,7 +208,7 @@ export default {
 
                 if (array[index + 1].parent_id === item.account_id) {
                     return [item, "is-parent"];
-                };
+                }
 
                 return [item, "is-children"];
             });
@@ -286,7 +238,7 @@ export default {
                     if (item[0].level === 0) {
                         this.rowsNeedExtend.push(index);
                         return;
-                    };
+                    }
                     this.collapseClose.push(index);
                 });
             } else {
@@ -296,11 +248,8 @@ export default {
         }
     },
 
-    mounted() {
-
-    },
+    mounted() {},
     methods: {
-
         handleCollapse(rowItem, rowIndex) {
             if (rowItem[1] === "is-children") {
                 return;
@@ -326,7 +275,10 @@ export default {
                 if (item[0].level > rowItem[0].level) {
                     if (isNeedExtend) {
                         // chỉ xóa 1 vị trí có trong collapseClose để đảm bảo ông mở nhưng các cha bên trong vẫn đóng
-                        this.collapseClose.splice(this.collapseClose.findIndex(coll => coll === index), 1);
+                        this.collapseClose.splice(
+                            this.collapseClose.findIndex(coll => coll === index),
+                            1
+                        );
                         continue;
                     }
                     // lấy index hàng cần ẩn đi
@@ -365,18 +317,18 @@ export default {
             this.$emit("filterValue", this.filter);
         },
         /**
-        * Sự kiện khi double click vào 1 row
-        * CreatedBy: Vũ Long Vũ 14/7/2021
-        */
+         * Sự kiện khi double click vào 1 row
+         * CreatedBy: Vũ Long Vũ 14/7/2021
+         */
         handleDblClickRow(e, item) {
             e.preventDefault();
             this.$emit("dblClickRow", item);
         },
 
         /**
-        * Sự kiện khi right click vào 1 row
-        * CreatedBy: Vũ Long Vũ 19/7/2021
-        */
+         * Sự kiện khi right click vào 1 row
+         * CreatedBy: Vũ Long Vũ 19/7/2021
+         */
         handleRightClick(e, item) {
             e.preventDefault();
             this.$emit("rightClick", item, e.pageX, e.pageY);
@@ -421,9 +373,9 @@ export default {
         },
 
         /**
-        * Thực hiện map dữ liệu theo các trường của header
-        * CreatedBy: Vũ Long Vũ 14/7/2021
-        */
+         * Thực hiện map dữ liệu theo các trường của header
+         * CreatedBy: Vũ Long Vũ 14/7/2021
+         */
         mapDataFlowHeader(item) {
             const newItem = {};
             this.columnNames.forEach(c => {
@@ -444,9 +396,9 @@ export default {
         },
 
         /**
-        * truyền vào class align khi nó được truyền trong prop columnName
-        * CreatedBy: Vũ Long Vũ 17/7/2021
-        */
+         * truyền vào class align khi nó được truyền trong prop columnName
+         * CreatedBy: Vũ Long Vũ 17/7/2021
+         */
         setAlign(key) {
             const positionAlign = this.alignColumns.findIndex(item => item.key === key);
             if (positionAlign > -1) {
@@ -478,13 +430,21 @@ export default {
             return this.rowsSelected.findIndex(i => i === index) > -1;
         },
         /**
-        * sort column
-        * CreatedBy: Vũ Long Vũ 17/7/2021
-        */
+         * sort column
+         * CreatedBy: Vũ Long Vũ 17/7/2021
+         */
         onSort(key) {
             const dataSorted = this.data.sort((a, b) => {
-                const lastKeyA = a[key].split(" ").slice(-1).join(" ").toLowerCase();
-                const lastKeyB = b[key].split(" ").slice(-1).join(" ").toLowerCase();
+                const lastKeyA = a[key]
+                    .split(" ")
+                    .slice(-1)
+                    .join(" ")
+                    .toLowerCase();
+                const lastKeyB = b[key]
+                    .split(" ")
+                    .slice(-1)
+                    .join(" ")
+                    .toLowerCase();
                 // sắp xếp theo thứ tự bảng chữ cái với unicode
                 return lastKeyA.localeCompare(lastKeyB);
             });
@@ -552,13 +512,11 @@ export default {
             this.showedFeature = -1;
             this.$emit("handleClickRelication", item);
         }
-
     }
 };
 </script>
 
-<style scoped src="./style.css">
-</style>
+<style scoped src="./style.css"></style>
 <style>
 .base-table-filter {
     font-weight: 400;

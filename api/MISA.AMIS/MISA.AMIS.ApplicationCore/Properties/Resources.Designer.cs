@@ -70,6 +70,15 @@ namespace MISA.AMIS.ApplicationCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Đã phát sinh dữ liệu..
+        /// </summary>
+        public static string ArisingData {
+            get {
+                return ResourceManager.GetString("ArisingData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bạn đã xóa 1 bản ghi thành công!.
         /// </summary>
         public static string DeletedSuccessfully {

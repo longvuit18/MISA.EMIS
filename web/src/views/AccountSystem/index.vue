@@ -21,7 +21,7 @@
                     </div>
                 </div>
             </div>
-            <div class="back">
+            <div class="back" @click="() => $router.push('/cash/process')">
                 Quay lai
             </div>
         </div>
@@ -93,8 +93,8 @@ import { removeVietnameseTones } from "../../utils";
 const columnNames = [
     { key: "account_number", text: "Số tài khoản", width: 145 },
     { key: "account_name", text: "Tên tài khoản", width: 250 },
-    { key: "property_name", text: "Tính chất", width: 120 },
-    { key: "account_name_english", text: "Tên tiếng anh", width: 250 },
+    { key: "property_name", text: "Tính chất", width: 130 },
+    { key: "account_name_english", text: "Tên tiếng anh", width: 270 },
     { key: "description", text: "Diễn giải", width: 250 },
     { key: "state", text: "Trạng thái", width: 150 }
 ];
@@ -192,7 +192,8 @@ export default {
                     const property = properties.find(x => x.id === item.account_category_kind);
                     return {
                         ...item,
-                        property_name: property.name
+                        property_name: property.name,
+                        state: "Đang sử dụng"
                     };
                 }) ?? [];
                 this.fixedData = [...this.accounts];

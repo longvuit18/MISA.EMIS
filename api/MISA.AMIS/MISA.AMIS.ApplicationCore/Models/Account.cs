@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,16 +11,19 @@ namespace MISA.AMIS.ApplicationCore.Models
 	public class Account: BaseEntity
 	{
 		[PrimaryKey]
-		[NotDuplicate]
-		[Required]
 		public Guid account_id { get; set; }
 		[Required]
+		[DisplayName("Tên tài khoản")]
 		public string account_name { get; set; }
 		public string account_name_english { get; set; }
+		[Required]
+		[DisplayName("Số tài khoản")]
 		public string account_number { get; set; }
 		[Required]
+		[DisplayName("Tính chất")]
 		public int? account_category_kind { get; set; }
-		public int level { get; set; }
+        public string description { get; set; }
+        public int level { get; set; }
 		public Guid? parent_id { get; set; }
 		public bool is_postable_in_foreign_currency { get; set; }
 		public int? account_object_type { get; set; }

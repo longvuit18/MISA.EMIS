@@ -425,7 +425,7 @@ const columnNamesEmployee = [
 
 ];
 
-const nameCountryDefault = "Viet Nam"; // khóa chính của VN trong db
+const nameCountryDefault = "Viet Nam"; // tên nước VN trong db
 export default {
     name: "ProviderDetails",
     components: { Contact, Terms, BankAccount, Address },
@@ -674,13 +674,18 @@ export default {
                 } else {
                     this.setToast(resources.toast.updateSuccess(this.currentProvider.account_object_code, "nhà cung cấp"));
                 }
-                this.currentProvider = {};
+                this.currentProvider = {
+                    country: this.provider?.country ?? nameCountryDefault, // id của việt nam trong db
+                    account_object_type: this.provider?.account_object_type ?? 0,
+                    personal_contact_identity_date: utils.formatDateValueInput(this.provider?.personal_contact_identity_date)
+                };
+
+                this.groupProvider = [];
                 if (keepCreating) {
-                    await this.setNewEmployeeCode();
+                    await this.setNewProviderCode();
                     this.$refs["1"].$refs.BaseInput.focus();
                     this.loading = false;
                     this.edited = false;
-                    // this.defaultDepartment = null;
                     // set lại currentState là post để nó có thể thêm mới
                     this.currentState = enums.dialogState.post;
                     this.$emit("reloadProviders");

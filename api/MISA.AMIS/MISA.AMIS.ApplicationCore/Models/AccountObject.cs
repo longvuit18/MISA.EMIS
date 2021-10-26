@@ -9,7 +9,6 @@ namespace MISA.AMIS.ApplicationCore.Models
     [TableName("account_object")]
     public class AccountObject : BaseEntity
     {
-        [NotDuplicate]
         [PrimaryKey]
         public Guid account_object_id { get; set; }
         [NotDuplicate]

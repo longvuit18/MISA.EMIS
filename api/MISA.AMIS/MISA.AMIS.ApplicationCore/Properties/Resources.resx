@@ -120,6 +120,9 @@
   <data name="AddedSuccessfully" xml:space="preserve">
     <value>Bạn đã thêm 1 bản ghi thành công!</value>
   </data>
+  <data name="ArisingData" xml:space="preserve">
+    <value>Đã phát sinh dữ liệu.</value>
+  </data>
   <data name="DeletedSuccessfully" xml:space="preserve">
     <value>Bạn đã xóa 1 bản ghi thành công!</value>
   </data>
